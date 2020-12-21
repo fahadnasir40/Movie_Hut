@@ -1,0 +1,41 @@
+{
+  "name": "movie-hut",
+  "version": "1.0.0",
+  "description": "Movie Hut",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [
+    "Movie",
+    "Hut",
+    "Cinema",
+    "Showtimes"
+  ],
+  "author": "Fahad",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "concurrently": "^5.3.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.0",
+    "mongoose": "^5.10.9",
+    "mongoose-sequence": "^5.3.0",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fahadnasir40/Movie_Hut.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fahadnasir40/Movie_Hut/issues"
+  },
+  "homepage": "https://github.com/fahadnasir40/Movie_Hut#readme"
+}
