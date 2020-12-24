@@ -31,18 +31,17 @@ class MovieDetails extends Component {
                 keyboard={false}
             >
                 <Modal.Header className="secondary" closeButton>
-                    <div className="text-center">
-                        <Modal.Title id="contained-modal-title-vcenter" className="heading text-center">
-                            MOVIE TRAILER
-                        </Modal.Title>
-                    </div>
+                    <Modal.Title id="contained-modal-title-vcenter" className="heading text-center" style={{ opacity: '0.8', fontSize: '18px' }}>
+                        Movie Trailer
+                    </Modal.Title>
                 </Modal.Header>
                 <div className="trailer-body mt-n1" >
-                    {/* <iframe width="100%" height="1080px" src="https://www.youtube.com/embed/neBkma9xtjM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
                     <div className="trailer-container">
                         <iframe className="player" type="text/html" width="100%" height="100%"
-                            src={'https://www.youtube-nocookie.com/embed/neBkma9xtjM?autoplay=1'} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+                            src={'https://www.youtube-nocookie.com/embed/neBkma9xtjM?autoplay=1&loop=1&modestbranding=1&playlist=neBkma9xtjM'} frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen="1"
+                            webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
                     </div>
                 </div>
             </Modal>
@@ -81,15 +80,6 @@ class MovieDetails extends Component {
                             </div>
 
                         </div>
-                        {/* <div className="col-4">
-                                <div className="poster-container nopadding ">
-                                    <img id="postertest" className='poster' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
-                                </div>
-                            </div>
-                            <div className="col-8">
-                                Hello
-                            </div> */}
-
                     </section>
                 </div>
             </div >
