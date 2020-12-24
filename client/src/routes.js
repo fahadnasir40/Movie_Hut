@@ -1,11 +1,12 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import MovieDetails from './components/MovieDetails/details';
 
 const routes = () => {
 
     return (
         <Switch>
-            <Route path="/" exact component={() => (<h1>Movie Hut - Getting Started</h1>)} />
+            <Route path="/" exact component={MovieDetails} />
         </Switch>
     )
 }

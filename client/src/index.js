@@ -8,6 +8,7 @@ import ReduxThunk from 'redux-thunk';
 import reducers from './reducers'
 import Routes from './routes';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
 
