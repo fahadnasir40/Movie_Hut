@@ -58,12 +58,12 @@ class MovieDetails extends Component {
                     {this.playTrailer()}
                     <section className=" container ">
                         <div className="row border p-2 rounded">
-                            <div className="col-lg-3 col-12 p-1">
-                                <div className="poster-container nopadding ">
+                            <div className="col-lg-4 col-xl-3 col-12 p-1">
+                                <div className="poster-container nopadding">
                                     <img id="postertest" className='poster' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
                                 </div>
                             </div>
-                            <div className="col-12 col-lg-9 p-2">
+                            <div className="col-12 col-lg-8 col-xl-9 ml-lg-n5 ml-xl-0 p-2">
                                 <div className="movie-details">
                                     <h3 className="title">
                                         The SpongeBob Movie: Sponge on the Run
@@ -83,6 +83,35 @@ class MovieDetails extends Component {
                             </div>
                         </div>
                     </section>
+                    <section className="m-3">
+                        <div class="row">
+                            <div class="col-lg-8 col-12">col-8</div>
+                            <div class="col-lg-4 col-xl-3 col-12 "> <div className="card ">
+                                <div class="card-header heading text-center" style={{ borderBottom: 'none' }}>
+                                    CAST {'&'} CREW
+                                    <hr className="mb-1 mt-1 ml-4 mr-4 " />
+                                </div>
+                                <div class="card-body ">
+                                    <div className="row mx-1 mt-n3">
+                                        <div className="col-6 ">
+                                            <div>
+                                                <span className="heading">Tim Harry</span>
+                                                <br />
+                                                <span>Director</span>
+                                            </div>
+
+                                        </div>
+                                        <div className='col-6'>
+                                            col-2
+                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
             </div >
         )
