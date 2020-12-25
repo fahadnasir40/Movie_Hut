@@ -71,3 +71,23 @@
   margin: 0;
   padding: 0;
 }
+/* Login */
+@media all and (min-width: 480px) {
+  .Login {
+    padding: 60px 0;
+  }
+
+  .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+}
+.LoginBorder{
+  border: 1px solid black;
+  padding-bottom: 1em;
+  padding-top: 3em;
+  margin: 0 0;
+}
+.font-text{
+  font-family: Roboto;
+}
