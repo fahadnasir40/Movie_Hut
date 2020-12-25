@@ -17,34 +17,36 @@ class Login extends Component {
         return (
             <div>
                 <Header />
+                <div className="top-margin-header"></div>
                 <div className="container">
                     <div className="Login">
                         <div className="card font-text">
                             <h4 className="m-3 text-center" >Login to your Account</h4>
-                            <Form className="mt-5">
-                                <Form.Group size="lg" controlId="email">
+                            <Form className="mt-3" action='/'>
+                            <Form.Group className="input-style" controlId="email">
                                     <Form.Label>Email</Form.Label>
                                     <Form.Control
-                                        autoFocus
-                                        
+                                        type="email"
+                                        placeholder="Email"
                                     />
                                 </Form.Group>
-                                <Form.Group size="lg" controlId="password">
+                                <Form.Group className="input-style" controlId="password">
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control
                                         type="password"
+                                        placeholder="Password"
                                     />
                                 </Form.Group>
-                                <p>Forgot Password</p>
-                                <Button className="btn-dark mt-5 mb-3" style={{ borderRadius: '200px' }}block size="lg" type="submit">
+                                <p className="left-margin-text">Forgot Password?</p>
+                                <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign In
                                 </Button>
-                                <p style={{ fontFamily: 'Roboto' }}>Do not have an account? Create here</p>
+                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Do not have an account? Create here</p>
                             </Form>
-                            
                         </div>
                     </div>
                 </div>
+                <div className="bottom-margin-header"></div>
             </div>
         )
     }
