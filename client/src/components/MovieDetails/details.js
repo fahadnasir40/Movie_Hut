@@ -5,6 +5,7 @@ import Footer from '../Footer/footer'
 
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
+import Review from '../Review/review';
 
 const responsive = {
     0: { items: 1 },
@@ -115,7 +116,7 @@ class MovieDetails extends Component {
                                                 The SpongeBob Movie: Sponge on the Run
                                             </h3>
                                             <p>08/14/2020 (CA) Fantasy, Animation, Adventure, Comedy, Family</p>
-                                            <p>L,<i class="fa fa-tick" ></i>1H 35M</p>
+                                            <p><span className="border border-dark rounded px-1 mx-1 ">L</span>   <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> 1H 35M</p>
 
                                             <h6>Overview</h6>
                                             <p>After SpongeBob's beloved pet snail Gary is snail-napped, he and Patrick embark on an epic
@@ -265,13 +266,21 @@ class MovieDetails extends Component {
                             </div>
 
                             {/* Video Slider */}
-                            <div className="row col-12 slider-details">
+                            {/* <div className="row col-12 slider-details">
                                 Slider ///
-                                <AliceCarousel
-                                    mouseTracking
-                                    items={items}
-                                    responsive={responsive}
-                                />
+                                <div className="offset-lg-2 offset-xl-2">
+
+                                    <AliceCarousel
+                                        mouseTracking
+                                        items={items}
+                                        responsive={responsive}
+                                    />
+                                </div>
+                            </div> */}
+                            <div className="row my-4 order-last">
+                                <div className=" col-12 offset-lg-2 offset-xl-2 col-lg-10 ">
+                                    <Review />
+                                </div>
                             </div>
                         </section>
 
