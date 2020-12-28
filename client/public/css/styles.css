@@ -172,10 +172,17 @@
 }
 
 /* Poster */
-.poster-container .poster {
+.poster {
   width: 250px;
   height: 375px;
   border-radius: 4px;
+}
+
+@media (max-width: 767px) {
+  .poster {
+    width: 130px;
+    height: 195px;
+  }
 }
 
 .movie-details {
@@ -216,6 +223,11 @@
   color: white;
 }
 
+.primary {
+  background: #000;
+  color: white;
+}
+
 .heading {
   font-family: "Roboto Condensed", sans-serif;
 }
@@ -249,6 +261,7 @@
     max-width: 320px;
   }
 }
+
 .LoginBorder {
   border: 1px solid black;
   padding-bottom: 1em;
@@ -265,6 +278,7 @@
 }
 
 .showtime-container {
+  width: -moz-fit-content;
   width: fit-content;
   background: #212121;
   color: white;
@@ -272,8 +286,7 @@
   padding-right: 1em;
   padding-top: 0.4em;
   padding-bottom: 0.4em;
-  /* display: inline-block;
-   */
+  display: inline-flexbox;
 }
 
 .showtime-date {
@@ -282,6 +295,7 @@
 
   margin-right: 20px;
   padding: 8px;
+  width: -moz-fit-content;
   width: fit-content;
   border-radius: 12px;
   background: #ffff;
@@ -300,8 +314,9 @@
 
 .session-container {
   cursor: pointer;
-  height: 24px;
-  box-sizing: border-box;
+  margin: 4px;
+  display: inline-flex;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
@@ -319,70 +334,89 @@
 
 .session-container .attribute {
   color: #000;
+  margin-right: 3px;
   padding: 12px;
   margin-left: 0 !important;
   border: 1px, solid, #000;
+  display: inline-flex;
 }
 
-@media (min-width:320px)  { /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
-  .register-line{
+@media (min-width: 320px) {
+  /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+  .register-line {
     width: 90%;
   }
-  .input-style{
+  .input-style {
     margin-left: 10px;
     margin-right: 10px;
   }
-  #btn-size{
+  #btn-size {
     width: 94%;
     margin-left: 9px;
     text-align: center;
   }
-  .left-margin-text{
+  .left-margin-text {
     margin-left: 10px;
   }
-  .top-margin-header{
+  .top-margin-header {
     margin-top: 20px;
   }
-  .bottom-margin-header{
+  .bottom-margin-header {
     margin-bottom: 20px;
   }
 }
-@media (min-width:480px)  { /* smartphones, Android phones, landscape iPhone */ }
-@media (min-width:600px)  { /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */ }
-@media (min-width:801px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
-@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ }
-@media (min-width:1281px) { /* hi-res laptops and desktops */ 
-  .register-line{
+@media (min-width: 480px) {
+  /* smartphones, Android phones, landscape iPhone */
+}
+@media (min-width: 600px) {
+  /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
+}
+@media (min-width: 801px) {
+  /* tablet, landscape iPad, lo-res laptops ands desktops */
+}
+@media (min-width: 1025px) {
+  /* big landscape tablets, laptops, and desktops */
+}
+@media (min-width: 1281px) {
+  /* hi-res laptops and desktops */
+  .register-line {
     width: 100%;
   }
-  .input-style{
+  .input-style {
     margin-left: 0px;
     margin-right: 0px;
   }
-  #btn-size{
+  #btn-size {
     width: 100%;
     margin-left: 0px;
     text-align: center;
   }
-  .left-margin-text{
+  .left-margin-text {
     margin-left: 0px;
   }
-  .top-margin-header{
+  .top-margin-header {
     margin-top: 0px;
   }
-  .bottom-margin-header{
+  .bottom-margin-header {
     margin-bottom: 0px;
   }
 }
-input[type=text] {
-  border:1px solid black;
+input[type="text"] {
+  border: 1px solid black;
 }
-input[type=password] {
-  border:1px solid black;
+input[type="password"] {
+  border: 1px solid black;
 }
-input[type=email] {
-  border:1px solid black;
+input[type="email"] {
+  border: 1px solid black;
 }
-input[type=date] {
-  border:1px solid black;
+input[type="date"] {
+  border: 1px solid black;
 }
+
+.cast-container {
+  width: 300px;
+  height: 500px;
+}
+
+/* Slider Movie Details */
