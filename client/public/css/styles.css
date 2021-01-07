@@ -456,7 +456,8 @@ input[type="date"] {
 .movie-container {
   max-width: 220px;
   margin: 8px;
-  font-size: 14px;
+  font-size: 11px;
+  display: inline-block;
 }
 
 /* RATING CSSS */

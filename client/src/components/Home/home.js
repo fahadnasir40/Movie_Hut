@@ -57,56 +57,54 @@ class Home extends Component {
                             </div>
 
                             <div className="row mt-3 px-5">
-                                <div className="movie-container">
+                                <div className=" movie-container ">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
                                         <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
                                     </Link>
-                                    <span className="text-truncate">Hellas iojsadklajsdklasjdoaisdjklsadjalksdjaklsdjaslkdajsldkajsdlkajsdklasdjkalsdjlaskdjlk</span>
+
                                 </div>
                                 <div className="movie-container ">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
-
-                                    </Link>
-
-                                </div>
-                                <div className="movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/thelionking.jpg' alt="movie-poster" />
                                     </Link>
                                 </div>
                                 <div className="movie-container">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/tennet.jpg' alt="movie-poster" />
+                                    </Link>
+                                </div>
+                                <div className="movie-container">
+                                    {/* <h1>Home Page - Getting Started</h1> */}
+                                    <Link class="p-1" to="/movie" >
+                                        <img id="postertest" className='movie-poster d-flex  ' src='./assets/images/soul.jpg' alt="movie-poster" />
                                     </Link>
                                 </div>
                                 <div className="movie-container ">
                                     {/* <h1>Home Page - Getting Started</h1> */}
 
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/mulan.jpg' alt="movie-poster" />
                                     </Link>
                                 </div>
                                 <div className="movie-container">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/nmfa.jpg' alt="movie-poster" />
                                     </Link>
                                 </div>
                                 <div className=" movie-container">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/Daalchawal.jpeg' alt="movie-poster" />
                                     </Link>
                                 </div>
                                 <div className=" movie-container">
                                     {/* <h1>Home Page - Getting Started</h1> */}
                                     <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
+                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/avenger.jpg' alt="movie-poster" />
                                     </Link>
                                 </div>
                             </div>
