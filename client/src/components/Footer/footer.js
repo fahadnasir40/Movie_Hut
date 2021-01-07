@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class Footer extends Component {
     render() {
         return (
-            <footer class="site-footer">
+            <footer class="site-footer mt-2 ">
                 <div class="container">
                     <div class="row ">
                         <div class="col-sm-12 col-md-3">
@@ -42,7 +42,7 @@ class Footer extends Component {
                 <div class="container">
                     <div class="row">
                         <div class="col-12 ">
-                            <span className="copyright-text offset-lg-2 col-xs-12 my-2 ">Copyright &copy; 2020 Movie Hut. All Rights Reserved.
+                            <span className="copyright-text offset-lg-2 col-xs-12 my-2 ">Copyright &copy; 2021 Movie Hut. All Rights Reserved.
                             </span>
                             <span className="footer-title  col-sm-12 col my-2"> MOVIE HUT</span>
                             <span className=" font-rc font-weight-bold  col-xs-12 my-2" style={{ opacity: '0.5', color: '#fff' }}> <a href="#"> Privacy Policy</a></span>
