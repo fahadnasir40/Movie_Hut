@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
 import Header from '../Header/header'
+import { Link } from 'react-router-dom';
 class Login extends Component {
     // state = {
     //     email: '',
@@ -11,9 +12,9 @@ class Login extends Component {
     // }
     render() {
 
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
+        function handleSubmit(event) {
+            event.preventDefault();
+        }
         return (
             <div>
                 <Header />
@@ -23,7 +24,7 @@ class Login extends Component {
                         <div className="card font-text">
                             <h4 className="m-3 text-center" >Login to your Account</h4>
                             <Form className="mt-3" action='/'>
-                            <Form.Group className="input-style" controlId="email">
+                                <Form.Group className="input-style" controlId="email">
                                     <Form.Label>Email</Form.Label>
                                     <Form.Control
                                         type="email"
@@ -41,7 +42,7 @@ class Login extends Component {
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign In
                                 </Button>
-                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Do not have an account? Create here</p>
+                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Do not have an account? <Link to="register">Create here</Link></p>
                             </Form>
                         </div>
                     </div>

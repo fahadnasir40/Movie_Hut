@@ -6,9 +6,15 @@ class Header extends Component {
     render() {
         return (
             <Navbar style={{ background: "black" }} variant="dark">
-                <Navbar.Brand href="#home" className="nav-brand">
+                <Navbar.Brand href="/" className="nav-brand">
                     MOVIE HUT
                 </Navbar.Brand>
+                <Nav className="ml-auto">
+                    <Nav.Link href="login">Sign In</Nav.Link>
+                    <Nav.Link eventKey={2} href="register">
+                        Sign Up
+                    </Nav.Link>
+                </Nav>
             </Navbar>
         )
     }
