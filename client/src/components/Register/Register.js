@@ -15,9 +15,9 @@ class Register extends Component {
     // }
     render() {
 
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
+        function handleSubmit(event) {
+            event.preventDefault();
+        }
         return (
             <div>
                 <Header />
@@ -69,8 +69,8 @@ class Register extends Component {
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign Up
                                 </Button>
-                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Already have an account? Sign In</p>
-                                <hr class="register-line" size="1"/>
+                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Already have an account? <Link to="login">Sign In</Link></p>
+                                <hr class="register-line" size="1" />
                                 <p className="input-style" style={{ fontFamily: 'Roboto', textAlign: 'center' }}>By clicking Sign Up, you agree to you agree to the <Link to="#">Terms</Link> and <Link to="#">Private policy</Link></p>
                             </Form>
                         </div>
