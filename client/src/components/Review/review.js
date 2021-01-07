@@ -16,7 +16,7 @@ export default class Review extends Component {
                                     <i class="fa fa-thumbs-up  "></i> 90% positive reivews
                                 </small>
                                 <span className="border border-dark rounded p-1 px-2  mx-2 text-nowrap ">
-                                    <a  >Write a review</a>
+                                    <a href="/create-review"  style={{ textDecoration: 'none', color: 'black' }}>Write a review</a>
                                 </span>
                             </div>
 
