@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const moment = require("moment")
+const { spawn } = require('child_process');
 
 const config = require("./config/config").get(process.env.NODE_ENV);
 const app = express();
@@ -18,6 +19,7 @@ mongoose.connect(config.DATABASE, {
 });
 
 const { User } = require("./models/user");
+const { Movie } = require("./models/movie");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -26,6 +28,42 @@ app.use(express.static("client/build"));
 
 
 // GET //
+app.get('/', (req, res) => {
+
+    var dataToSend;
+    // spawn new child process to call the python script
+
+    //variables file name, movie name, api key
+    const python = spawn('python', ['tmdb.py', 'The Lion King', config.TMDB_API_KEY]);
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...',);
+
+        dataToSend = data.toString();
+    });
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        try {
+            var movieObject = JSON.parse(dataToSend);
+            const movie = new Movie(movieObject);
+            // console.log("Movie Info", movie);
+            movie.save((error, document) => {
+                if (error) return res.status(400).send(error);
+                res.status(200).json({
+                    post: true,
+                    movie: document
+                })
+            });
+        }
+        catch {
+            res.status(404).send("Error in movie");
+        }
+    });
+})
+
 
 app.get("/api/auth", auth2, (req, res) => {
     res.json({
