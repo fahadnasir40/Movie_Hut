@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import Header from '../Header/header'
 import Footer from '../Footer/footer'
-import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom'
-import "react-multi-carousel/lib/styles.css";
-
-
+import { Carousel } from 'react-bootstrap'
+import HomeSlider from '../Widgets/slider'
 class Home extends Component {
 
     responsive = {
@@ -33,13 +31,22 @@ class Home extends Component {
         this.setState({ index: selectedIndex })
     };
 
+    slideImages = [
+        './assets/images/lionkingbackdrop.jpg',
+        './assets/images/lionkingbackdrop.jpg',
+        './assets/images/lionkingbackdrop.jpg'
+    ];
     render() {
         return (
             <div>
                 <Header />
                 <div className="container-fluid">
                     <div className="row">
-
+                        <HomeSlider
+                            settings={{
+                                interval: '5000'
+                            }}
+                        />
                     </div>
                     <div className="row">
 
