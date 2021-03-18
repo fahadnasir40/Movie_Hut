@@ -77,6 +77,17 @@ export function userRegister(user) {
     }
 }
 
+export function getMovieInfo(id) {
+
+    const request = axios.get(`/api/getMovieInfo?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_MOVIE_INFO',
+        payload: request
+    }
+}
+
 export function changePassword(data) {
     const request = axios.post(`/api/change_password`, data)
         .then(response => response.data);

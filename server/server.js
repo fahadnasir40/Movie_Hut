@@ -28,13 +28,15 @@ app.use(express.static("client/build"));
 
 
 // GET //
-app.get('/', (req, res) => {
+
+app.get('/api/saveMovie', (req, res) => {
 
     var dataToSend;
     // spawn new child process to call the python script
 
+    title = String(req.query.title);
     //variables file name, movie name, api key
-    const python = spawn('python', ['tmdb.py', 'The Lion King', config.TMDB_API_KEY]);
+    const python = spawn('python', ['tmdb.py', title, config.TMDB_API_KEY]);
 
     // collect data from script
     python.stdout.on('data', function (data) {
@@ -75,7 +77,22 @@ app.get("/api/auth", auth2, (req, res) => {
     });
 });
 
+//GET
 
+app.get('/api/getMovieInfo', (req, res) => {
+
+    let id = req.query.id;
+    Movie.findById(id, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            movie: doc,
+        })
+    })
+})
+
+
+
+//POST
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

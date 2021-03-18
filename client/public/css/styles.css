@@ -303,6 +303,14 @@
   font-stretch: semi-condensed;
 }
 
+.showmore {
+  font-size: 14px;
+  font-family: "Roboto Condensed", sans-serif;
+  cursor: pointer;
+}
+.showmore:hover {
+  color: gray;
+}
 .showtime-container {
   width: -moz-fit-content;
   width: fit-content;
