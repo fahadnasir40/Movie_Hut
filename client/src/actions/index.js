@@ -77,6 +77,17 @@ export function userRegister(user) {
     }
 }
 
+export function getHomeMovies() {
+
+    const request = axios.get(`/api/getHomeMovies`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_HOME_MOVIES',
+        payload: request
+    }
+}
+
 export function getMovieInfo(id) {
 
     const request = axios.get(`/api/getMovieInfo?id=${id}`)
