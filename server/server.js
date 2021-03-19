@@ -20,6 +20,8 @@ mongoose.connect(config.DATABASE, {
 
 const { User } = require("./models/user");
 const { Movie } = require("./models/movie");
+const { Cinema } = require("./models/cinema");
+const { Showtime } = require("./models/showtime");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -36,7 +38,7 @@ app.get('/api/saveMovie', (req, res) => {
 
     title = String(req.query.title);
     //variables file name, movie name, api key
-    const python = spawn('python', ['tmdb.py', title, config.TMDB_API_KEY]);
+    const python = spawn('python', ['tmdb.py', "Deadpool", config.TMDB_API_KEY]);
 
     // collect data from script
     python.stdout.on('data', function (data) {
@@ -93,6 +95,31 @@ app.get('/api/getMovieInfo', (req, res) => {
 
 
 //POST
+app.post('/api/create-cinema',(req, res)=>{
+    console.log(req.body)
+    const cinema = new Cinema(req.body);
+    cinema.save((error, cinema)=>{
+        if(error) {
+            console.log(error)
+            return res.status(400).send(error);
+        }
+        res.status(200).json({
+            post: true,
+            cinemaId: cinema._id
+        })
+    });
+})
+
+app.post('/api/create-showtime',(req, res)=>{
+    const showtime = new Showtime(req.body);
+    showtime.save((error, showtime)=>{
+        if(error) return res.status(400).send(error);
+        res.status(200).json({
+            post: true,
+            showtimeId: showtime._id
+        })
+    });
+})
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

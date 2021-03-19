@@ -51,7 +51,7 @@ class MovieDetails extends Component {
 
 
     componentDidMount = () => {
-        this.props.dispatch(getMovieInfo('6053602694f88f41a8546aa5'));
+        this.props.dispatch(getMovieInfo('6053601565e95e4958684afa'));
         // 605207d10644524990e0ecd9 Tom & Jerry
         // 605207fc13b9dc5d2833819c The Lion King 1999
         // 6053601565e95e4958684afa Deadpool

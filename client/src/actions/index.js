@@ -135,3 +135,19 @@ export function changeUserPassword(user) {
         payload: request
     }
 }
+
+export function addCinema(cinema){
+    const request = axios.post('/api/create-cinema',cinema)
+        .then(response => response.data);
+    return {
+        type:'ADD_CINEMA',
+        payload:request
+    }
+}
+
+export function clearCinema(){
+    return {
+        type: 'CLEAR_CINEMA',
+        payload: {}
+    }
+}
