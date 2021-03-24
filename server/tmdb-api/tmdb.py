@@ -15,7 +15,7 @@ class MovieEncoder(JSONEncoder):
 
 
 class Movie:
-    def __init__(self, backImg, posterImg, genreList, description, runtime, releaseDate, rating, videoLinks, castList, title, movieId):
+    def __init__(self, backImg, posterImg, genreList, description, runtime, releaseDate, rating, videoLinks, castList, title, certification, movieId):
         self.movieId = movieId
         self.title = title
         self.backImg = backImg  # link for image
@@ -27,6 +27,7 @@ class Movie:
         self.rating = rating
         self.videoLinks = videoLinks
         self.castList = castList
+        self.certification = certification
 
     def printMovie(self):
         movie_data = {
@@ -40,7 +41,8 @@ class Movie:
             "releaseDate": self.releaseDate,
             "rating": self.rating,
             "videoLinks": self.videoLinks,
-            "cast": self.castList
+            "cast": self.castList,
+            "certification": self.certification
         }
         movie_json = json.dumps(movie_data, indent=4, cls=MovieEncoder)
         print(movie_json)
@@ -103,6 +105,24 @@ def getMovieCredits(movieID, castList):
         castList.append(cast)
 
 
+def getCertifications(movieID):
+    request = 'https://api.themoviedb.org/3/movie/{0}/release_dates?api_key={1}'.format(movieID,
+                                                                                        key)
+    response = requests.get(request)
+    if response.status_code != 200:
+        print('Request failed! Exitting')
+        sys.exit()
+    data = response.json()
+    results = data.get('results')
+    certificate = ''
+    for r in results:
+        if r.get('iso_3166_1') == 'US':
+            release = r.get('release_dates')
+            for rel in release:
+                certificate = rel.get('certification')
+                return certificate
+
+
 def getMovieDetails(movieID, castList, title):
     request = 'https://api.themoviedb.org/3/movie/{0}?api_key={1}&language=en-US'.format(
         movieID, key)
@@ -132,6 +152,7 @@ def getMovieDetails(movieID, castList, title):
     runTime = data.get("runtime")
     releaseDate = data.get("release_date")
     rating = data.get("vote_average")
+    certificate = getCertifications(movieID)
     request = 'https://api.themoviedb.org/3/movie/{0}/videos?api_key={1}&language=en-US'.format(
         movieID, key)
     response = requests.get(request)
@@ -155,7 +176,7 @@ def getMovieDetails(movieID, castList, title):
             videoLinks.append(completeLink)
 
     movie = Movie(backImg, posterImg, genreList,
-                  description, runTime, releaseDate, rating, videoLinks, castList, title, movieId)
+                  description, runTime, releaseDate, rating, videoLinks, castList, title, certificate, movieId)
     return movie
 
 
