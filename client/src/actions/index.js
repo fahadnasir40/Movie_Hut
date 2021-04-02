@@ -77,6 +77,23 @@ export function userRegister(user) {
     }
 }
 
+
+
+/*     ADMIN */
+
+export function getCinemasList() {
+
+    const request = axios.get(`/api/getCinemasList`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMAS_LIST',
+        payload: request
+    }
+}
+
+
+/*  MOVIES  */
 export function getHomeMovies() {
 
     const request = axios.get(`/api/getHomeMovies`)

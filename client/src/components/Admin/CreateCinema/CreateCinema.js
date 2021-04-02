@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
-import Header from '../Header/header'
+import Header from '../../Header/header'
 import { Link } from 'react-router-dom'
 
 class CreateCinema extends Component {

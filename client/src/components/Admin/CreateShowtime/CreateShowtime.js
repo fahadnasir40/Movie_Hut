@@ -1,42 +1,42 @@
 import React, { Component } from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
-import Header from '../Header/header'
+import Header from '../../Header/header'
 import { Link } from 'react-router-dom'
 
 class CreateShowtime extends Component {
 
     render() {
-        function setDate(){
+        function setDate() {
             var today = new Date();
             var dd = today.getDate();
-            var mm = today.getMonth()+1; //January is 0!
+            var mm = today.getMonth() + 1; //January is 0!
             var yyyy = today.getFullYear();
-            if(dd<10){
-                    dd='0'+dd
-                } 
-                if(mm<10){
-                    mm='0'+mm
-                }
-            today = yyyy+'-'+mm+'-'+dd;
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            today = yyyy + '-' + mm + '-' + dd;
             console.log(today)
             return today;
         }
-        function setDateMax(){
+        function setDateMax() {
             var today = new Date();
             var dd = today.getDate();
-            var mm = today.getMonth()+3; //January is 0!
+            var mm = today.getMonth() + 3; //January is 0!
             var yyyy = today.getFullYear();
-            if(dd<10){
-                    dd='0'+dd
-                } 
-                if(mm<10){
-                    mm='0'+mm
-                }
-            today = yyyy+'-'+mm+'-'+dd;
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            today = yyyy + '-' + mm + '-' + dd;
             console.log(today)
             return today;
         }
-       
+
         return (
             <div>
                 <Header />
@@ -54,7 +54,7 @@ class CreateShowtime extends Component {
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="date">
-                                <Form.Label>Date</Form.Label>
+                                    <Form.Label>Date</Form.Label>
                                     <Form.Control
                                         type="date"
                                         min={setDate()}
