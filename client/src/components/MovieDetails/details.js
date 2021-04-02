@@ -11,6 +11,8 @@ import { getMovieInfo, } from '../../actions';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 
+
+
 const responsive = {
     0: { items: 1 },
     568: { items: 2 },
@@ -51,17 +53,11 @@ class MovieDetails extends Component {
 
 
     componentDidMount = () => {
-        this.props.dispatch(getMovieInfo('6053601565e95e4958684afa'));
-        // 605207d10644524990e0ecd9 Tom & Jerry
-        // 605207fc13b9dc5d2833819c The Lion King 1999
-        // 6053601565e95e4958684afa Deadpool
-        //6053602694f88f41a8546aa5 Tenet
-        // 6053651ae515483624b79aa2 NMA2
-        //60536509e515483624b79aa1 Soul
+        this.props.dispatch(getMovieInfo(this.props.match.params.movieId));
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log("Props", props)
+
         if (props.movie.movieInfo) {
             return {
                 movieInfo: props.movie.movieInfo.movie,
@@ -419,7 +415,10 @@ class MovieDetails extends Component {
                                 </section>
                             </div>
                         </div>
-                        : null
+                        : <div>
+
+                            <h2>Loading</h2>
+                        </div>
                 }
 
 
@@ -432,7 +431,6 @@ class MovieDetails extends Component {
 
 
 function mapStateToProps(state) {
-    console.log("State ", state)
     return {
         movie: state.movie
     }

@@ -4,7 +4,15 @@ import Footer from '../Footer/footer'
 import { Link } from 'react-router-dom'
 import { Carousel } from 'react-bootstrap'
 import HomeSlider from '../Widgets/slider'
+import { connect } from 'react-redux'
+import { getHomeMovies } from '../../actions'
+
 class Home extends Component {
+
+
+    state = {
+        movies: ''
+    }
 
     responsive = {
         desktop: {
@@ -36,7 +44,27 @@ class Home extends Component {
         './assets/images/lionkingbackdrop.jpg',
         './assets/images/lionkingbackdrop.jpg'
     ];
+
+    componentDidMount() {
+
+        this.props.dispatch(getHomeMovies());
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if (props.movies) {
+            if (props.movies.length > 0) {
+                return {
+                    movies: props.movies
+                }
+            }
+        }
+        return null;
+    }
+
+
     render() {
+        let movies = this.state.movies;
         return (
             <div>
                 <Header />
@@ -64,56 +92,23 @@ class Home extends Component {
                             </div>
 
                             <div className="row mt-3 px-5">
-                                <div className=" movie-container ">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/spongebobposter.jpg' alt="movie-poster" />
-                                    </Link>
+                                {
+                                    movies ?
+                                        movies.map((movie, key) => {
+                                            return (
+                                                <div className=" movie-container " key={key}>
 
-                                </div>
-                                <div className="movie-container ">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/thelionking.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className="movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/tennet.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className="movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie" >
-                                        <img id="postertest" className='movie-poster d-flex  ' src='./assets/images/soul.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className="movie-container ">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
+                                                    {/* <h1>Home Page - Getting Started</h1> */}
+                                                    <Link class="p-1" to={`/movie/${movie._id}`}>
+                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt="movie-poster" />
+                                                    </Link>
+                                                </div>
+                                            )
+                                        })
 
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/mulan.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className="movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/nmfa.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className=" movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/Daalchawal.jpeg' alt="movie-poster" />
-                                    </Link>
-                                </div>
-                                <div className=" movie-container">
-                                    {/* <h1>Home Page - Getting Started</h1> */}
-                                    <Link class="p-1" to="/movie">
-                                        <img id="postertest" className='movie-poster d-flex ' src='./assets/images/avenger.jpg' alt="movie-poster" />
-                                    </Link>
-                                </div>
+                                        : null
+                                }
+
                             </div>
                         </div>
 
@@ -169,4 +164,11 @@ class Home extends Component {
 }
 
 
-export default Home;
+function mapStateToProps(state) {
+
+    return {
+        movies: state.movie.moviesList
+    }
+}
+
+export default connect(mapStateToProps)(Home)

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const showtimeSchema = mongoose.Schema({
-    showtimeId: {
-        type: Number,
-        required: true,
-        unique: true
-    },
+    // showtimeId: {
+    //     type: Number,
+    //     required: true,
+    //     unique: true
+    // },
     name: {
         type: String,
         required: true
@@ -22,10 +22,10 @@ const showtimeSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    screenType: [{
+    screenType: {
         type: String,
         required: true
-    }],
+    },
 
 }, { timestamps: true })
 

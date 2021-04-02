@@ -77,6 +77,17 @@ export function userRegister(user) {
     }
 }
 
+export function getHomeMovies() {
+
+    const request = axios.get(`/api/getHomeMovies`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_HOME_MOVIES',
+        payload: request
+    }
+}
+
 export function getMovieInfo(id) {
 
     const request = axios.get(`/api/getMovieInfo?id=${id}`)
@@ -148,6 +159,22 @@ export function addCinema(cinema){
 export function clearCinema(){
     return {
         type: 'CLEAR_CINEMA',
+        payload: {}
+    }
+}
+
+export function addShowtime(showtime){
+    const request = axios.post('/api/create-showtime', showtime)
+        .then(response => response.data);
+    return {
+        type:'ADD_SHOWTIME',
+        payload: request
+    }
+}
+
+export function clearShowtime(){
+    return {
+        type: 'CLEAR_SHOWTIME',
         payload: {}
     }
 }

@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
 
+
 const config = require("./config/config").get(process.env.NODE_ENV);
 const app = express();
 const { auth } = require("./middleware/auth");
@@ -27,23 +28,26 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(express.static("client/build"));
+const fs = require('fs')
+
 
 
 // GET //
 
 app.get('/api/saveMovie', (req, res) => {
-
+    
     var dataToSend;
     // spawn new child process to call the python script
 
     title = String(req.query.title);
+
     //variables file name, movie name, api key
-    const python = spawn('python', ['tmdb.py', "Deadpool", config.TMDB_API_KEY]);
+    const python = spawn('python', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
 
     // collect data from script
     python.stdout.on('data', function (data) {
         console.log('Pipe data from python script ...',);
-
+        
         dataToSend = data.toString();
     });
     // in close event we are sure that stream from child process is closed
@@ -68,6 +72,7 @@ app.get('/api/saveMovie', (req, res) => {
     });
 })
 
+//GET
 
 app.get("/api/auth", auth2, (req, res) => {
     res.json({
@@ -79,7 +84,26 @@ app.get("/api/auth", auth2, (req, res) => {
     });
 });
 
-//GET
+
+app.get('/api/getHomeMovies', (req, res) => {
+    Movie.find({}).select('_id movieId poster_url title runtime videoLinks background_url description rating title').exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+
+        res.status(200).json({
+            moviesList: doc
+            // id: doc._id,
+            // movieId: doc.movieId,
+            // poster_url: doc.poster_url,
+            // title: doc.title,
+            // runtime: doc.runtime,
+            // description: doc.description,
+            // rating: doc.rating,
+            // background_url: doc.background_url,
+            // videoLinks: doc.videoLinks
+        })
+    })
+})
+
 
 app.get('/api/getMovieInfo', (req, res) => {
 

@@ -4,6 +4,10 @@ export default function (state = {}, action) {
 
         case 'GET_MOVIE_INFO':
             return { ...state, movieInfo: action.payload }
+        case 'GET_HOME_MOVIES':
+            return { ...state, moviesList: action.payload.moviesList }
+
+
         // case 'GET_SHARED_DOCUMENT':
         //     return { ...state, sharedDocument: action.payload }
         // case 'UPDATE_DOCUMENT':
