@@ -116,7 +116,8 @@ app.get('/api/getMovieInfo', (req, res) => {
 
 
 
-//POST
+
+
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
@@ -128,6 +129,7 @@ if (process.env.NODE_ENV === "production") {
         })
     });
 }
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
