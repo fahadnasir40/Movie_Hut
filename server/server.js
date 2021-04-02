@@ -21,6 +21,8 @@ mongoose.connect(config.DATABASE, {
 
 const { User } = require("./models/user");
 const { Movie } = require("./models/movie");
+const { Cinema } = require("./models/cinema");
+const { Showtime } = require("./models/showtime");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -33,7 +35,7 @@ const fs = require('fs')
 // GET //
 
 app.get('/api/saveMovie', (req, res) => {
-
+    
     var dataToSend;
     // spawn new child process to call the python script
 
@@ -45,7 +47,7 @@ app.get('/api/saveMovie', (req, res) => {
     // collect data from script
     python.stdout.on('data', function (data) {
         console.log('Pipe data from python script ...',);
-
+        
         dataToSend = data.toString();
     });
     // in close event we are sure that stream from child process is closed
@@ -117,6 +119,31 @@ app.get('/api/getMovieInfo', (req, res) => {
 
 
 //POST
+app.post('/api/create-cinema',(req, res)=>{
+    console.log(req.body)
+    const cinema = new Cinema(req.body);
+    cinema.save((error, cinema)=>{
+        if(error) {
+            console.log(error)
+            return res.status(400).send(error);
+        }
+        res.status(200).json({
+            post: true,
+            cinemaId: cinema._id
+        })
+    });
+})
+
+app.post('/api/create-showtime',(req, res)=>{
+    const showtime = new Showtime(req.body);
+    showtime.save((error, showtime)=>{
+        if(error) return res.status(400).send(error);
+        res.status(200).json({
+            post: true,
+            showtimeId: showtime._id
+        })
+    });
+})
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");
