@@ -4,10 +4,14 @@ export default function (state = {}, action) {
 
         case 'GET_MOVIE_INFO':
             return { ...state, movieInfo: action.payload }
+        case 'GET_MOVIE_BY_NAME':
+            return { ...state, movieDetails: action.payload }
+        case 'GET_MOVIE_FROM_TMDB':
+            return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
             return { ...state, moviesList: action.payload.moviesList }
-
-
+        case 'CLEAR_MOVIE':
+            return { ...state, movieDetails: action.payload }
         // case 'GET_SHARED_DOCUMENT':
         //     return { ...state, sharedDocument: action.payload }
         // case 'UPDATE_DOCUMENT':

@@ -34,12 +34,12 @@ const fs = require('fs')
 
 // GET //
 
-app.get('/api/saveMovie', (req, res) => {
+function saveMovie(title) {
 
-    var dataToSend;
+    var dataToSend, err;
     // spawn new child process to call the python script
 
-    title = String(req.query.title);
+    title = String(title);
 
     //variables file name, movie name, api key
     const python = spawn('python', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
@@ -50,6 +50,7 @@ app.get('/api/saveMovie', (req, res) => {
 
         dataToSend = data.toString();
     });
+
     // in close event we are sure that stream from child process is closed
     python.on('close', (code) => {
         console.log(`child process close all stdio with code ${code}`);
@@ -59,18 +60,45 @@ app.get('/api/saveMovie', (req, res) => {
             const movie = new Movie(movieObject);
             // console.log("Movie Info", movie);
             movie.save((error, document) => {
-                if (error) return res.status(400).send(error);
-                res.status(200).json({
-                    post: true,
-                    movie: document
-                })
+
+                if (error) {
+                    err = error;
+                    return err;
+                }
+
+                return true;
+                // res.status(200).json({
+                //     post: true,
+                //     movie: document
+                // })
             });
         }
         catch {
-            res.status(404).send("Error in movie");
+            return false;
+            // res.status(404).send("Error in movie");
         }
     });
+}
+
+app.post('/api/create-showtime', (req, res) => {
+    const showtime = new Showtime(req.body);
+
+    if (saveMovie(showtime.name)) {
+        showtime.save((error, showtime) => {
+            if (error) return res.status(400).send(error);
+            res.status(200).json({
+                post: true,
+                showtimeId: showtime._id
+            })
+        });
+    }
+    else {
+        res.status(400).send("Error creating showtime")
+    }
+
+
 })
+
 
 //GET
 
@@ -85,7 +113,36 @@ app.get("/api/auth", auth2, (req, res) => {
 });
 
 app.get('/api/getCinemasList', (req, res) => {
+    let skip = parseInt(req.query.skip);
+    let limit = parseInt(req.query.limit);
+    let order = req.query.order;
 
+    // ORDER = asc || desc
+    Cinema.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.send(doc);
+    })
+})
+
+app.get('/api/getCinemaMovies', (req, res) => {
+
+    // let skip = parseInt(req.query.skip);
+    // let limit = parseInt(req.query.limit);
+    // let order = req.query.order;
+    let id = req.query.id
+
+    // // ORDER = asc || desc
+    Cinema.findById(id, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        console.log(doc);
+        if (doc.moviesList) {
+            if (doc.moviesList.length > 0)
+                Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').exec((err, movies) => {
+                    if (err) return res.status(400).send(err);
+                    return res.status(200).send({ movies });
+                });
+        }
+    })
 })
 
 
@@ -120,7 +177,55 @@ app.get('/api/getMovieInfo', (req, res) => {
     })
 })
 
+app.get('/api/getMovieTMDB', (req, res) => {
 
+    var dataToSend, err;
+    // spawn new child process to call the python script
+
+    title = String(req.query.name);
+
+    //variables file name, movie name, api key
+    const python = spawn('python', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...',);
+
+        dataToSend = data.toString();
+    });
+
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        try {
+            var movieObject = JSON.parse(dataToSend);
+            const movie = new Movie(movieObject);
+            return res.status(200).send({ movie, found: true, tmdb: true });
+        }
+        catch {
+            return res.status(404).json({ message: "Error getting movie info TMDB.", found: false });
+        }
+    });
+})
+
+app.get('/api/getMovieByName', (req, res) => {
+
+    Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
+        if (err) return res.status(400).send(err);
+
+        if (doc == null) {
+            res.json({
+                movie: doc,
+                found: false,
+            })
+        }
+        else {
+            res.json({
+                movie: doc,
+                found: true,
+            })
+        }
+    });
+})
 
 //POST
 app.post('/api/create-cinema', (req, res) => {
@@ -138,16 +243,41 @@ app.post('/api/create-cinema', (req, res) => {
     });
 })
 
-app.post('/api/create-showtime', (req, res) => {
-    const showtime = new Showtime(req.body);
-    showtime.save((error, showtime) => {
-        if (error) return res.status(400).send(error);
-        res.status(200).json({
-            post: true,
-            showtimeId: showtime._id
-        })
-    });
+app.post('/api/addMovieInCinema', (req, res) => {
+
+    let movieData = req.body;
+
+    Cinema.findByIdAndUpdate(movieData.cinemaID, { $addToSet: { moviesList: movieData.movie._id } },
+        function (err, docs) {
+            if (err) {
+                console.log(err)
+                return res.status(400).json(err);
+            }
+            else {
+                if (movieData.tmdb === true) {
+                    const movie = new Movie(movieData.movie);
+                    return movie.save((error, document) => {
+                        if (error) {
+                            console.log(err)
+                            return res.status(400).json(error);
+                        }
+                        return res.status(200).json({
+                            post: true,
+                            movie: true,
+                            cinema: true
+                        })
+                    });
+                }
+                else {
+                    return res.status(200).json({
+                        post: true,
+                        cinemaId: docs._id
+                    })
+                }
+            }
+        });
 })
+
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

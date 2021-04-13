@@ -132,7 +132,6 @@ class MovieDetails extends Component {
     }
 
     render() {
-        console.log("THis state", this.state.movieInfo)
         let cast = '';
         if (this.state.movieInfo)
             cast = this.state.movieInfo.cast;
@@ -329,16 +328,16 @@ class MovieDetails extends Component {
 
                                     {/* Video Slider */}
                                     {/* <div className="row col-12 slider-details">
-                                    Slider ///
+                                        Slider ///
                                     <div className="offset-lg-2 offset-xl-2">
-    
-                                        <AliceCarousel
-                                            mouseTracking
-                                            items={items}
-                                            responsive={responsive}
-                                        />
-                                    </div>
-                                </div> */}
+
+                                            <AliceCarousel
+                                                mouseTracking
+                                                items={items}
+                                                responsive={responsive}
+                                            />
+                                        </div>
+                                    </div> */}
                                     <div className="row my-4 order-last">
                                         <div className=" col-12 offset-lg-2 offset-xl-2 col-lg-10 ">
                                             <Review />

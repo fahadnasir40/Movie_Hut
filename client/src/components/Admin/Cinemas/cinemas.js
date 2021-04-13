@@ -2,59 +2,65 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../../Header/header'
 import DataTable from 'react-data-table-component'
-
+import { getCinemasList } from '../../../actions'
+import { connect } from 'react-redux'
 class Cinemas extends Component {
 
 
+    state = {
+        cinemaList: []
+    }
+
+    componentDidMount() {
+        this.props.dispatch(getCinemasList())
+    }
+
+    static getDerivedStateFromProps(props, state) {
+
+        if (props.cinemaList) {
+            if (props.cinemaList.length > 0) {
+                return {
+                    cinemaList: props.cinemaList
+                }
+            }
+        }
+        return null;
+    }
 
     columns = [
         {
-            name: 'SKU',
-            selector: 'sku',
-            hide: 'md',
+            name: 'Name',
+            selector: 'name',
             sortable: true,
 
         },
         {
-            name: 'Stock',
-            selector: 'stock',
-            hide: 'md',
+            name: 'City',
+            selector: 'city',
             sortable: true,
         },
         {
-            name: 'Brand',
-            selector: 'brand',
+            name: 'Url',
+            selector: 'url',
             sortable: true,
-            hide: 'md',
-            cell: row => (
-                <span className="ccap">{row.brand}</span>
-            )
 
         },
         {
-            name: 'UOM',
-            selector: 'uom',
+            name: 'Showtimes',
             sortable: true,
-            hide: 'md',
-        },
-        {
-            name: 'Status',
-            selector: 'status',
-            sortable: true,
-            hide: 'md',
             cell: row => (
                 <div>
-                    {
-                        row.status === 'active' ?
-                            <span className="tb-status text-success ccap">{row.status}</span>
-                            : <span className="tb-status text-danger ccap">{row.status}</span>
-                    }
+
+                    <button className='btn btn-outline-dark'>View </button>
+                    <Link to={`/create-showtime/${row._id}`} className='btn btn-outline-dark m-2'>Add </Link>
+
                 </div>
             )
         },
 
         {
             name: 'Action',
+            hide: 'md',
             cell: row => (
                 <div className="nk-tb-col nk-tb-col-tools">
                     <ul className="nk-tb-actions gx-1 my-n1">
@@ -100,18 +106,21 @@ class Cinemas extends Component {
                 <Header />
                 <div className="container">
                     <div className='row'>
-                        <div className='column mt-2'>
+                        <div className='col mt-2'>
                             <h2>Cinemas</h2>
+                        </div>
+                        <div className='col mt-2'>
+                            <Link to='create-cinema' className='btn btn-dark'>Add Cinema </Link>
                         </div>
                     </div>
                     <div>
                         <DataTable
                             columns={this.columns}
-                            data={{ 'status': 'prec' }}
+                            data={this.state.cinemaList}
                             highlightOnHover
                             pointerOnHover
                             pagination
-                            onRowClicked={(data) => { this.showData(data) }}
+                            // onRowClicked={(data) => { this.showData(data) }}
                             paginationPerPage={10}
                         />
                     </div>
@@ -121,4 +130,11 @@ class Cinemas extends Component {
     }
 }
 
-export default Cinemas;
+function mapStateToProps(state) {
+
+    return {
+        cinemaList: state.cinema.cinemaList
+    }
+}
+
+export default connect(mapStateToProps)(Cinemas)

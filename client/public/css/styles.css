@@ -204,6 +204,12 @@
   border-radius: 4px;
 }
 
+.poster-small {
+  width: 114px;
+  height: 164px;
+  border-radius: 4px;
+}
+
 @media (max-width: 767px) {
   .poster {
     width: 130px;

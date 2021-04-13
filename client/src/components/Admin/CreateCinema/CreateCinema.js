@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
 import Header from '../../Header/header'
 import { Link, Redirect } from 'react-router-dom'
-import { addCinema, clearCinema } from '../../actions';
+import { addCinema, clearCinema } from '../../../actions';
 import { connect } from 'react-redux';
 
 class CreateCinema extends Component {

@@ -81,16 +81,32 @@ export function userRegister(user) {
 
 /*     ADMIN */
 
-export function getCinemasList() {
+export function getCinemasList(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
 
-    const request = axios.get(`/api/getCinemasList`)
-        .then(response => response.data);
+    const request = axios.get(`api/getCinemasList?skip=${start}&limit=${limit}&order=${order}`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
 
     return {
         type: 'GET_CINEMAS_LIST',
         payload: request
     }
 }
+
 
 
 /*  MOVIES  */
@@ -112,6 +128,39 @@ export function getMovieInfo(id) {
 
     return {
         type: 'GET_MOVIE_INFO',
+        payload: request
+    }
+}
+
+export function getMovieByName(name) {
+
+    const request = axios.get(`/api/getMovieByName?name=${name}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_MOVIE_BY_NAME',
+        payload: request
+    }
+}
+
+export function getCinemaMovies(id) {
+
+    const request = axios.get(`/api/getCinemaMovies?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMA_MOVIES',
+        payload: request
+    }
+}
+
+export function getMovieFromTMDB(name) {
+
+    const request = axios.get(`/api/getMovieTMDB?name=${name}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_MOVIE_FROM_TMDB',
         payload: request
     }
 }
@@ -164,32 +213,55 @@ export function changeUserPassword(user) {
     }
 }
 
-export function addCinema(cinema){
-    const request = axios.post('/api/create-cinema',cinema)
+export function addCinema(cinema) {
+    const request = axios.post('/api/create-cinema', cinema)
         .then(response => response.data);
     return {
-        type:'ADD_CINEMA',
-        payload:request
+        type: 'ADD_CINEMA',
+        payload: request
     }
 }
 
-export function clearCinema(){
+export function addMovieInCinema(movieData) {
+    const request = axios.post('/api/addMovieInCinema', movieData)
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_IN_CINEMA',
+        payload: request
+    }
+}
+
+export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',
         payload: {}
     }
 }
 
-export function addShowtime(showtime){
+export function clearCinemaMovie() {
+    return {
+        type: 'CLEAR_CINEMA_MOVIE',
+        payload: {}
+    }
+}
+
+export function clearMovie() {
+    return {
+        type: 'CLEAR_MOVIE',
+        payload: {}
+    }
+}
+
+export function addShowtime(showtime) {
     const request = axios.post('/api/create-showtime', showtime)
         .then(response => response.data);
     return {
-        type:'ADD_SHOWTIME',
+        type: 'ADD_SHOWTIME',
         payload: request
     }
 }
 
-export function clearShowtime(){
+export function clearShowtime() {
     return {
         type: 'CLEAR_SHOWTIME',
         payload: {}
