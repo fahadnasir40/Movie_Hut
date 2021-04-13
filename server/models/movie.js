@@ -33,13 +33,15 @@ const movieSchema = mongoose.Schema({
     rating: {
         type: String
     },
+    certification: {
+        type: String
+    },
     videoLinks: [{
         type: String
     }],
     cast: [{
         type: Object
-    }],
-
+    }]
 }, { timestamps: true })
 
 const Movie = mongoose.model('Movie', movieSchema);

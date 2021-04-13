@@ -97,11 +97,11 @@ class Home extends Component {
                                         movies.map((movie, key) => {
                                             return (
                                                 <div className=" movie-container " key={key}>
-
-                                                    {/* <h1>Home Page - Getting Started</h1> */}
                                                     <Link class="p-1" to={`/movie/${movie._id}`}>
-                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt="movie-poster" />
+                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+
                                                     </Link>
+
                                                 </div>
                                             )
                                         })

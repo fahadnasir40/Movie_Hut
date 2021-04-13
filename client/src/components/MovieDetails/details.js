@@ -132,7 +132,6 @@ class MovieDetails extends Component {
     }
 
     render() {
-
         let cast = '';
         if (this.state.movieInfo)
             cast = this.state.movieInfo.cast;
@@ -144,7 +143,7 @@ class MovieDetails extends Component {
 
                 {
                     this.state.movieInfo ?
-                        <div className="container-fluid mt-md-4 mt-3">
+                        <div className="container-fluid mt-md-4 mt-3 overflow-hidden">
                             {this.playTrailer(this.state.movieInfo.videoLinks)}
                             <section className="row">
                                 <div className="  p-md-2 rounded ">
@@ -162,7 +161,7 @@ class MovieDetails extends Component {
                                                         <h5 className="title">
                                                             {this.state.movieInfo.title}
                                                         </h5>
-                                                        <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment> (US)</p>
+                                                        <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment></p>
                                                     </div>
                                                     <button className=" btn  btn-dark mr-2" onClick={this.handleShow}><i class="fa fa-play"></i> Play Trailer</button>
                                                     <button class=" btn-dark btn my-2 d-md-none " ><i class="fa fa-heart"> Favorite</i></button>
@@ -172,12 +171,12 @@ class MovieDetails extends Component {
                                                     <h3 className="title">
                                                         {this.state.movieInfo.title}
                                                     </h3>
-                                                    <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment> (US)
-                                                    {this.state.movieInfo.genreList.map((genre, i) => {
-                                                        return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
-                                                    })}
+                                                    <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment>
+                                                        {this.state.movieInfo.genreList.map((genre, i) => {
+                                                            return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
+                                                        })}
                                                     </p>
-                                                    <p><span className="border border-dark rounded px-1 mx-1 ">L</span>   <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
+                                                    <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span>   <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
 
                                                     <h6>Overview</h6>
                                                     <p>{this.state.movieInfo.description}
@@ -196,11 +195,11 @@ class MovieDetails extends Component {
                                         <h6 className="heading">
                                             Movie Details
                                     </h6>
-                                        <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment> (US)
-                                        {this.state.movieInfo.genreList.map((genre, i) => {
-                                            return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
-                                        })}</p>
-                                        <p><span className="border border-dark rounded px-1 mx-1 ">L</span> <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
+                                        <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment>
+                                            {this.state.movieInfo.genreList.map((genre, i) => {
+                                                return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
+                                            })}</p>
+                                        <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span> <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
 
                                         <h6>Overview</h6>
                                         <p>{this.state.movieInfo.description}
@@ -329,16 +328,16 @@ class MovieDetails extends Component {
 
                                     {/* Video Slider */}
                                     {/* <div className="row col-12 slider-details">
-                                    Slider ///
+                                        Slider ///
                                     <div className="offset-lg-2 offset-xl-2">
-    
-                                        <AliceCarousel
-                                            mouseTracking
-                                            items={items}
-                                            responsive={responsive}
-                                        />
-                                    </div>
-                                </div> */}
+
+                                            <AliceCarousel
+                                                mouseTracking
+                                                items={items}
+                                                responsive={responsive}
+                                            />
+                                        </div>
+                                    </div> */}
                                     <div className="row my-4 order-last">
                                         <div className=" col-12 offset-lg-2 offset-xl-2 col-lg-10 ">
                                             <Review />
