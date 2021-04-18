@@ -107,6 +107,17 @@ export function getCinemasList(
     }
 }
 
+export function getCinemaMovieShowtimes(cinemaId, movieId) {
+
+    const request = axios.get(`/api/getCinemaMovieShowtimes?cinemaId=${cinemaId}&movieId=${movieId}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMA_MOVIE_SHOWTIMES',
+        payload: request
+    }
+}
+
 
 
 /*  MOVIES  */

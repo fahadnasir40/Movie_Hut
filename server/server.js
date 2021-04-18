@@ -134,7 +134,7 @@ app.get('/api/getCinemaMovies', (req, res) => {
     // // ORDER = asc || desc
     Cinema.findById(id, (err, doc) => {
         if (err) return res.status(400).send(err);
-        console.log(doc);
+
         if (doc.moviesList) {
             if (doc.moviesList.length > 0)
                 Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').exec((err, movies) => {
@@ -177,6 +177,16 @@ app.get('/api/getMovieInfo', (req, res) => {
     })
 })
 
+
+app.get('/api/getCinemaMovieShowtimes', (req, res) => {
+    Showtime.find({ cinemaId: req.query.cinemaId, movieId: req.query.movieId }, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            showtime: doc,
+        })
+    })
+})
+
 app.get('/api/getMovieTMDB', (req, res) => {
 
     var dataToSend, err;
@@ -208,8 +218,8 @@ app.get('/api/getMovieTMDB', (req, res) => {
 })
 
 app.get('/api/getMovieByName', (req, res) => {
-
-    Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
+    // Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
+    Movie.findOne({ title: req.query.name }, (err, doc) => {
         if (err) return res.status(400).send(err);
 
         if (doc == null) {
@@ -229,7 +239,7 @@ app.get('/api/getMovieByName', (req, res) => {
 
 //POST
 app.post('/api/create-cinema', (req, res) => {
-    console.log(req.body)
+
     const cinema = new Cinema(req.body);
     cinema.save((error, cinema) => {
         if (error) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
 import Header from '../../Header/header'
 import { Link, Redirect } from 'react-router-dom'
-import { addShowtime, clearShowtime, getCinemaMovies } from '../../../actions';
+import { addShowtime, clearCinemaMovie, clearShowtime, getCinemaMovies } from '../../../actions';
 import { connect } from 'react-redux';
 import { Moment } from 'react-moment';
 
@@ -99,6 +99,7 @@ class CreateShowtime extends Component {
 
     componentWillUnmount() {
         this.props.dispatch(clearShowtime());
+        this.props.dispatch(clearCinemaMovie());
     }
 
     componentDidMount() {
@@ -118,37 +119,41 @@ class CreateShowtime extends Component {
             <div>
                 <Header />
 
-                <div className="container">
-                    <div className="row">
-                        <div className="col col-md-4 my-4">
-                            <h2>Create new showtime</h2>
-                        </div>
-                        <div className="col my-4 mr-md-5">
-                            <div className="float-right mr-md-2">
-                                <Link to={`/addMovie/${this.state.cinemaId}`} className="btn btn-dark"><i className="fa fa-cup"> </i>  New Movie</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <div className="input-group col-md-4 col float-right  mb-3 mr-md-5">
+                <div className="container-fluid">
+                    <div className="container">
 
-                                <div class="input-group-prepend ">
-                                    <span class="input-group-text " style={{ backgroundColor: "black" }} id="basic-addon1">
-                                        <i className="fa fa-search" style={{ color: '#ffff' }}></i></span>
+                        <div className="row ">
+                            <div className="col col-md-4 my-4">
+                                <h4>Create new showtime</h4>
+                            </div>
+                            <div className="col my-4 mr-md-5">
+                                <div className="float-right mr-md-2">
+                                    <Link to={`/addMovie/${this.state.cinemaId}`} className="btn btn-dark"><i className="fa fa-cup"> </i>  New Movie</Link>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Search Movie" aria-label="Search" aria-describedby="basic-addon1" />
                             </div>
+                        </div>
+                        <div className="row">
+                            <div className="col">
+                                <div className="input-group col-md-4 col float-right  mb-3 mr-md-5">
 
+                                    <div class="input-group-prepend ">
+                                        <span class="input-group-text " style={{ backgroundColor: "black" }} id="basic-addon1">
+                                            <i className="fa fa-search" style={{ color: '#ffff' }}></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Search Movie" aria-label="Search" aria-describedby="basic-addon1" />
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row d-flex mx-md-5 px-md-5" style={{ float: "none", justifyContent: 'between' }}>
 
                         {
                             this.state.moviesList.map((movie, key) => {
                                 return (
-                                    <div key={key} className='col-md-5 col d-flex flex-row  border my-2 mx-4 p-2 display-inline'>
+                                    <div key={key} className=' cinema-movie-container  d-flex flex-row my-2 mx-md-4 mx-1 rounded border p-2 display-inline '>
+
                                         <div className="d-inline" >
                                             <img id="postertest" className='poster-small d-flex mr-3 ' src={movie.poster_url} alt="movie-poster" />
                                         </div>
@@ -166,9 +171,15 @@ class CreateShowtime extends Component {
                                                 Upcomming shows: 20
                                                 </div>
                                             <div>
-                                                <button className="btn btn-dark my-2">
+                                                <Link to={{
+                                                    pathname: `/showtimes`,
+                                                    showtimeProps: {
+                                                        cinemaId: this.state.cinemaId,
+                                                        movie: movie
+                                                    }
+                                                }} className="btn btn-dark my-2">
                                                     New Showtime
-                                                    </button>
+                                                    </Link>
                                             </div>
                                             <div>
                                                 <button className="btn border my-1">
@@ -176,7 +187,9 @@ class CreateShowtime extends Component {
                                                     </button>
                                             </div>
                                         </div>
+
                                     </div>
+
                                 )
                             })
                         }
@@ -249,7 +262,6 @@ class CreateShowtime extends Component {
 
 
 function mapStateToProps(state) {
-    console.log("Cinema: ", state)
     return {
         cinemaInfo: state.cinema.cinemaMoviesList
     }

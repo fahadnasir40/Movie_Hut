@@ -14,6 +14,7 @@ class AddMovie extends Component {
         tmdb: null,
         show: false,
         loading: false,
+        searching: false,
         redirect: false,
     }
 
@@ -38,12 +39,12 @@ class AddMovie extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("Next Props: ", nextProps.movieDetails, "Prev State", prevState)
+        // console.log("Next Props: ", nextProps.movieDetails, "Prev State", prevState)
 
         if (nextProps.postDetails) {
 
             if (nextProps.postDetails.post == true) {
-                console.log("Return 1")
+
                 return ({
                     redirect: true
                 })
@@ -56,23 +57,24 @@ class AddMovie extends Component {
                 let tmdb = null;
                 if (nextProps.movieDetails.tmdb)
                     tmdb = nextProps.movieDetails.tmdb;
-                console.log("Return 2")
+
                 return {
                     movieInfo: nextProps.movieDetails.movie,
                     notFound: false,
+                    searching: false,
                     tmdb: tmdb
                 }
             }
             else if (nextProps.movieDetails.found == false) {
-                console.log("Return 3")
                 return {
                     movieInfo: '',
                     notFound: true,
+                    searching: false,
                     tmdb: null
                 }
             }
             else
-                return { movieInfo: '' };
+                return { movieInfo: '', };
         }
 
     }
@@ -129,14 +131,15 @@ class AddMovie extends Component {
     }
 
     closeMovie = () => {
-
         this.props.dispatch(clearMovie())
-
     }
 
     getMovieTMDB = () => {
         if (this.state.name) {
             this.props.dispatch(getMovieFromTMDB(this.state.name.trim()))
+            this.setState({
+                searching: true
+            })
         }
     }
 
@@ -271,8 +274,8 @@ class AddMovie extends Component {
                                         </div>
                                     </div>
                                 </section>
-                                // : this.state.name ? <div className="m-4 p-2">No movie found...</div>
-                                : null
+                                : this.state.searching == true ? <div className="m-4 p-2">Searching...</div>
+                                    : null
                         }
 
                     </div>

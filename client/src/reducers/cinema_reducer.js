@@ -23,7 +23,7 @@ export default function (state = {}, action) {
         case 'CLEAR_CINEMA':
             return { ...state, cinema: action.payload }
         case 'CLEAR_CINEMA_MOVIE':
-            return { ...state, cinemaMovie: action.payload }
+            return { ...state, cinemaMovie: action.payload, cinemaMoviesList: action.payload }
 
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}
