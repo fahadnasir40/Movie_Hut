@@ -30,25 +30,28 @@ const Slider = (props) => {
     ]
 
     const showItems = () => (
-        items.map((item, i) => {
-            return (
-                <Carousel.Item key={i} >
-                    {/* <img className="d-block w-100"
-                        src={item.image}
-                        alt={item.image_text}
-                        height='380px'
-                    />
-                    <Carousel.Caption className="mb-4">
-                        <h2>{item.caption}</h2>
-                        <p>{item.text}</p>
-                    </Carousel.Caption> */}
-                </Carousel.Item>
-            )
-        })
+        props.movies ?
+            props.movies.map((item, i) => {
+                return (
+                    <Carousel.Item key={i} >
+                        <img className="d-block w-100"
+                            src={item.background_url}
+                            alt={item.title}
+                            height="400px"
+
+                        />
+                        {/* <Carousel.Caption className="mb-4">
+                            <h2>{item.caption}</h2>
+                            <p>{item.text}</p>
+                        </Carousel.Caption> */}
+                    </Carousel.Item>
+                )
+            })
+            : null
     )
 
     return (
-        <Carousel className="d-none d-sm-block" {...props.settings}>
+        <Carousel className="d-none d-sm-block w-100" {...props.settings}>
             {showItems()}
         </Carousel>
     )

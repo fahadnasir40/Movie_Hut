@@ -70,23 +70,24 @@ class Home extends Component {
                 <Header />
                 <div className="container-fluid">
                     <div className="row">
-                        <HomeSlider
+                        {/* <HomeSlider
                             settings={{
-                                interval: '5000'
+                                interval: '500'
                             }}
-                        />
+                            movies={movies}
+                        /> */}
                     </div>
                     <div className="row">
 
                         <div className="container">
                             <div className="row mt-5 ml-5">
-                                <button className="cbtn active">
+                                <button className="cbtn active my-1">
                                     NOW SHOWING
                                 </button>
-                                <button className="cbtn">
+                                <button className="cbtn my-1">
                                     COMING SOON
                                 </button>
-                                <button className="cbtn">
+                                <button className="cbtn my-1">
                                     CINEMAS
                                 </button>
                             </div>

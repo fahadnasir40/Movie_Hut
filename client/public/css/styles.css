@@ -478,6 +478,20 @@ input[type="date"] {
   display: flex;
 }
 
+.cinema-movie-container {
+  width: 400px;
+}
+
+@media (min-width: 801px) {
+  .modal-90w {
+    max-width: 80% !important;
+  }
+}
+@media (max-width: 800px) {
+  .cinema-movie-container {
+    width: 100%;
+  }
+}
 /* .movie-container:focus-within .movie-poster,
 .movie-container:hover .movie-poster {
   transform: translateX(-25%);

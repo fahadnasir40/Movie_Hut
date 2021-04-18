@@ -10,6 +10,7 @@ import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
 import CinemasList from './components/Admin/Cinemas/cinemas'
 import AddMovie from './components/Admin/AddMovie/addMovie'
+import Showtimes from './components/Admin/CreateShowtime/showtimes'
 
 
 const routes = () => {
@@ -24,6 +25,7 @@ const routes = () => {
             <Route path="/create-cinema" exact component={CreateCinema} />
             <Route path="/create-showtime/:cinemaId" exact component={CreateShowtime} />
             <Route path="/addMovie/:cinemaId" exact component={AddMovie} />
+            <Route path="/showtimes" exact component={Showtimes} />
             <Route path="/admin-cinemas" exact component={CinemasList} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />
 

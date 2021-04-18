@@ -94,11 +94,12 @@ class MovieDetails extends Component {
 
                 <Modal
                     show={this.state.show} onHide={this.handleClose}
-                    size="xl"
+
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
+                    size="xl"
+                    dialogClassName="modal-90w"
                     // className="container-fluid"
-
                     backdrop="static"
                     keyboard={false}
                 >
