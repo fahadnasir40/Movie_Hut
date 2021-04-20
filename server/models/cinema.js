@@ -20,7 +20,6 @@ const cinemaSchema = mongoose.Schema({
     moviesList:
         [{
             type: String,
-            unique: true,
             sparse: true
         }]
 

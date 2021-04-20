@@ -63,18 +63,6 @@ class CreateShowtime extends Component {
         this.setState({ screenType: event.target.value })
     }
 
-    handleSubmit = (event) => {
-        // console.log("Inside handle submit")
-        event.preventDefault();
-        this.props.dispatch(addShowtime({
-            name: this.state.name,
-            language: this.state.language,
-            date: this.state.date,
-            time: this.state.time,
-            screenType: this.state.screenType,
-            cinemaId: this.state.cinemaId
-        }))
-    }
 
     static getDerivedStateFromProps(nextProps, state) {
 

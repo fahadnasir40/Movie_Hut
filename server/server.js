@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
-
+const async = require("async");
 
 const config = require("./config/config").get(process.env.NODE_ENV);
 const app = express();
@@ -83,18 +83,25 @@ function saveMovie(title) {
 app.post('/api/create-showtime', (req, res) => {
     const showtime = new Showtime(req.body);
 
-    if (saveMovie(showtime.name)) {
-        showtime.save((error, showtime) => {
-            if (error) return res.status(400).send(error);
-            res.status(200).json({
-                post: true,
-                showtimeId: showtime._id
-            })
-        });
-    }
-    else {
-        res.status(400).send("Error creating showtime")
-    }
+    showtime.save((error, showtime) => {
+
+        if (error) {
+            console.log(error);
+            return res.status(400).send(error)
+        };
+
+        res.status(200).json({
+            post: true,
+            showtimeId: showtime._id
+        })
+    });
+    // if (saveMovie(showtime.name)) {
+
+    // }
+    // else {
+    //     console.log("Error",)
+    //     res.status(400).send("Error creating showtime")
+    // }
 
 
 })
@@ -166,17 +173,53 @@ app.get('/api/getHomeMovies', (req, res) => {
 })
 
 
-app.get('/api/getMovieInfo', (req, res) => {
+app.get('/api/getMovieInfo', async function (req, res) {
 
     let id = req.query.id;
+
     Movie.findById(id, (err, doc) => {
         if (err) return res.status(400).send(err);
-        res.json({
-            movie: doc,
-        })
-    })
-})
 
+        const today = moment().startOf('day');
+
+        //$gte greater than equal to $lte less than equal to
+        var promise = Showtime.find({
+            movieId: id,
+            date: {
+                $gte: today.toDate(),
+                $lte: moment(today).add(6, "days").toDate()
+            }
+        }).exec();
+
+        promise.then(function (showtimes) {
+            var cinemaIds = showtimes.map(function (s) {
+                return s.cinemaId;
+            });
+
+            const p = Cinema.find({ "_id": { "$in": cinemaIds } }).select('_id name city address url').exec()
+            return p.then(function (cinemas) {
+                const data = { cinemas, showtimes };
+                return data;
+            })
+        }).then(function (data) {
+            // do something with the cinemas here
+            return res.status(200).json({
+                showtime: data.showtimes,
+                cinema: data.cinemas,
+                movie: doc
+            });
+        }).then(null, function (err) {
+            // handle error here
+            if (err) console.log(err);
+            return res.status(200).json({
+                showtime: null,
+                cinema: null,
+                movie: doc
+            });
+        });
+    });
+
+});
 
 app.get('/api/getCinemaMovieShowtimes', (req, res) => {
     Showtime.find({ cinemaId: req.query.cinemaId, movieId: req.query.movieId }, (err, doc) => {

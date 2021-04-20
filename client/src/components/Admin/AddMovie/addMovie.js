@@ -76,7 +76,7 @@ class AddMovie extends Component {
             else
                 return { movieInfo: '', };
         }
-
+        return null;
     }
 
     setShow = (value) => {

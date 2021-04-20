@@ -12,10 +12,15 @@ export default function (state = {}, action) {
         //         documentUpdated:action.payload.success,
         //         newDocument:action.payload.doc
         //     }
+
         case 'ADD_SHOWTIME':
-            return {...state, showtime:action.payload}
+            return { ...state, showtime: action.payload }
+        case 'GET_CINEMA_MOVIE_SHOWTIMES':
+            return { ...state, movieShowtimes: action.payload }
+        case 'CLEAR_MOVIE_SHOWTIME':
+            return { ...state, movieShowtimes: action.payload }
         case 'CLEAR_SHOWTIME':
-            return {...state, showtime:action.payload}
+            return { ...state, showtime: action.payload }
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}
 
