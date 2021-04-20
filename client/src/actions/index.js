@@ -242,6 +242,7 @@ export function addMovieInCinema(movieData) {
     }
 }
 
+
 export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',
@@ -262,6 +263,14 @@ export function clearMovie() {
         payload: {}
     }
 }
+
+export function clearMovieShowtimes() {
+    return {
+        type: 'CLEAR_MOVIE_SHOWTIMES',
+        payload: {}
+    }
+}
+
 
 export function addShowtime(showtime) {
     const request = axios.post('/api/create-showtime', showtime)

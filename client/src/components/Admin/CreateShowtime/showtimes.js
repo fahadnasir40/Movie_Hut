@@ -4,8 +4,9 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Header from '../../Header/header'
 import { Modal, Form, Button } from 'react-bootstrap'
-import { getCinemaMovieShowtimes } from '../../../actions'
+import { getCinemaMovieShowtimes, addShowtime, clearMovieShowtimes } from '../../../actions'
 import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 
 class Showtime extends Component {
@@ -13,44 +14,76 @@ class Showtime extends Component {
 
     state = {
         events: [
-            {
-                start: moment().toDate(),
-                end: moment().add(0.4, "hours").toDate(),
-                title: "Movie 1",
-            },
-            {
-                'title': 'Movie 2',
-                'allDay': true,
-                'start': moment().toDate(),
-                'end': moment().add(1, "hours").toDate(),
-            }, {
-                'title': 'Movie 3',
+            // {
+            //     start: moment().toDate(),
+            //     end: moment().add(0.4, "hours").toDate(),
+            //     title: "Movie 1",
+            // },
+            // {
+            //     'title': 'Movie 2',
+            //     'allDay': true,
+            //     'start': moment().toDate(),
+            //     'end': moment().add(1, "hours").toDate(),
+            // }, {
+            //     'title': 'Movie 3',
 
-                'start': moment().toDate(),
-                'end': moment().add(3, "hours").toDate(),
-            }, {
-                'title': 'Movie 4',
+            //     'start': moment().toDate(),
+            //     'end': moment().add(3, "hours").toDate(),
+            // }, {
+            //     'title': 'Movie 4',
 
-                'start': moment().toDate(),
-                'end': moment().add(0.5, "hours").toDate(),
-            }, {
-                'title': 'Movie 5',
+            //     'start': moment().toDate(),
+            //     'end': moment().add(0.5, "hours").toDate(),
+            // }, {
+            //     'title': 'Movie 5',
 
-                'start': moment().toDate(),
-                'end': moment().add(0.2, "hours").toDate(),
-            }, {
-                'title': 'Movie 7',
+            //     'start': moment().toDate(),
+            //     'end': moment().add(0.2, "hours").toDate(),
+            // }, {
+            //     'title': 'Movie 7',
 
-                'start': moment().toDate(),
-                'end': moment().add(4, "hours").toDate(),
-            },
+            //     'start': moment().toDate(),
+            //     'end': moment().add(4, "hours").toDate(),
+            // },
         ],
         title: '',
+        language: 'English',
+        date: '',
+        time: '',
+        screenType: '',
         show: false,
         redirect: false
     };
 
+    static getDerivedStateFromProps(nextProps, prevState) {
 
+        if (nextProps.showtimes) {
+            if (nextProps.showtimes.showtime) {
+                if (prevState.movie) {
+                    const events = [];
+                    nextProps.showtimes.showtime.forEach((item => {
+                        let language = item.language == 'Urdu' ? ' (Urdu)' : '';
+                        const event = {
+                            title: "Screen: " + item.screenType + language,
+                            start: moment(item.date).toDate(),
+                            end: moment(item.date).add("minute", item.runtime).toDate()
+                        }
+                        console.log("Event", event)
+                        events.push(event)
+                    }))
+
+
+                    return {
+                        events: events
+                    }
+                }
+
+            }
+
+        }
+
+        return null;
+    }
 
     onEventResize = (data) => {
         const { start, end } = data;
@@ -63,7 +96,7 @@ class Showtime extends Component {
     };
 
     onEventDrop = (data) => {
-        console.log(data);
+        // console.log(data);
     };
 
 
@@ -89,7 +122,7 @@ class Showtime extends Component {
             mm = '0' + mm
         }
         today = yyyy + '-' + mm + '-' + dd;
-        console.log(today)
+        // console.log(today)
         return today;
     }
     setDateMax = () => {
@@ -104,7 +137,7 @@ class Showtime extends Component {
             mm = '0' + mm
         }
         today = yyyy + '-' + mm + '-' + dd;
-        console.log(today)
+        // console.log(today)
         return today;
     }
     handleInputName = (event) => {
@@ -121,6 +154,19 @@ class Showtime extends Component {
     }
     handleInputScreen = (event) => {
         this.setState({ screenType: event.target.value })
+    }
+
+    handleSubmit = (event) => {
+        // console.log("Inside handle submit")
+        event.preventDefault();
+        this.props.dispatch(addShowtime({
+            language: this.state.language,
+            date: this.state.date,
+            runtime: this.state.movie.runtime,
+            screenType: this.state.screenType,
+            cinemaId: this.state.cinemaId,
+            movieId: this.state.movie._id
+        }))
     }
 
     addShowtime = () => {
@@ -153,22 +199,22 @@ class Showtime extends Component {
                             </div>
                             <Form.Group className="input-style" controlId="language">
                                 <Form.Label>Language</Form.Label>
-                                <select id="language" name="language" onChange={this.handleInputLanguage}>
-                                    <option value="english">English</option>
-                                    <option value="urdu">Urdu</option>
+                                <select id="language" name="language" className="form-control" onChange={this.handleInputLanguage}>
+                                    <option value="English">English</option>
+                                    <option value="Urdu">Urdu</option>
                                 </select>
                             </Form.Group>
                             <Form.Group className="input-style" controlId="date">
                                 <Form.Label>Date</Form.Label>
                                 <Form.Control
-                                    type="date"
+                                    type="datetime-local"
                                     min={this.setDate()}
                                     max={this.setDateMax()}
                                     value={this.state.date}
                                     onChange={this.handleInputDate}
                                 />
                             </Form.Group>
-                            <Form.Group className="input-style" controlId="time">
+                            {/* <Form.Group className="input-style" controlId="time">
                                 <Form.Label>Time</Form.Label>
                                 <Form.Control
                                     type="time"
@@ -176,7 +222,7 @@ class Showtime extends Component {
                                     value={this.state.time}
                                     onChange={this.handleInputTime}
                                 />
-                            </Form.Group>
+                            </Form.Group> */}
                             <Form.Group className="input-style" controlId="screen">
                                 <Form.Label>Screen type</Form.Label>
                                 <Form.Control
@@ -185,12 +231,12 @@ class Showtime extends Component {
                                     value={this.state.screenType}
                                     onChange={this.handleInputScreen}
                                 />
-                                <select id="type" name="type">
+                                {/* <select id="type" name="type">
                                     <option value="gold1">Gold-1</option>
                                     <option value="gold2">Gold-2</option>
                                     <option value="plat1">Platinum-1</option>
                                     <option value="plat2">Platinum-2</option>
-                                </select>
+                                </select> */}
                             </Form.Group>
                             <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                 SAVE
@@ -206,13 +252,12 @@ class Showtime extends Component {
 
 
     componentDidMount() {
-        console.log("This props", this.props)
 
         if (this.props.location.showtimeProps) {
             let id = this.props.location.showtimeProps.cinemaId;
             let movieId = this.props.location.showtimeProps.movie._id;
 
-            // this.props.dispatch(getCinemaMovieShowtimes(id, movieId));
+            this.props.dispatch(getCinemaMovieShowtimes(id, movieId));
             this.setState({
                 cinemaId: id,
                 movie: this.props.location.showtimeProps.movie
@@ -225,6 +270,9 @@ class Showtime extends Component {
             })
         }
 
+    }
+    componentWillUnmount() {
+        this.props.dispatch(clearMovieShowtimes())
     }
 
     render() {
@@ -272,4 +320,11 @@ class Showtime extends Component {
     }
 }
 
-export default Showtime;
+function mapStateToProps(state) {
+    console.log("State", state)
+    return {
+        showtimes: state.showtime.movieShowtimes
+    }
+}
+
+export default connect(mapStateToProps)(Showtime);

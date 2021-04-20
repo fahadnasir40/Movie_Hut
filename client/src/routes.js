@@ -16,8 +16,8 @@ import Showtimes from './components/Admin/CreateShowtime/showtimes'
 const routes = () => {
     return (
         <Switch>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/home" exact component={Home} />
+            <Route path="/home" exact component={Dashboard} />
+            <Route path="/" exact component={Home} />
             <Route path="/movie/:movieId" exact component={MovieDetails} />
             <Route path="/login" exact component={Login} />
             <Route path="/register" exact component={Register} />

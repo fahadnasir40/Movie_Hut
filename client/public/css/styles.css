@@ -338,7 +338,7 @@
   width: -moz-fit-content;
   width: fit-content;
   border-radius: 12px;
-  background: #ffff;
+  background: #e1e1e1;
   font-family: "Roboto Condensed", sans-serif;
   color: #000;
   font-weight: bold;
@@ -348,8 +348,13 @@
 }
 
 .showtime-date:hover {
-  background: #e1e1e1;
-  border-top: 1px solid #d0d0d0;
+  background: #ffff;
+  /* border-top: 1px solid #d0d0d0; */
+}
+
+.active {
+  background: #ffff;
+  border: 1px solid rgb(224, 9, 9);
 }
 
 .session-container {
