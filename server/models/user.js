@@ -22,9 +22,10 @@ const userSchema = mongoose.Schema({
         trim: true,
     },
     phone: {
-        type: Number,
+        type: String,
         default: 0,
         trim: true,
+        default:"XXXX-XXXXXXX"
     },
     dob: {
         type: String,
@@ -34,14 +35,17 @@ const userSchema = mongoose.Schema({
     city: {
         type: String,
         trim: true,
+        default:""
     },
     address: {
         type: String,
         trim: true,
+        default:""
     },
     role: {
         type: String,
         trim: true,
+        default:"administrator"
     },
     token: {
         type: String
@@ -49,9 +53,11 @@ const userSchema = mongoose.Schema({
     status: {
         type: String,
         trim: true,
+        default:""
     },
     modifiedBy: {
-        type: String
+        type: String,
+        default:""
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date
