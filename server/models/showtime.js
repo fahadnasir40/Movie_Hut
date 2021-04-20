@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const showtimeSchema = mongoose.Schema({
 
-    name: {
-        type: String,
-        required: true
-    },
     movieId: {
         type: String,
         required: true
@@ -22,8 +18,8 @@ const showtimeSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    time: {
-        type: String,
+    runtime: {
+        type: Date,
         required: true
     },
     screenType: {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header from '../Header/header';
-import { Button, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import Footer from '../Footer/footer'
 
 import AliceCarousel from 'react-alice-carousel';
@@ -10,7 +10,9 @@ import Review from '../Review/review';
 import { getMovieInfo, } from '../../actions';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
-
+import { Link } from 'react-router-dom'
+import moment from 'moment';
+import showtimes from '../Admin/CreateShowtime/showtimes';
 
 
 const responsive = {
@@ -43,6 +45,7 @@ const items = [
     <div className="item" data-value="4">4</div>,
     <div className="item" data-value="5">5</div>,
 ];
+
 class MovieDetails extends Component {
     constructor(props) {
         super(props);
@@ -57,10 +60,12 @@ class MovieDetails extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-
+        console.log("Props", props)
         if (props.movie.movieInfo) {
             return {
                 movieInfo: props.movie.movieInfo.movie,
+                showtimeInfo: props.movie.movieInfo.showtime,
+                cinemaInfo: props.movie.movieInfo.cinema
             }
         }
         return null;
@@ -68,6 +73,7 @@ class MovieDetails extends Component {
 
     state = {
         show: false,
+        selectedDate: moment()
     }
 
     setShow = (value) => {
@@ -132,6 +138,106 @@ class MovieDetails extends Component {
         this.setState({ castToDisplay: 12 });
     }
 
+    handleSelectedDate = (date) => {
+        this.setState({
+            selectedDate: date
+        })
+    }
+
+    getShowtimeDates = () => {
+        const today = moment().startOf('day');;
+
+        const days = [0, 0, 0, 0, 0, 0];
+        var i = 0;
+        return days.map((d, key) => {
+            const date = moment(today).add(i++, "days").toDate();
+            let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'active' : '';
+            return (
+                <div className={`showtime-date ${c}`} onClick={() => { return this.handleSelectedDate(date) }}>
+                    <div>
+                        <Moment date={date} format="MMM" />
+                    </div>
+                    <div>
+                        <Moment date={date} format="ddd" />  <Moment date={date} format="DD" />
+                    </div>
+                </div>
+            )
+        });
+    }
+
+    getScreenPlays = () => {
+        console.log("State", this.state);
+        if (this.state.cinemaInfo) {
+            if (this.state.showtimeInfo.some(item => moment(item.date).isSame(this.state.selectedDate, "date"))) {
+
+                return this.state.cinemaInfo.map(cinema => {
+
+                    var showtimeCinemas = this.state.showtimeInfo.some(item => {
+                        if (item.cinemaId == cinema._id &&
+                            moment(item.date).isSame(this.state.selectedDate, "date")) return true;
+                        else return false
+                    });
+                    console.log("Showtimes", showtimeCinemas);
+                    if (showtimeCinemas) {
+                        return (
+                            <div className="row col-12 ">
+                                <div className="offset-lg-2 offset-xl-2 ">
+                                    <div className="ml-xl-4  ml-lg-n1 my-3 ">
+                                        <div className="col-12  my-4">
+                                            <div className="cinema-title font-text ml-xs-n2  font-weight-bold">
+                                                {cinema.name} {cinema.address}
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            {
+                                                this.state.showtimeInfo.map((showtime, key) => {
+                                                    if (cinema._id == showtime.cinemaId && moment(showtime.date).isSame(this.state.selectedDate, "date")) {
+                                                        return (
+                                                            <div className="col" key={key}>
+                                                                <div className=" session-container">
+                                                                    <span className="text-capitalize session ">
+                                                                        Screen {showtime.screenType} {showtime.language == 'Urdu' ? '(Urdu)' : null}
+                                                                    </span>
+                                                                    <span className="attribute ml-2 border">
+                                                                        <Moment date={showtime.date} format="hh:mm A" />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-12 col-lg-8">
+                                    <div className="offset-lg-2 offset-xl-4">
+                                        <Link to={{ pathname: `http://${cinema.url}` }} target="_blank" className="btn border ml-lg-2 ml-xl-n2 mb-3"><i className="fa fa-send"></i>  Visit Site</Link>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        )
+                    }
+
+                }
+
+                )
+            }
+            else {
+                return <div className="row col-12 ">
+                    <div className="offset-lg-2 offset-xl-2 p-2">
+                        <div className="ml-xl-4  ml-lg-n1 my-3 text-muted"> No showtimes available.  </div>
+                    </div>
+                </div>
+
+            }
+        }
+    }
+
+
+
     render() {
         let cast = '';
         if (this.state.movieInfo)
@@ -150,12 +256,12 @@ class MovieDetails extends Component {
                                 <div className="  p-md-2 rounded ">
 
                                     <div className="col-12 offset-lg-1 offset-xl-2  px-2">
-                                        <div class="media p-1">
+                                        <div className="media p-1">
 
                                             <img id="postertest" className='poster d-flex mr-3 ' src={this.state.movieInfo.poster_url} alt="movie-poster" />
 
 
-                                            <div class="media-body">
+                                            <div className="media-body">
 
                                                 <div className=" d-md-none">
                                                     <div className="movie-details">
@@ -164,8 +270,8 @@ class MovieDetails extends Component {
                                                         </h5>
                                                         <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment></p>
                                                     </div>
-                                                    <button className=" btn  btn-dark mr-2" onClick={this.handleShow}><i class="fa fa-play"></i> Play Trailer</button>
-                                                    <button class=" btn-dark btn my-2 d-md-none " ><i class="fa fa-heart"> Favorite</i></button>
+                                                    <button className=" btn  btn-dark mr-2" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
+                                                    <button className=" btn-dark btn my-2 d-md-none " ><i className="fa fa-heart"> Favorite</i></button>
                                                 </div>
 
                                                 <div className="movie-details d-none d-md-block col-lg-8 col-xl-7">
@@ -177,15 +283,15 @@ class MovieDetails extends Component {
                                                             return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
                                                         })}
                                                     </p>
-                                                    <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span>   <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
+                                                    <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span>   <i className="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
 
                                                     <h6>Overview</h6>
                                                     <p>{this.state.movieInfo.description}
                                                     </p>
 
                                                     <div className="d-none d-md-block">
-                                                        <button className=" btn  btn-dark" onClick={this.handleShow}><i class="fa fa-play"></i> Play Trailer</button>
-                                                        <button class=" btn-dark btn-circle ml-2" ><i class="fa fa-heart"></i></button>
+                                                        <button className=" btn  btn-dark" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
+                                                        <button className=" btn-dark btn-circle ml-2" ><i className="fa fa-heart"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -200,7 +306,7 @@ class MovieDetails extends Component {
                                             {this.state.movieInfo.genreList.map((genre, i) => {
                                                 return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
                                             })}</p>
-                                        <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span> <i class="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
+                                        <p><span className="border border-dark rounded px-1 mx-1 ">{this.state.movieInfo.certification ? this.state.movieInfo.certification : 'N/A'}</span> <i className="fa fa-clock-o" aria-hidden="true" style={{ color: "#212121", opacity: '0.9' }}></i> {this.state.movieInfo.runtime} Minutes</p>
 
                                         <h6>Overview</h6>
                                         <p>{this.state.movieInfo.description}
@@ -208,8 +314,9 @@ class MovieDetails extends Component {
                                     </div>
                                 </div>
                             </section>
+
                             <div className="row">
-                                <section class="col-lg-8  col-12 " >
+                                <section className="col-lg-8  col-12 " >
                                     {/* ---------Showtimes--------- */}
                                     <div className="row col-12  m-0 ">
 
@@ -219,112 +326,16 @@ class MovieDetails extends Component {
                                                 {/* --------Showtime Dates-------- */}
 
                                                 <div className=" showtime-container  ml-xl-1  row  my-3 ">
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            SAT 26
-                                                </div>
-                                                    </div>
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            SUN 27
-                                                </div>
-                                                    </div>
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            MON 28
-                                                </div>
-                                                    </div>
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            TUE 29
-                                                </div>
-                                                    </div>
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            WED 30
-                                                </div>
-                                                    </div>
-                                                    <div className="showtime-date">
-                                                        <div >
-                                                            DEC
-                                                </div>
-                                                        <div>
-                                                            THU 31
-                                                </div>
-                                                    </div>
+
+                                                    {this.getShowtimeDates()}
                                                 </div>
 
                                             </div>
                                         </div>
-                                        <div className="row col-12 ">
+                                        {/* --------Screen Plays-------- */}
+                                        {this.getScreenPlays()}
 
-                                            {/* --------Screen Plays-------- */}
-                                            <div class="offset-lg-2 offset-xl-2 ">
-                                                <div className="ml-xl-4  ml-lg-n1 my-3 ">
 
-                                                    <div className="col-12  my-4">
-                                                        <div className="cinema-title font-text ml-xs-n2  font-weight-bold">
-                                                            Cinepax Amanah Mall Lahore
-                                                      </div>
-                                                    </div>
-                                                    <div className="row">
-                                                        <div className="col">
-                                                            <div className=" session-container">
-                                                                <span className="text-capitalize session ">
-                                                                    Screen 2
-                                                        </span>
-                                                                <span className="attribute ml-2 border">
-                                                                    08:00 PM
-                                                      </span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="col ">
-                                                            <div className="session-container">
-                                                                <span className="text-capitalize session ">
-                                                                    Screen 5
-                                                        </span>
-                                                                <span className="attribute ml-2 border">
-                                                                    10:00 PM
-                                                      </span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col">
-                                                            <div className="session-container">
-                                                                <span className="text-capitalize session ">
-                                                                    Screen 7
-                                                        </span>
-                                                                <span className="attribute ml-2 border">
-                                                                    10:30 PM
-                                                      </span>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div className="col-12 col-lg-8">
-                                            <div className="offset-lg-2 offset-xl-4">
-                                                <button className="btn border ml-lg-2 ml-xl-n2 mb-3"><i className="fa fa-send"></i>  Visit Site</button>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     {/* Video Slider */}
@@ -346,16 +357,16 @@ class MovieDetails extends Component {
                                     </div>
                                 </section>
 
-                                <section class="col-lg-4 col-md-6 col-xl-3 col-sm-9 col-xs-12 mb-3">
+                                <section className="col-lg-4 col-md-6 col-xl-3 col-sm-9 col-xs-12 mb-3">
 
                                     {/* ---------Cast and Crew--------- */}
                                     <div >
                                         <div className="card ">
-                                            <div class="card-header  heading text-center" style={{ borderBottom: 'none', background: '#fff' }}>
+                                            <div className="card-header  heading text-center" style={{ borderBottom: 'none', background: '#fff' }}>
                                                 CAST {'&'} CREW
                                         <hr className="mb-1 mt-1 ml-4 mr-4 " />
                                             </div>
-                                            <div class="card-body ">
+                                            <div className="card-body ">
                                                 <section>
                                                     <div className="row mx-1 mt-n3 mb-2">
                                                         {
