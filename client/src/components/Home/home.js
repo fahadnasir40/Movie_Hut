@@ -70,23 +70,24 @@ class Home extends Component {
                 <Header />
                 <div className="container-fluid">
                     <div className="row">
-                        <HomeSlider
+                        {/* <HomeSlider
                             settings={{
-                                interval: '5000'
+                                interval: '500'
                             }}
-                        />
+                            movies={movies}
+                        /> */}
                     </div>
                     <div className="row">
 
                         <div className="container">
                             <div className="row mt-5 ml-5">
-                                <button className="cbtn active">
+                                <button className="cbtn active my-1">
                                     NOW SHOWING
                                 </button>
-                                <button className="cbtn">
+                                <button className="cbtn my-1">
                                     COMING SOON
                                 </button>
-                                <button className="cbtn">
+                                <button className="cbtn my-1">
                                     CINEMAS
                                 </button>
                             </div>
@@ -97,11 +98,11 @@ class Home extends Component {
                                         movies.map((movie, key) => {
                                             return (
                                                 <div className=" movie-container " key={key}>
-
-                                                    {/* <h1>Home Page - Getting Started</h1> */}
                                                     <Link class="p-1" to={`/movie/${movie._id}`}>
-                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt="movie-poster" />
+                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+
                                                     </Link>
+
                                                 </div>
                                             )
                                         })

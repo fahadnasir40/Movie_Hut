@@ -13,9 +13,18 @@ export default function (state = {}, action) {
         //         newDocument:action.payload.doc
         //     }
         case 'ADD_CINEMA':
-            return {...state, cinema:action.payload}
+            return { ...state, cinema: action.payload }
+        case 'GET_CINEMAS_LIST':
+            return { ...state, cinemaList: action.payload }
+        case 'GET_CINEMA_MOVIES':
+            return { ...state, cinemaMoviesList: action.payload }
+        case 'ADD_MOVIE_IN_CINEMA':
+            return { ...state, cinemaMovie: action.payload }
         case 'CLEAR_CINEMA':
-            return {...state, cinema:action.payload}
+            return { ...state, cinema: action.payload }
+        case 'CLEAR_CINEMA_MOVIE':
+            return { ...state, cinemaMovie: action.payload, cinemaMoviesList: action.payload }
+
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}
 

@@ -1,20 +1,35 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap'
-import Header from '../Header/header'
+import Header from '../Header/header';
 import { Link } from 'react-router-dom';
-class Login extends Component {
-    // state = {
-    //     email: '',
-    //     password: '',
-    //     error: '',
-    //     success: false,
-    //     validated: false,
-    // }
-    render() {
+import { loginUser } from './../../actions/index';
 
-        function handleSubmit(event) {
-            event.preventDefault();
+class Login extends Component {
+    state = {
+        email: '',
+        password: '',
+        error: '',
+        success: false,
+        validated: false,
+    }
+    handleInputEmail = (event) => {
+        this.setState({email:event.target.value})
+    }
+    handleInputPassword = (event) => {
+        this.setState({password:event.target.value})
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.user.login.isAuth){
+            this.props.history.push('/home')
         }
+    }
+    submitForm = (event) => {
+        event.preventDefault();
+        this.props.dispatch(loginUser(this.state))
+    }
+    render() {
         return (
             <div>
                 <Header />
@@ -23,12 +38,14 @@ class Login extends Component {
                     <div className="Login">
                         <div className="card font-text">
                             <h4 className="m-3 text-center" >Login to your Account</h4>
-                            <Form className="mt-3" action='/'>
+                            <Form className="mt-3" onSubmit={this.submitForm}>
                                 <Form.Group className="input-style" controlId="email">
                                     <Form.Label>Email</Form.Label>
                                     <Form.Control
                                         type="email"
                                         placeholder="Email"
+                                        value={this.state.email}
+                                        onChange={this.handleInputEmail}
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="password">
@@ -36,6 +53,8 @@ class Login extends Component {
                                     <Form.Control
                                         type="password"
                                         placeholder="Password"
+                                        value={this.state.password}
+                                        onChange={this.handleInputPassword}
                                     />
                                 </Form.Group>
                                 <p className="left-margin-text">Forgot Password?</p>
@@ -53,7 +72,10 @@ class Login extends Component {
     }
 }
 
+function mapStateToProps(state){
+    return{
+        user: state.user
+    }
+}
 
-
-
-export default Login;
+export default connect(mapStateToProps)(Login);

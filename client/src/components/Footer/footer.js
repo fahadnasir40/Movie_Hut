@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Moment from 'react-moment'
 
 class Footer extends Component {
     render() {
@@ -42,7 +43,7 @@ class Footer extends Component {
                 <div class="container">
                     <div class="row">
                         <div class="col-12 ">
-                            <span className="copyright-text offset-lg-2 col-xs-12 my-2 ">Copyright &copy; 2021 Movie Hut. All Rights Reserved.
+                            <span className="copyright-text offset-lg-2 col-xs-12 my-2 ">Copyright &copy; <Moment format='YYYY'></Moment> Movie Hut. All Rights Reserved.
                             </span>
                             <span className="footer-title  col-sm-12 col my-2"> MOVIE HUT</span>
                             <span className=" font-rc font-weight-bold  col-xs-12 my-2" style={{ opacity: '0.5', color: '#fff' }}> <a href="#"> Privacy Policy</a></span>
