@@ -3,8 +3,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Header from '../../Header/header'
-import { Modal, Form, Button } from 'react-bootstrap'
-import { getCinemaMovieShowtimes, addShowtime, clearMovieShowtimes } from '../../../actions'
+import { Modal, Form, Button, ProgressBar } from 'react-bootstrap'
+import { getCinemaMovieShowtimes, addShowtime, clearMovieShowtimes, clearShowtime } from '../../../actions'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -57,10 +57,27 @@ class Showtime extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
+        const events = [];
+        let show = prevState.show;
+
+        if (nextProps.postShowtime) {
+            if (nextProps.postShowtime.post == true) {
+                let language = nextProps.postShowtime.newShowtime.language == 'Urdu' ? ' (Urdu)' : '';
+                const event = {
+                    title: "Screen: " + nextProps.postShowtime.newShowtime.screenType + language,
+                    start: moment(nextProps.postShowtime.newShowtime.date).toDate(),
+                    end: moment(nextProps.postShowtime.newShowtime.date).add("minute", nextProps.postShowtime.newShowtime.runtime).toDate()
+                }
+                events.push(event);
+                show = !prevState.show;
+                nextProps.dispatch(clearShowtime);
+            }
+        }
+
+
         if (nextProps.showtimes) {
             if (nextProps.showtimes.showtime) {
                 if (prevState.movie) {
-                    const events = [];
                     nextProps.showtimes.showtime.forEach((item => {
                         let language = item.language == 'Urdu' ? ' (Urdu)' : '';
                         const event = {
@@ -74,7 +91,8 @@ class Showtime extends Component {
 
 
                     return {
-                        events: events
+                        events: events,
+                        show: show
                     }
                 }
 
@@ -290,7 +308,7 @@ class Showtime extends Component {
                 {movie ?
                     <div className="container">
                         {this.addShowtime()}
-                        <div className="row my-4">
+                        <div className="row mt-3">
                             <div className="col">
                                 <h4>{movie.title}</h4>
                             </div>
@@ -323,7 +341,8 @@ class Showtime extends Component {
 function mapStateToProps(state) {
     console.log("State", state)
     return {
-        showtimes: state.showtime.movieShowtimes
+        showtimes: state.showtime.movieShowtimes,
+        postShowtime: state.showtime.showtime
     }
 }
 
