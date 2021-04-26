@@ -24,6 +24,10 @@ class Login extends Component {
         if(nextProps.user.login.isAuth){
             this.props.history.push('/home')
         }
+        else{
+            this.setState({error:nextProps.user.login.message})
+            setTimeout(()=>{this.setState({error:''}) }, 5000);
+        }
     }
     submitForm = (event) => {
         event.preventDefault();
@@ -46,6 +50,7 @@ class Login extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="password">
@@ -55,12 +60,14 @@ class Login extends Component {
                                         placeholder="Password"
                                         value={this.state.password}
                                         onChange={this.handleInputPassword}
+                                        required
                                     />
                                 </Form.Group>
                                 <p className="left-margin-text">Forgot Password?</p>
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign In
                                 </Button>
+                                <div className="error">{this.state.error}</div>
                                 <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Do not have an account? <Link to="register">Create here</Link></p>
                             </Form>
                         </div>

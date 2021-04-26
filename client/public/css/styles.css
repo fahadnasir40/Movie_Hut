@@ -675,3 +675,15 @@ body {
   height: 100%;
   background-position: center;
 }
+
+.error {
+  color: #FF5722;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.success {
+  color: #4BB543;
+  margin-top: 10px;
+  font-weight: 600;
+}

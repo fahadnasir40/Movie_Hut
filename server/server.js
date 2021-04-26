@@ -115,7 +115,8 @@ app.get("/api/auth", auth2, (req, res) => {
         id: req.user.id,
         email: req.user.email,
         name: req.user.name,
-        role: req.user.role,
+        dob: req.user.dob,
+        role: req.user.role
     });
 });
 
@@ -369,6 +370,17 @@ app.get('/api/logout',auth,(req,res)=>{
     req.user.deleteToken(req.token,(err,user)=>{
         if(err) return res.status(400).send(err);
         res.sendStatus(200)
+    })
+})
+
+//UPDATE
+app.post('/api/update_user',(req,res)=>{
+    User.findByIdAndUpdate(req.body._id,req.body,{new:true},(err,doc)=>{
+        if(err) return res.status(400).send(err);
+        res.json({
+            success:true,
+            doc
+        })
     })
 })
 

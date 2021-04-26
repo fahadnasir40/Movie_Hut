@@ -14,7 +14,7 @@ class Register extends Component {
         password: '',
         confirmPassword:'',
         error: '',
-        success: false,
+        success: '',
         validated: false,
     }
 
@@ -36,28 +36,35 @@ class Register extends Component {
 
     componentWillReceiveProps(nextProps){
         if(nextProps.user.register === false){
-            this.setState({error:'Error,try again'})
+            this.setState({error:'Error registering the user, try again'})
         } else{
             this.setState({
                 name:'',
-                lastname:'',
                 email:'',
-                password:''
+                dob:'',
+                password: '',
+                confirmPassword:'',
+                success: 'Registered successfully',
             })
         }
+        setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
     }
 
     submitForm = (e) => {
         e.preventDefault();
-        this.setState({error:''});
-
-        this.props.dispatch(userRegister({
-            name:this.state.name,
-            email:this.state.email,
-            dob:this.state.dob,
-            password:this.state.password
-        }))
-        
+        this.setState({error:'', success:''});
+        if(this.state.password === this.state.confirmPassword){
+            this.props.dispatch(userRegister({
+                name:this.state.name,
+                email:this.state.email,
+                dob:this.state.dob,
+                password:this.state.password
+            }))
+        }
+        else{
+            this.setState({error:'Password and Confirm pawword do not match', success:''});
+            setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
+        }
     }
 
     render() {
@@ -78,6 +85,7 @@ class Register extends Component {
                                         placeholder="Full Name"
                                         value={this.state.name}
                                         onChange={this.handleInputName}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="email">
@@ -87,6 +95,7 @@ class Register extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="dob">
@@ -97,6 +106,7 @@ class Register extends Component {
                                         max="2010-12-31"
                                         value={this.state.dob}
                                         onChange={this.handleInputDob}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="password">
@@ -106,6 +116,7 @@ class Register extends Component {
                                         placeholder="Password"
                                         value={this.state.password}
                                         onChange={this.handleInputPassword}
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="cPassword">
@@ -115,17 +126,22 @@ class Register extends Component {
                                         placeholder="Confirm Password"
                                         value={this.state.confirmPassword}
                                         onChange={this.handleInputConfirmPassword}
+                                        required
                                     />
                                 </Form.Group>
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign Up
                                 </Button>
-                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Already have an account? <Link to="login">Sign In</Link></p>
-                                <hr class="register-line" size="1" />
-                                <p className="input-style" style={{ fontFamily: 'Roboto', textAlign: 'center' }}>By clicking Sign Up, you agree to you agree to the <Link to="#">Terms</Link> and <Link to="#">Private policy</Link></p>
                                 <div className="error">
                                     {this.state.error}
                                 </div>
+                                <div className="success">
+                                    {this.state.success}
+                                </div>
+                                <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Already have an account? <Link to="login">Sign In</Link></p>
+                                <hr class="register-line" size="1" />
+                                <p className="input-style" style={{ fontFamily: 'Roboto', textAlign: 'center' }}>By clicking Sign Up, you agree to you agree to the <Link to="#">Terms</Link> and <Link to="#">Private policy</Link></p>
+                                
                             </Form>
                         </div>
                     </div>
