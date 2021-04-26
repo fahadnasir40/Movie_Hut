@@ -5,11 +5,20 @@ const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
 const async = require("async");
+const path = require('path');
 
 const config = require("./config/config").get(process.env.NODE_ENV);
 const app = express();
 const { auth } = require("./middleware/auth");
 const { auth2 } = require("./middleware/auth2");
+
+const nodemailer = require('nodemailer');
+const Email = require('email-templates');
+const handlebars = require('handlebars');
+// app.engine('html', require('ejs').renderFile);
+// app.set('view engine', 'html');
+// app.set('view engine', 'ejs');
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DATABASE, {
@@ -32,7 +41,121 @@ const fs = require('fs')
 
 
 
+
+
+
 // GET //
+
+
+app.get('/api/sendEmail', async (req, res) => {
+
+
+    Movie.find({ rating: { $gte: '8' } }).limit(3).exec((err, doc) => {
+        if (err)
+            return res.status(500).json("error ");
+
+        const movie = doc.map((item, key) => {
+            return item;
+        })
+
+        const showtimes = Showtime.find().limit(3).lean().exec();
+
+        showtimes.then((showtime) => {
+
+            const shows = showtime.map((item, key) => {
+                return item;
+            })
+
+            var readHTMLFile = function (path, callback) {
+                fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                    if (err) {
+                        throw err;
+                        callback(err);
+                    }
+                    else {
+                        callback(null, html);
+                    }
+                });
+            };
+
+            // var testMailTemplate = new emailTemplate(templateDir)
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: config.MOVIEHUT_EMAIL_AUTH_USER,
+                    pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
+                }
+            });
+
+
+            var readHTMLFile = function (path, callback) {
+                fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                    if (err) {
+                        // console.log(err);
+                        throw err;
+                        callback(err);
+                    }
+                    else {
+                        callback(null, html);
+                    }
+                });
+            };
+
+            readHTMLFile('./server/email-templates/top-picks.html', function (err, html) {
+                // console.log("HTML", movie);
+                var template = handlebars.compile(html);
+                var replacements = {
+                    username: `Fahad`,
+                    top_movie_poster_url: movie[0].poster_url,
+                    top_movie_description: movie[0].description,
+                    top_movie_title: movie[0].title,
+                    top_rated_movie_1_title: movie[1].title,
+                    top_rated_movie_1_poster_url: movie[1].poster_url,
+                    top_rated_movie_1_description: movie[1].description,
+                    top_rated_movie_1_runtime: movie[1].runtime,
+                    top_rated_movie_1_rating: movie[1].rating,
+                    top_rated_movie_2_title: movie[2].title,
+                    top_rated_movie_2_poster_url: movie[2].poster_url,
+                    top_rated_movie_2_description: movie[2].description,
+                    top_rated_movie_2_runtime: movie[2].runtime,
+                    top_rated_movie_2_rating: movie[2].rating,
+                    showtime_1_title: 'Joker',
+                    showtime_1_time: moment(shows[0].date).format("hh:mm A"),
+                    showtime_2_title: 'Djanhgo Unchained',
+                    showtime_2_time: moment(shows[1].date).format("hh:mm A"),
+                    showtime_3_title: 'Descpicable Me 3',
+                    showtime_3_time: moment(shows[2].date).format("hh:mm A")
+
+                };
+
+                var htmlToSend = template(replacements);
+                var mailOptions = {
+                    from: config.MOVIEHUT_EMAIL_AUTH_USER,
+                    to: ['l176335@lhr.nu.edu.pk'],
+                    subject: 'Movie Hut: Top Picks for you!',
+                    preview: true,
+                    html: htmlToSend
+                };
+
+                transporter.sendMail(mailOptions, function (error, response) {
+                    if (error) {
+                        // console.log(error);
+                        callback(error);
+                    }
+
+                    return res.status(200).json("Email sent successfully")
+                });
+            });
+
+        })
+
+    });
+
+
+
+
+})
+
 
 function saveMovie(title) {
 
@@ -92,18 +215,9 @@ app.post('/api/create-showtime', (req, res) => {
 
         res.status(200).json({
             post: true,
-            showtimeId: showtime._id
+            newShowtime: showtime
         })
     });
-    // if (saveMovie(showtime.name)) {
-
-    // }
-    // else {
-    //     console.log("Error",)
-    //     res.status(400).send("Error creating showtime")
-    // }
-
-
 })
 
 
@@ -296,17 +410,32 @@ app.post('/api/create-cinema', (req, res) => {
     });
 })
 
-app.post('/api/addMovieInCinema', (req, res) => {
+app.post('/api/addMovieInCinema', async (req, res) => {
 
     let movieData = req.body;
+    Cinema.findById(movieData.cinemaID, (err, docs) => {
+        if (err) {
+            console.log(err)
+            return res.status(400).json(err);
+        }
 
-    Cinema.findByIdAndUpdate(movieData.cinemaID, { $addToSet: { moviesList: movieData.movie._id } },
-        function (err, docs) {
-            if (err) {
-                console.log(err)
-                return res.status(400).json(err);
-            }
-            else {
+        Cinema.findByIdAndUpdate(movieData.cinemaID, { $addToSet: { moviesList: movieData.movie._id } },
+            function (err, docs) {
+                if (err) {
+                    console.log(err)
+                    return res.status(400).json(err);
+                }
+
+                for (var i = 0; i < docs.moviesList.length; i++) {
+                    if (docs.moviesList[i] === movieData.movie._id) {
+                        return res.status(200).json({
+                            post: true,
+                            cinemaId: docs._id
+                        })
+                    }
+                }
+
+
                 if (movieData.tmdb === true) {
                     const movie = new Movie(movieData.movie);
                     return movie.save((error, document) => {
@@ -327,47 +456,50 @@ app.post('/api/addMovieInCinema', (req, res) => {
                         cinemaId: docs._id
                     })
                 }
-            }
-        });
+            });
+    });
 })
 
-app.post('/api/register',(req,res)=>{
+
+
+
+app.post('/api/register', (req, res) => {
     const user = new User(req.body);
 
-    user.save((err,doc)=>{
-        if(err) return res.json({success:false});
+    user.save((err, doc) => {
+        if (err) return res.json({ success: false });
         res.status(200).json({
-            success:true,
-            user:doc
+            success: true,
+            user: doc
         })
     })
 })
 
-app.post('/api/login',(req,res)=>{
-    User.findOne({'email':req.body.email},(err,user)=>{
-        if(!user) return res.json({isAuth:false,message:'Auth failed, email not found'})
+app.post('/api/login', (req, res) => {
+    User.findOne({ 'email': req.body.email }, (err, user) => {
+        if (!user) return res.json({ isAuth: false, message: 'Auth failed, email not found' })
 
-        user.comparePassword(req.body.password,(err,isMatch)=>{
-            if(!isMatch) return res.json({
-                isAuth:false,
-                message:'Wrong password'
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch) return res.json({
+                isAuth: false,
+                message: 'Wrong password'
             });
 
-            user.generateToken((err,user)=>{
-                if(err) return res.status(400).send(err);
-                res.cookie('auth',user.token).json({
-                    isAuth:true,
-                    id:user._id,
-                    email:user.email
+            user.generateToken((err, user) => {
+                if (err) return res.status(400).send(err);
+                res.cookie('auth', user.token).json({
+                    isAuth: true,
+                    id: user._id,
+                    email: user.email
                 })
             })
         })
     })
 })
 
-app.get('/api/logout',auth,(req,res)=>{
-    req.user.deleteToken(req.token,(err,user)=>{
-        if(err) return res.status(400).send(err);
+app.get('/api/logout', auth, (req, res) => {
+    req.user.deleteToken(req.token, (err, user) => {
+        if (err) return res.status(400).send(err);
         res.sendStatus(200)
     })
 })

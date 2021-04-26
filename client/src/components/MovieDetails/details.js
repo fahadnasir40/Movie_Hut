@@ -151,7 +151,7 @@ class MovieDetails extends Component {
         var i = 0;
         return days.map((d, key) => {
             const date = moment(today).add(i++, "days").toDate();
-            let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'active' : '';
+            let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'showtime-date-active' : '';
             return (
                 <div className={`showtime-date ${c}`} onClick={() => { return this.handleSelectedDate(date) }}>
                     <div>
