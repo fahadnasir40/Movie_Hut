@@ -20,16 +20,22 @@
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
-    "bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "concurrently": "^5.3.0",
     "cookie-parser": "^1.4.5",
+    "ejs": "^3.1.6",
+    "email-templates": "^8.0.4",
     "express": "^4.17.1",
-    "jquery": "^3.5.1",
+    "handlebars": "^4.7.7",
+    "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.0",
-    "mongoose": "^5.10.9",
-    "mongoose-sequence": "^5.3.0",
-    "nodemon": "^2.0.4"
+    "mongoose": "^5.12.5",
+    "mongoose-sequence": "^5.3.1",
+    "nodemailer": "^6.5.0",
+    "nodemon": "^2.0.7",
+    "pug": "^3.0.2",
+    "util": "^0.12.3"
   },
   "devDependencies": {},
   "repository": {
