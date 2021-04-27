@@ -10,7 +10,7 @@ export default function (ComposedClass, reload, access) {
             loading: true
         }
 
-        componentDidMount() {
+        componentWillMount() {
             this.props.dispatch(auth())
         }
 
@@ -19,21 +19,24 @@ export default function (ComposedClass, reload, access) {
 
             if (!nextProps.user.login.isAuth) {
                 if (reload) {
-                    this.props.history.push('/');
+                    this.props.history.push('/login');
                 }
             } else {
-                if (nextProps.user.login.role === 'worker' && access === true) {
-                    if (reload === false) {
-                        this.props.history.push('/orders')
-                    }
+                if(reload === false) {
+                    this.props.history.push('/home')
                 }
-                else if (nextProps.user.login.role === 'worker' && access === false) {
-                    this.props.history.push('/orders');
-                }
+                // if (nextProps.user.login.role === 'worker' && access === true) {
+                //     if (reload === false) {
+                //         this.props.history.push('/orders')
+                //     }
+                // }
+                // else if (nextProps.user.login.role === 'worker' && access === false) {
+                //     this.props.history.push('/orders');
+                // }
 
-                else if (nextProps.user.login.role === 'worker' && !access) {
-                    this.props.history.push('/404');
-                }
+                // else if (nextProps.user.login.role === 'worker' && !access) {
+                //     this.props.history.push('/404');
+                // }
             }
         }
 

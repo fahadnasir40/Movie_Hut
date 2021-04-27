@@ -3,6 +3,33 @@ import axios from 'axios';
 
 /* =========== USER ============== */
 
+export function forgotPassword(email) {
+    const request = axios.post('/api/forgotPassword',{ email })
+    .then(response => response.data);
+    return {
+        type: 'USER_FORGOT_PASSWORD',
+        payload: request
+    }
+}
+
+export function resetPassword(resetPasswordToken) {
+    const request = axios.get(`/api/reset?resetPasswordToken=${resetPasswordToken}`)
+    .then(response => response.data);
+    return {
+        type: 'USER_RESET_PASSWORD',
+        payload: request
+    }
+}
+
+export function updatePasswordEmail(resetPasswordToken, password) {
+    const request = axios.put("/api/updatePasswordViaEmail", {resetPasswordToken,password})
+    .then(response => response.data);
+    return {
+        type: 'USER_UPDATE_PASSWORD',
+        payload: request
+    }
+}
+
 export function loginUser({ email, password }) {
 
     const request = axios.post(`/api/login`, { email, password })
