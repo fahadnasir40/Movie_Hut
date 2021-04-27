@@ -63,7 +63,7 @@ class Login extends Component {
                                         required
                                     />
                                 </Form.Group>
-                                <p className="left-margin-text">Forgot Password?</p>
+                                <Link to="forgot"><p className="left-margin-text">Forgot Password?</p></Link>
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign In
                                 </Button>

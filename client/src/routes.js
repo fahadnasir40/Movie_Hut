@@ -14,6 +14,9 @@ import Showtimes from './components/Admin/CreateShowtime/showtimes'
 import Logout from './components/Logout/logout'
 import Auth from './hoc/auth';
 import Profile from './components/Profile/profile';
+import ForgotPassword from './components/Forgot/forgot';
+import ResetPassword from './components/Reset/reset';
+
 
 
 const routes = () => {
@@ -24,6 +27,8 @@ const routes = () => {
             <Route path="/movie/:movieId" exact component={MovieDetails} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />
+            <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
+            <Route path="/reset/:id" exact component={Auth(ResetPassword, false)} />
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/create-review" exact component={CreateReview} />
             <Route path="/create-cinema" exact component={CreateCinema} />

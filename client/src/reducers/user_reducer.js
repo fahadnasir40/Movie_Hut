@@ -13,6 +13,21 @@ export default function(state={},action){
                 ...state,
                 register:action.payload.success
             }
+        case 'USER_FORGOT_PASSWORD':
+            return {
+                ...state,
+                message:action.payload
+            }
+        case 'USER_RESET_PASSWORD':
+            return {
+                ...state,
+                message:action.payload
+            }
+        case 'USER_UPDATE_PASSWORD':
+            return {
+                ...state,
+                message:action.payload
+            }
         default:
             return state;
     }
