@@ -60,7 +60,6 @@ class MovieDetails extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log("Props", props)
         if (props.movie.movieInfo) {
             return {
                 movieInfo: props.movie.movieInfo.movie,
@@ -151,7 +150,7 @@ class MovieDetails extends Component {
         var i = 0;
         return days.map((d, key) => {
             const date = moment(today).add(i++, "days").toDate();
-            let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'active' : '';
+            let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'showtime-date-active' : '';
             return (
                 <div className={`showtime-date ${c}`} onClick={() => { return this.handleSelectedDate(date) }}>
                     <div>
@@ -166,7 +165,6 @@ class MovieDetails extends Component {
     }
 
     getScreenPlays = () => {
-        console.log("State", this.state);
         if (this.state.cinemaInfo) {
             if (this.state.showtimeInfo.some(item => moment(item.date).isSame(this.state.selectedDate, "date"))) {
 
@@ -177,7 +175,6 @@ class MovieDetails extends Component {
                             moment(item.date).isSame(this.state.selectedDate, "date")) return true;
                         else return false
                     });
-                    console.log("Showtimes", showtimeCinemas);
                     if (showtimeCinemas) {
                         return (
                             <div className="row col-12 ">
@@ -245,8 +242,7 @@ class MovieDetails extends Component {
 
         return (
             <div>
-                <Header />
-
+                <Header user={this.props.user} />
 
                 {
                     this.state.movieInfo ?

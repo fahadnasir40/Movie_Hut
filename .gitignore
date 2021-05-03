@@ -2,3 +2,4 @@ node_modules
 client/.eslintcache
 client/.eslintcache
 server/env
+server\config\config.js

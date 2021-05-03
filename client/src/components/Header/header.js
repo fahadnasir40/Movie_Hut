@@ -1,20 +1,28 @@
 import React, { Component } from 'react'
 import { Navbar, NavDropdown, Nav } from 'react-bootstrap'
+import NavItems from './navItems'
 
 class Header extends Component {
-
     render() {
         return (
             <Navbar style={{ background: "black" }} variant="dark">
                 <Navbar.Brand href="/" className="nav-brand">
                     MOVIE HUT
                 </Navbar.Brand>
-                <Nav className="ml-auto">
-                    <Nav.Link href="login">Sign In</Nav.Link>
-                    <Nav.Link eventKey={2} href="register">
-                        Sign Up
-                    </Nav.Link>
-                </Nav>
+                {
+                    this.props.user ?
+                        this.props.user.login.error === true ?
+                            <Nav className="ml-auto">
+                                <Nav.Link href="/login">Sign In</Nav.Link>
+                                <Nav.Link eventKey={2} href="/register">
+                                    Sign Up
+                            </Nav.Link>
+                            </Nav>
+
+                            : <Nav className="ml-auto mr-3"><NavItems user={this.props.user.login} /></Nav>
+                        : null
+                }
+
             </Navbar>
         )
     }

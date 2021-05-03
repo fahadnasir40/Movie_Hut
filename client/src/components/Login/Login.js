@@ -12,6 +12,7 @@ class Login extends Component {
         error: '',
         success: false,
         validated: false,
+        redirect: false
     }
     handleInputEmail = (event) => {
         this.setState({email:event.target.value})
@@ -19,11 +20,27 @@ class Login extends Component {
     handleInputPassword = (event) => {
         this.setState({password:event.target.value})
     }
-
-    componentWillReceiveProps(nextProps){
-        if(nextProps.user.login.isAuth){
-            this.props.history.push('/home')
+    componentDidMount(){
+        if(this.props.user){
+            if(this.props.user.login){
+                if(this.props.user.login.isAuth){
+                    this.props.history.push('/')
+                }
+            }
         }
+    }
+    static getDerivedStateFromProps(nextProps, state){
+        if(nextProps.user.login.isAuth){
+            nextProps.history.push('/')
+        }
+        else{
+            // this.setState({error:nextProps.user.login.message})
+            //setTimeout(()=>{this.setState({error:''}) }, 5000)
+            return {
+                error:nextProps.user.login.message
+            };
+        }
+        return null
     }
     submitForm = (event) => {
         event.preventDefault();
@@ -46,6 +63,8 @@ class Login extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        maxlength="50"
+                                        required
                                     />
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="password">
@@ -55,12 +74,16 @@ class Login extends Component {
                                         placeholder="Password"
                                         value={this.state.password}
                                         onChange={this.handleInputPassword}
+                                        maxlength="20"
+                                        minlength="6"
+                                        required
                                     />
                                 </Form.Group>
-                                <p className="left-margin-text">Forgot Password?</p>
+                                <Link to="forgot"><p className="left-margin-text">Forgot Password?</p></Link>
                                 <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                     Sign In
                                 </Button>
+                                <div className="error">{this.state.error}</div>
                                 <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Do not have an account? <Link to="register">Create here</Link></p>
                             </Form>
                         </div>
