@@ -16,6 +16,7 @@ import Auth from './hoc/auth';
 import Profile from './components/Profile/profile';
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
+import ExpirePassword from './components/Reset/expiredPassword'
 
 
 
@@ -30,13 +31,14 @@ const routes = () => {
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
             <Route path="/reset/:id" exact component={Auth(ResetPassword, false)} />
             <Route path="/profile" exact component={Auth(Profile, true)} />
-            <Route path="/create-review" exact component={Auth(CreateReview, true, true)} />
+            <Route path="/create-review" exact component={Auth(CreateReview, true)} />
             <Route path="/create-cinema" exact component={Auth(CreateCinema, true, true)} />
             <Route path="/create-showtime/:cinemaId" exact component={Auth(CreateShowtime, true, true)} />
             <Route path="/addMovie/:cinemaId" exact component={Auth(AddMovie, true, true)} />
             <Route path="/showtimes" exact component={Auth(Showtimes, true, true)} />
             <Route path="/admin-cinemas" exact component={Auth(CinemasList, true, true)} />
             <Route path="/logout" exact component={Logout} />
+            <Route path="/reset-expired" exact component={ExpirePassword} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />
 
         </Switch>

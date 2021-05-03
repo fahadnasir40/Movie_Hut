@@ -48,6 +48,7 @@ class forgot extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        maxlength="50"
                                         required
                                     />
                                 </Form.Group>

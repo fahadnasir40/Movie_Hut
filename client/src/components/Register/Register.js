@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import Header from '../Header/header';
 import { Link } from 'react-router-dom';
-import {userRegister} from './../../actions/index';
+import {userRegister, loginUser} from './../../actions/index';
 
 
 class Register extends Component {
@@ -34,20 +34,40 @@ class Register extends Component {
         this.setState({confirmPassword:event.target.value})
     }
 
-    componentWillReceiveProps(nextProps){
+    static getDerivedStateFromProps(nextProps, state){
+        console.log(nextProps)
         if(nextProps.user.register === false){
-            this.setState({error:'Error registering the user, try again'})
-        } else{
-            this.setState({
-                name:'',
-                email:'',
-                dob:'',
-                password: '',
-                confirmPassword:'',
-                success: 'Registered successfully',
-            })
+            return {error:'Error registering the user, try again'}
         }
-        setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
+        if(nextProps.user.login.isAuth){
+            nextProps.history.push('/')
+        } 
+        else if(nextProps.user.register === true){{
+            
+            if(nextProps.user.login.isAuth){
+                nextProps.history.push('/')
+            } 
+            
+            // if(nextProps.user.login.error){
+            //     nextProps.history.push('/login')
+            // } 
+            nextProps.dispatch(loginUser({
+                email:state.email,
+                password:state.password
+            }))
+            // this.setState({
+            //     name:'',
+            //     email:'',
+            //     dob:'',
+            //     password: '',
+            //     confirmPassword:'',
+            //     success: 'Registered successfully',
+            // })
+            
+        }
+        return null;
+        // setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
+    }
     }
 
     submitForm = (e) => {
@@ -85,6 +105,8 @@ class Register extends Component {
                                         placeholder="Full Name"
                                         value={this.state.name}
                                         onChange={this.handleInputName}
+                                        maxlength="100"
+                                        minlength="3"
                                         required
                                     />
                                 </Form.Group>
@@ -95,6 +117,7 @@ class Register extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        maxlength="50"
                                         required
                                     />
                                 </Form.Group>
@@ -116,6 +139,8 @@ class Register extends Component {
                                         placeholder="Password"
                                         value={this.state.password}
                                         onChange={this.handleInputPassword}
+                                        maxlength="20"
+                                        minlength="6"
                                         required
                                     />
                                 </Form.Group>
@@ -126,6 +151,8 @@ class Register extends Component {
                                         placeholder="Confirm Password"
                                         value={this.state.confirmPassword}
                                         onChange={this.handleInputConfirmPassword}
+                                        maxlength="20"
+                                        minlength="6"
                                         required
                                     />
                                 </Form.Group>

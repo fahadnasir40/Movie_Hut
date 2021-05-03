@@ -47,17 +47,24 @@ const SidenavItems = ({ user }) => {
         {
             type: 'navItem',
             // icon:'file-text-o',
-            text: 'My reviews',
-            link: '/user/user-reviews',
+            text: 'Favorites',
+            link: '/favorites',
             restricted: true
         },
         {
             type: 'navItem',
             // icon:'file-text-o',
-            text: 'Add reviews',
-            link: '/user/add',
+            text: 'My reviews',
+            link: '/user/user-reviews',
             restricted: true
         },
+        // {
+        //     type: 'navItem',
+        //     // icon:'file-text-o',
+        //     text: 'Add reviews',
+        //     link: '/create-review',
+        //     restricted: true
+        // },
         {
             type: 'navItem',
             // icon:'file-text-o',
@@ -100,6 +107,9 @@ const SidenavItems = ({ user }) => {
                 str = user.login.name
                 : str = ""
             : str = ""
+        
+        if (str.substr(0, str.indexOf(' ')) === "")
+            return str
         return str.substr(0, str.indexOf(' '))
     }
     const navDropdownTitle = (<span style={{ color: "#ffff" }} className="title"><i className="fa fa-user-circle mr-1"></i> {userDropdown()}</span>);
