@@ -153,7 +153,7 @@ app.put('/api/updatePasswordViaEmail', (req, res) => {
 // GET //
 
 
-app.get('/api/sendEmail', async (req, res) => {
+app.get('/api/sendEmail', auth2, async (req, res) => {
 
 
     Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
@@ -309,7 +309,7 @@ function saveMovie(title) {
     });
 }
 
-app.post('/api/create-showtime', (req, res) => {
+app.post('/api/create-showtime', auth2, (req, res) => {
     const showtime = new Showtime(req.body);
 
     showtime.save((error, showtime) => {
@@ -341,7 +341,7 @@ app.get("/api/auth", auth, (req, res) => {
     });
 });
 
-app.get('/api/getCinemasList', (req, res) => {
+app.get('/api/getCinemasList', auth2, (req, res) => {
     let skip = parseInt(req.query.skip);
     let limit = parseInt(req.query.limit);
     let order = req.query.order;
@@ -353,7 +353,7 @@ app.get('/api/getCinemasList', (req, res) => {
     })
 })
 
-app.get('/api/getCinemaMovies', (req, res) => {
+app.get('/api/getCinemaMovies', auth2, (req, res) => {
 
     // let skip = parseInt(req.query.skip);
     // let limit = parseInt(req.query.limit);
@@ -443,7 +443,7 @@ app.get('/api/getMovieInfo', async function (req, res) {
 
 });
 
-app.get('/api/getCinemaMovieShowtimes', (req, res) => {
+app.get('/api/getCinemaMovieShowtimes', auth2, (req, res) => {
     Showtime.find({ cinemaId: req.query.cinemaId, movieId: req.query.movieId }, (err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
@@ -452,7 +452,7 @@ app.get('/api/getCinemaMovieShowtimes', (req, res) => {
     })
 })
 
-app.get('/api/getMovieTMDB', (req, res) => {
+app.get('/api/getMovieTMDB', auth2, (req, res) => {
 
     var dataToSend, err;
     // spawn new child process to call the python script
@@ -482,7 +482,7 @@ app.get('/api/getMovieTMDB', (req, res) => {
     });
 })
 
-app.get('/api/getMovieByName', (req, res) => {
+app.get('/api/getMovieByName', auth2, (req, res) => {
     // Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
     Movie.findOne({ title: req.query.name }, (err, doc) => {
         if (err) return res.status(400).send(err);
@@ -503,7 +503,7 @@ app.get('/api/getMovieByName', (req, res) => {
 })
 
 //POST
-app.post('/api/create-cinema', (req, res) => {
+app.post('/api/create-cinema', auth2, (req, res) => {
 
     const cinema = new Cinema(req.body);
     cinema.save((error, cinema) => {
@@ -518,7 +518,7 @@ app.post('/api/create-cinema', (req, res) => {
     });
 })
 
-app.post('/api/addMovieInCinema', async (req, res) => {
+app.post('/api/addMovieInCinema', auth2, async (req, res) => {
 
     let movieData = req.body;
     Cinema.findById(movieData.cinemaID, (err, docs) => {
@@ -575,7 +575,10 @@ app.post('/api/register', (req, res) => {
     const user = new User(req.body);
 
     user.save((err, doc) => {
-        if (err) return res.json({ success: false });
+        if (err) {
+            console.log(err);
+            return res.json({ success: false })
+        };
         res.status(200).json({
             success: true,
             user: doc
@@ -613,7 +616,7 @@ app.get('/api/logout', auth, (req, res) => {
 })
 
 //UPDATE
-app.post('/api/update_user', (req, res) => {
+app.post('/api/update_user', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({

@@ -4,18 +4,12 @@ import axios from 'axios';
 const Logout = (props) => {
 
     let request = axios.get(`/api/logout`)
-                .then(request =>{
-                    setTimeout(()=>{
-                        props.history.push('/')
-                    },2000)
-                })
+        .then(request => {
+            props.history.push('/')
+        })
 
     return (
-        <div className="logout_container">
-            <h1>
-                Sorry to see you go :(
-            </h1>
-        </div>
+        <div > </div>
     );
 };
 
