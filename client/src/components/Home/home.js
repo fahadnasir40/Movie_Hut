@@ -67,7 +67,7 @@ class Home extends Component {
         let movies = this.state.movies;
         return (
             <div>
-                <Header />
+                <Header user={this.props.user} />
                 <div className="container-fluid">
                     <div className="row">
                         {/* <HomeSlider

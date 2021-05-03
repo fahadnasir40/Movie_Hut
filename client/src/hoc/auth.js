@@ -23,7 +23,7 @@ export default function (ComposedClass, reload, access) {
                 }
             } else {
                 if(reload === false) {
-                    this.props.history.push('/home')
+                    this.props.history.push('/')
                 }
                 // if (nextProps.user.login.role === 'worker' && access === true) {
                 //     if (reload === false) {
