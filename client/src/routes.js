@@ -18,8 +18,8 @@ import Auth from './hoc/auth';
 const routes = () => {
     return (
         <Switch>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/home" exact component={Auth(Home, true)} />
+            <Route path="/home" exact component={Dashboard} />
+            <Route path="/" exact component={Auth(Home, false)} />
             <Route path="/movie/:movieId" exact component={MovieDetails} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, true)} />
