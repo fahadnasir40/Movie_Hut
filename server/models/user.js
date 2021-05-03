@@ -7,9 +7,10 @@ const SALT_I = 10;
 const userSchema = mongoose.Schema({
     email: {
         type: String,
-        required: true,
-        trim: true,
-        unique: 1
+        require: true,
+        index: true,
+        unique: true,
+        sparse: true
     },
     password: {
         type: String,
@@ -25,7 +26,7 @@ const userSchema = mongoose.Schema({
         type: String,
         default: 0,
         trim: true,
-        default:"XXXX-XXXXXXX"
+        default: "XXXX-XXXXXXX"
     },
     dob: {
         type: String,
@@ -35,17 +36,17 @@ const userSchema = mongoose.Schema({
     city: {
         type: String,
         trim: true,
-        default:""
+        default: ""
     },
     address: {
         type: String,
         trim: true,
-        default:""
+        default: ""
     },
     role: {
         type: String,
         trim: true,
-        default:"user"
+        default: "user"
     },
     token: {
         type: String
@@ -53,11 +54,11 @@ const userSchema = mongoose.Schema({
     status: {
         type: String,
         trim: true,
-        default:""
+        default: ""
     },
     modifiedBy: {
         type: String,
-        default:""
+        default: ""
     },
     // resetPasswordToken: String,
     // resetPasswordExpires: Date

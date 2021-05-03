@@ -497,6 +497,15 @@ input[type="date"] {
     width: 100%;
   }
 }
+
+#basic-nav-dropdown::after {
+  display: none;
+}
+
+#basic-nav-dropdown {
+  margin-left: 60px;
+}
+
 /* .movie-container:focus-within .movie-poster,
 .movie-container:hover .movie-poster {
   transform: translateX(-25%);
@@ -677,13 +686,13 @@ body {
 }
 
 .error {
-  color: #FF5722;
+  color: #ff5722;
   margin-top: 10px;
   font-weight: 600;
 }
 
 .success {
-  color: #4BB543;
+  color: #4bb543;
   margin-top: 10px;
   font-weight: 600;
 }
