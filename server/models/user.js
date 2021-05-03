@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         trim: true,
-        default:"administrator"
+        default:"user"
     },
     token: {
         type: String
