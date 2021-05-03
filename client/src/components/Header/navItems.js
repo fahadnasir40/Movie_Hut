@@ -7,13 +7,13 @@ import {NavDropdown} from 'react-bootstrap'
 const SidenavItems = ({user}) => {
 
     const items = [
-        {
-            type:'navItem',
-            // icon:'home',
-            text:'Home',
-            link:'/',
-            restricted:false
-        },
+        // {
+        //     type:'navItem',
+        //     // icon:'home',
+        //     text:'Home',
+        //     link:'/',
+        //     restricted:false
+        // },
         {
             type:'navItem',
             // icon:'file-text-o',
@@ -23,19 +23,27 @@ const SidenavItems = ({user}) => {
         },
         {
             type:'navItem',
+            admin: true,
             // icon:'file-text-o',
-            text:'Add Admins',
-            link:'/register',
+            text:'Admin Panel',
+            link:'/admin-panel',
             restricted:true
         },
-        {
-            type:'navItem',
-            // icon:'file-text-o',
-            text:'Login',
-            link:'/login',
-            restricted:false,
-            exclude:true
-        },
+        // {
+        //     type:'navItem',
+        //     // icon:'file-text-o',
+        //     text:'Add Admins',
+        //     link:'/register',
+        //     restricted:true
+        // },
+        // {
+        //     type:'navItem',
+        //     // icon:'file-text-o',
+        //     text:'Login',
+        //     link:'/login',
+        //     restricted:false,
+        //     exclude:true
+        // },
         {
             type:'navItem',
             // icon:'file-text-o',
@@ -69,9 +77,13 @@ const SidenavItems = ({user}) => {
         user.login ?
             items.map((item,i)=>{
                 if(user.login.isAuth) {
-                    return !item.exclude ?
+                    if(user.login.role == "administrator"){
+                        return item.admin ?
                         element(item,i)
-                    :null
+                        :element(item,i)
+                    }
+                    else if (!item.admin)
+                        return element(item,i)
                 } else {
                     return !item.restricted ?
                         element(item,i)
@@ -81,9 +93,19 @@ const SidenavItems = ({user}) => {
         :null
     )
 
-    return (
+    const userDropdown = () => {
+        var str = ""
+        user.login ? 
+        user.login.isAuth ?
+            str= user.login.name
+        :str = ""
+            : str = ""
+        return str.substr(0,str.indexOf(' '))
+    }
+    const navDropdownTitle = (<span><i className="fa fa-user-circle"></i> {userDropdown()}</span>);
+    return (  
         <div>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+            <NavDropdown title={navDropdownTitle} id="basic-nav-dropdown">
                 {showItems()}
             </NavDropdown>
         </div>

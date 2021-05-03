@@ -22,8 +22,8 @@ import ResetPassword from './components/Reset/reset';
 const routes = () => {
     return (
         <Switch>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/home" exact component={Auth(Home, null)} />
+            <Route path="/admin-panel" exact component={Auth(Dashboard, null)} />
+            <Route path="/" exact component={Auth(Home, null)} />
             <Route path="/movie/:movieId" exact component={MovieDetails} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />

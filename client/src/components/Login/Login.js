@@ -12,6 +12,7 @@ class Login extends Component {
         error: '',
         success: false,
         validated: false,
+        redirect: false
     }
     handleInputEmail = (event) => {
         this.setState({email:event.target.value})
@@ -19,15 +20,27 @@ class Login extends Component {
     handleInputPassword = (event) => {
         this.setState({password:event.target.value})
     }
-
-    componentWillReceiveProps(nextProps){
+    componentDidMount(){
+        if(this.props.user){
+            if(this.props.user.login){
+                if(this.props.user.login.isAuth){
+                    this.props.history.push('/')
+                }
+            }
+        }
+    }
+    static getDerivedStateFromProps(nextProps, state){
         if(nextProps.user.login.isAuth){
-            this.props.history.push('/home')
+            nextProps.history.push('/')
         }
         else{
-            this.setState({error:nextProps.user.login.message})
-            setTimeout(()=>{this.setState({error:''}) }, 5000);
+            // this.setState({error:nextProps.user.login.message})
+            //setTimeout(()=>{this.setState({error:''}) }, 5000)
+            return {
+                error:nextProps.user.login.message
+            };
         }
+        return null
     }
     submitForm = (event) => {
         event.preventDefault();

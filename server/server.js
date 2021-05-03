@@ -329,14 +329,15 @@ app.post('/api/create-showtime', (req, res) => {
 
 //GET
 
-app.get("/api/auth", auth2, (req, res) => {
+app.get("/api/auth", auth, (req, res) => {
     res.json({
         isAuth: true,
         id: req.user.id,
         email: req.user.email,
         name: req.user.name,
         dob: req.user.dob,
-        role: req.user.role
+        role: req.user.role,
+        error: false
     });
 });
 
