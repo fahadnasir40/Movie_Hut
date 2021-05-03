@@ -47,72 +47,73 @@ app.post('/api/forgotPassword', (req, res) => {
     User.findOne({
         email: req.body.email,
     }).then((user) => {
-    if (user === null) {
-        res.send('email not in db');
-    }
-    else {
-        const token = crypto.randomBytes(20).toString('hex');
-        date =  new Date();
-        date.setHours(date.getHours() + 1)
-        User.findOneAndUpdate({ email: req.body.email }, 
-            {resetPasswordToken: token, resetPasswordExpires: date}, null, function (err, docs) {
-            if (err){
-                console.log(err)
-            }
-            else{
-                //node mailer code
-                const transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.MOVIEHUT_EMAIL_AUTH_USER,
-                        pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
-                    },
-                });
-
-                const mailOptions = {
-                    from: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    to: `${user.email}`,
-                    subject: 'Link To Reset Password',
-                    text:
-                        'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
-                        + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
-                        + `http://localhost:3000/reset/${token}\n\n`
-                        + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-                };
-
-                transporter.sendMail(mailOptions, (err, response) => {
+        if (user === null) {
+            res.send('email not in db');
+        }
+        else {
+            const token = crypto.randomBytes(20).toString('hex');
+            date = new Date();
+            date.setHours(date.getHours() + 1)
+            User.findOneAndUpdate({ email: req.body.email },
+                { resetPasswordToken: token, resetPasswordExpires: date }, null, function (err, docs) {
                     if (err) {
-                        console.error('there was an error: ', err);
-                    } 
+                        console.log(err)
+                    }
                     else {
-                        res.status(200).json('recovery email sent');
+                        //node mailer code
+                        const transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: config.MOVIEHUT_EMAIL_AUTH_USER,
+                                pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
+                            },
+                        });
+
+                        const mailOptions = {
+                            from: config.MOVIEHUT_EMAIL_AUTH_USER,
+                            to: `${user.email}`,
+                            subject: 'Link To Reset Password',
+                            text:
+                                'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
+                                + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
+                                + `http://localhost:3000/reset/${token}\n\n`
+                                + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+                        };
+
+                        transporter.sendMail(mailOptions, (err, response) => {
+                            if (err) {
+                                console.error('there was an error: ', err);
+                            }
+                            else {
+                                res.status(200).json('recovery email sent');
+                            }
+                        });
                     }
                 });
-            }
-        });
-    }});
+        }
+    });
 });
 
 app.get('/api/reset', (req, res) => {
     User.findOne({
         resetPasswordToken: req.query.resetPasswordToken,
     }).then((user) => {
-    if (user == null) {
-            res.send('password reset link is invalid or has expired');
-    } 
-    else {
-        d = new Date()
-        if(user.resetPasswordExpires < d){
+        if (user == null) {
             res.send('password reset link is invalid or has expired');
         }
-        else{
-            res.status(200).send({
-                resetPasswordToken: user.resetPasswordToken,
-                message: 'password reset link a-ok',
-            });
+        else {
+            d = new Date()
+            if (user.resetPasswordExpires < d) {
+                res.send('password reset link is invalid or has expired');
+            }
+            else {
+                res.status(200).send({
+                    resetPasswordToken: user.resetPasswordToken,
+                    message: 'password reset link a-ok',
+                });
+            }
         }
-    }
-});
+    });
 });
 
 app.put('/api/updatePasswordViaEmail', (req, res) => {
@@ -123,27 +124,30 @@ app.put('/api/updatePasswordViaEmail', (req, res) => {
         if (user == null) {
             res.status(403).send('password reset link is invalid or has expired');
         }
-        else if(user.resetPasswordExpires < d){
+        else if (user.resetPasswordExpires < d) {
             res.status(403).send('password reset link is invalid or has expired');
         }
         else if (user != null) {
             bcrypt.genSalt(10, function (error, salt) {
                 bcrypt.hash(req.body.password, salt, function (error, hash) {
                     if (error) return next(error);
-                    User.findOneAndUpdate({ email: user.email }, 
-                        {resetPasswordToken: null,
+                    User.findOneAndUpdate({ email: user.email },
+                        {
+                            resetPasswordToken: null,
                             resetPasswordExpires: null,
-                            password: hash}, null, function (err, docs) {
-                        if (err){
-                            console.log(err)
-                        }
-                        else{
-                            res.status(200).send({ message: 'password updated' });
-                        }
-                    });
+                            password: hash
+                        }, null, function (err, docs) {
+                            if (err) {
+                                console.log(err)
+                            }
+                            else {
+                                res.status(200).send({ message: 'password updated' });
+                            }
+                        });
                 })
             }
-        )}
+            )
+        }
     })
 });
 // GET //
@@ -207,7 +211,7 @@ app.get('/api/sendEmail', async (req, res) => {
                 // console.log("HTML", movie);
                 var template = handlebars.compile(html);
                 var replacements = {
-                    username: `Faizan`,
+                    username: `Fahad`,
                     top_movie_poster_url: movie[0].poster_url,
                     top_movie_description: movie[0].description,
                     top_movie_title: movie[0].title,
@@ -233,7 +237,7 @@ app.get('/api/sendEmail', async (req, res) => {
                 var htmlToSend = template(replacements);
                 var mailOptions = {
                     from: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    to: ['faizanbutt833@gmail.com'],
+                    to: ['fahadnasir40@gmail.com'],
                     subject: 'Movie Hut: Top Picks for you!',
                     preview: true,
                     html: htmlToSend
@@ -608,11 +612,11 @@ app.get('/api/logout', auth, (req, res) => {
 })
 
 //UPDATE
-app.post('/api/update_user',(req,res)=>{
-    User.findByIdAndUpdate(req.body._id,req.body,{new:true},(err,doc)=>{
-        if(err) return res.status(400).send(err);
+app.post('/api/update_user', (req, res) => {
+    User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
+        if (err) return res.status(400).send(err);
         res.json({
-            success:true,
+            success: true,
             doc
         })
     })
