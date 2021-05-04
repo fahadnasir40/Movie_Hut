@@ -32,7 +32,7 @@ const routes = () => {
             <Route path="/reset/:id" exact component={Auth(ResetPassword, false)} />
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/create-review" exact component={Auth(CreateReview, true)} />
-            <Route path="/create-cinema" exact component={Auth(CreateCinema, true, true)} />
+            <Route path="/create-cinema" exact component={Auth(CreateCinema, null, true)} />
             <Route path="/create-showtime/:cinemaId" exact component={Auth(CreateShowtime, true, true)} />
             <Route path="/addMovie/:cinemaId" exact component={Auth(AddMovie, true, true)} />
             <Route path="/showtimes" exact component={Auth(Showtimes, true, true)} />
