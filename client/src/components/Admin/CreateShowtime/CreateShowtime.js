@@ -19,7 +19,7 @@ class CreateShowtime extends Component {
             mm = '0' + mm
         }
         today = yyyy + '-' + mm + '-' + dd;
-        console.log(today)
+
         return today;
     }
     setDateMax = () => {
@@ -34,7 +34,7 @@ class CreateShowtime extends Component {
             mm = '0' + mm
         }
         today = yyyy + '-' + mm + '-' + dd;
-        console.log(today)
+
         return today;
     }
     state = {
@@ -44,6 +44,7 @@ class CreateShowtime extends Component {
         // time: '',
         // screenType: '',
         moviesList: [],
+        dupList: [],
         redirect: false,
     }
 
@@ -66,11 +67,11 @@ class CreateShowtime extends Component {
 
     static getDerivedStateFromProps(nextProps, state) {
 
-        console.log("NExt", nextProps)
         if (nextProps.cinemaInfo) {
             if (nextProps.cinemaInfo.movies) {
                 return {
-                    moviesList: nextProps.cinemaInfo.movies.reverse()
+                    moviesList: nextProps.cinemaInfo.movies.reverse(),
+                    dupList: nextProps.cinemaInfo.movies.reverse()
                 }
             }
 
@@ -96,6 +97,39 @@ class CreateShowtime extends Component {
         this.setState({
             cinemaId: id
         })
+    }
+
+    handleSearchChange = (e) => {
+        // Variable to hold the original version of the list
+        let currentList = [];
+        // Variable to hold the filtered list before putting into state
+        let newList = [];
+
+        // If the search bar isn't empty
+        if (e.target.value !== "") {
+            // Assign the original list to currentList
+            currentList = this.state.dupList;
+
+            // Use .filter() to determine which items should be displayed
+            // based on the search terms
+            newList = currentList.filter(item => {
+                // change current item to lowercase
+                const lc = item.title.toLowerCase();
+                // change search term to lowercase
+                const filter = e.target.value.toLowerCase();
+                // check to see if the current list item includes the search term
+                // If it does, it will be added to newList. Using lowercase eliminates
+                // issues with capitalization in search terms and search content
+                return lc.includes(filter);
+            });
+        } else {
+            // If the search bar is empty, set newList to original task list
+            newList = this.state.moviesList;
+        }
+        // Set the filtered state based on what our rules added to newList
+        this.setState({
+            dupList: newList
+        });
     }
 
     render() {
@@ -128,7 +162,7 @@ class CreateShowtime extends Component {
                                         <span class="input-group-text " style={{ backgroundColor: "black" }} id="basic-addon1">
                                             <i className="fa fa-search" style={{ color: '#ffff' }}></i></span>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Search Movie" aria-label="Search" aria-describedby="basic-addon1" />
+                                    <input type="text" onChange={this.handleSearchChange} class="form-control" placeholder="Search Movie" aria-label="Search" aria-describedby="basic-addon1" />
                                 </div>
 
                             </div>
@@ -138,7 +172,7 @@ class CreateShowtime extends Component {
                     <div class="row d-flex mx-md-5 px-md-5" style={{ float: "none", justifyContent: 'between' }}>
 
                         {
-                            this.state.moviesList.map((movie, key) => {
+                            this.state.dupList.map((movie, key) => {
                                 return (
                                     <div key={key} className=' cinema-movie-container  d-flex flex-row my-2 mx-md-4 mx-1 rounded border p-2 display-inline '>
 
@@ -156,8 +190,12 @@ class CreateShowtime extends Component {
                                                 Release: {movie.releaseDate}
                                             </div>
                                             <div>
-                                                Upcomming shows: 20
+                                                Runtime: {movie.runtime} Minutes
                                                 </div>
+                                            <div>
+                                                Rating: {movie.rating}
+                                            </div>
+
                                             <div>
                                                 <Link to={{
                                                     pathname: `/showtimes`,
@@ -165,15 +203,15 @@ class CreateShowtime extends Component {
                                                         cinemaId: this.state.cinemaId,
                                                         movie: movie
                                                     }
-                                                }} className="btn btn-dark my-2">
-                                                    New Showtime
-                                                    </Link>
+                                                }} className="btn btn-dark my-3">
+                                                    Showtimes
+                                                </Link>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <button className="btn border my-1">
                                                     Edit Showtime
                                                     </button>
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                     </div>
