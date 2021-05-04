@@ -16,6 +16,9 @@ class profile extends Component {
                 <div className="top-margin-header"></div>
                 <div className="container">
                     <h4 className="m-3 text-center">Personal Information</h4>
+                    <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
+                        Edit Profile
+                    </Button>
                     <p>Full Name: {user.name}</p>
                     <p>Email: {user.email}</p>
                     <p>Date of Birth: {user.dob}</p>
