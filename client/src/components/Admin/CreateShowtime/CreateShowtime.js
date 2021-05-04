@@ -108,7 +108,7 @@ class CreateShowtime extends Component {
         // If the search bar isn't empty
         if (e.target.value !== "") {
             // Assign the original list to currentList
-            currentList = this.state.dupList;
+            currentList = this.state.moviesList;
 
             // Use .filter() to determine which items should be displayed
             // based on the search terms
