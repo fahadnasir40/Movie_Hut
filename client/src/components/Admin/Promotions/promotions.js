@@ -1,6 +1,41 @@
 import React, { Component } from 'react'
 import Header from '../../Header/header'
+import { connect } from 'react-redux'
+import { getCinemas } from '../../../actions'
 class Promotions extends Component {
+
+    state = {
+        disabled: false,
+        message: '',
+        cinemasList: [],
+        cinemaSelected: '',
+        audience: ''
+    }
+
+    componentDidMount() {
+        this.props.dispatch(getCinemas())
+
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("Next Props", nextProps)
+        if (nextProps.cinemas) {
+            if (nextProps.cinemas.cinemasList) {
+
+                return {
+                    cinemasList: nextProps.cinemas.cinemasList
+                }
+            }
+        }
+
+        return null;
+    }
+
+    handleSubmit = (e) => {
+        console.log("event");
+        this.setState({ disabled: true })
+    }
+
     render() {
         return (
             <div>
@@ -30,7 +65,7 @@ class Promotions extends Component {
                                 </div>
                                 <div>
                                     <div class="my-4 form-group form-inline">
-                                        <label for="staticEmail" class=" col-form-label">Audience</label>
+                                        <label for="staticEmail" class=" col-form-label">Audience: </label>
                                         <div class="col-sm-10">
                                             <select class="form-control  col-sm-12" id="audience">
                                                 <option>All Audience</option>
@@ -38,31 +73,59 @@ class Promotions extends Component {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div>
                                     <div class="my-4 form-group form-inline">
-                                        <label for="staticEmail" class=" col-form-label">Cinemas</label>
+                                        <label for="staticEmail" class=" col-form-label">Cinemas: </label>
                                         <div class="col-sm-10">
                                             <select class="form-control  col-sm-12" id="audience">
-                                                <option>All Cinemas</option>
-                                                <option>Cinepax</option>
-                                                <option>Universal Cinemas</option>
-                                                <option>Vouge Tower</option>
+                                                {this.state.cinemasList.length > 0 ? <option>All Cinemas</option> : null}
+                                                {this.state.cinemasList.map((item, key) => {
+                                                    return (
+                                                        <option value={item._id} >{item.name}</option>
+                                                    )
+                                                })}
 
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
+                                <div className="row">
+                                    <div className="col">
+                                        <div className="float-right">
+                                            {
+                                                this.state.disabled ?
+                                                    <button type="button" className="btn btn-dark" disabled >Sending</button>
+                                                    :
+                                                    <button type="button" onClick={this.handleSubmit} className="btn btn-dark" >Send Email</button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col my-3">
+                                        <div className="float-right">
+                                            <span>{this.state.message}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
 
                     </div>
+
                 </div>
 
             </div>
         )
     }
 }
-
-export default Promotions;
+const mapStateToProps = (state) => {
+    console.log("State", state);
+    return {
+        cinemas: state.cinema.cinemasName
+    }
+}
+export default connect(mapStateToProps)(Promotions);
