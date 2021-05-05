@@ -547,11 +547,8 @@ app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
                 console.log("Error", err)
                 return res.status(400).send("Users not found");
             }
-            console.log("Req", req.body)
-
 
             users.map((user, key) => {
-                console.log("Each user", user);
 
                 Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
                     if (err)
