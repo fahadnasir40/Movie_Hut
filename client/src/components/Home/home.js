@@ -88,7 +88,7 @@ class Home extends Component {
                                     COMING SOON
                                 </button>
                                 <button className="cbtn my-1">
-                                    CINEMAS
+                                    <a style={{ color: "inherit", textDecoration: "none" }} href="/cities">CINEMAS</a>
                                 </button>
                             </div>
 

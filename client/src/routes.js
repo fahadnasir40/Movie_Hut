@@ -16,7 +16,8 @@ import Auth from './hoc/auth';
 import Profile from './components/Profile/profile';
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
-import ExpirePassword from './components/Reset/expiredPassword'
+import ExpirePassword from './components/Reset/expiredPassword';
+import City from './components/Home/city';
 
 
 
@@ -25,6 +26,7 @@ const routes = () => {
         <Switch>
             <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/" exact component={Auth(Home, null)} />
+            <Route path="/cities" exact component={Auth(City, null)} />
             <Route path="/movie/:movieId" exact component={Auth(MovieDetails, null)} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />
