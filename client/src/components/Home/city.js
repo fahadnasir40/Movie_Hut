@@ -8,17 +8,18 @@ class City extends Component {
         name:"lahore"
     }
     handleClick = (e) =>{
-        // console.log(e.target.id)
         this.setState({name: e.target.id})
-         console.log(this.state.name)
         this.props.dispatch(getCinemas())
     }
     componentDidMount() {
         this.props.dispatch(getCinemas())
     }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("Nex Prop"+JSON.stringify(nextProps.cinema))
+        return null;
+    }
     render() {
-        
-        // console.log(this.state.name)
+        console.log(""+this.props.cinema)
         return (
             <div>
                 <div className="container-fluid">
@@ -58,9 +59,8 @@ class City extends Component {
 
 
 function mapStateToProps(state) {
-
     return {
-        cinemas: state.movie.cinemas
+        cinema: state.cinema
     }
 }
 
