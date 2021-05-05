@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
-const async = require("async");
 const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -15,7 +14,8 @@ const { auth } = require("./middleware/auth");
 const { auth2 } = require("./middleware/auth2");
 
 const nodemailer = require('nodemailer');
-const Email = require('email-templates');
+const emailModule = require('./emails/emails');
+
 const handlebars = require('handlebars');
 // app.engine('html', require('ejs').renderFile);
 // app.set('view engine', 'html');
@@ -38,9 +38,18 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(express.static("client/build"));
-const fs = require('fs')
+const fs = require('fs');
 
-app.post('/api/forgotPassword', (req, res) => {
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config.MOVIEHUT_EMAIL_AUTH_USER,
+        pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
+    },
+});
+
+
+app.post('/api/forgotPassword', async (req, res, next) => {
     if (req.body.email === '') {
         res.send('email required');
     }
@@ -60,14 +69,6 @@ app.post('/api/forgotPassword', (req, res) => {
                         console.log(err)
                     }
                     else {
-                        //node mailer code
-                        const transporter = nodemailer.createTransport({
-                            service: 'gmail',
-                            auth: {
-                                user: config.MOVIEHUT_EMAIL_AUTH_USER,
-                                pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
-                            },
-                        });
 
                         const mailOptions = {
                             from: config.MOVIEHUT_EMAIL_AUTH_USER,
@@ -184,16 +185,6 @@ app.get('/api/sendEmail', auth2, async (req, res) => {
                 });
             };
 
-            // var testMailTemplate = new emailTemplate(templateDir)
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
-                }
-            });
-
-
             var readHTMLFile = function (path, callback) {
                 fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
                     if (err) {
@@ -207,7 +198,7 @@ app.get('/api/sendEmail', auth2, async (req, res) => {
                 });
             };
 
-            readHTMLFile('./server/email-templates/top-picks.html', function (err, html) {
+            readHTMLFile('./server/emails/email-templates/top-picks.html', function (err, html) {
                 // console.log("HTML", movie);
                 var template = handlebars.compile(html);
                 var replacements = {
@@ -366,7 +357,7 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
 
         if (doc.moviesList) {
             if (doc.moviesList.length > 0)
-                Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').exec((err, movies) => {
+                Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').sort({ createdAt: 'DESC' }).exec((err, movies) => {
                     if (err) return res.status(400).send(err);
                     return res.status(200).send({ movies });
                 });
@@ -501,6 +492,7 @@ app.get('/api/getMovieByName', auth2, (req, res) => {
         }
     });
 })
+
 
 //POST
 app.post('/api/create-cinema', auth2, (req, res) => {

@@ -183,7 +183,8 @@ class Showtime extends Component {
             runtime: this.state.movie.runtime,
             screenType: this.state.screenType,
             cinemaId: this.state.cinemaId,
-            movieId: this.state.movie._id
+            movieId: this.state.movie._id,
+            movieTitle: this.state.movie.title
         }))
     }
 

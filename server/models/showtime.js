@@ -6,6 +6,10 @@ const showtimeSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    movieTitle: {
+        type: String,
+        required: true
+    },
     cinemaId: {
         type: String,
         required: true
