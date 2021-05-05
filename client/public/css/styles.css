@@ -696,3 +696,39 @@ body {
   margin-top: 10px;
   font-weight: 600;
 }
+
+.edit-profile{
+  width: 10em;
+  float: right
+}
+
+.edit-profile-hieght{
+  margin-top: 5em;
+}
+
+.cities-names {
+  margin-top: 4px;
+  margin-bottom: 4px;
+
+  margin-right: 20px;
+  padding: 8px;
+  width: -moz-fit-content;
+  width: fit-content;
+  background: #e1e1e1;
+  font-family: "Roboto Condensed", sans-serif;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.cities-names:hover {
+  background: #ffff;
+  /* border-top: 1px solid #d0d0d0; */
+}
+
+.cities-names-active {
+  background: #ffff;
+  border: 1px solid rgb(224, 9, 9);
+}

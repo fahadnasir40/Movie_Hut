@@ -607,6 +607,16 @@ app.get('/api/logout', auth, (req, res) => {
     })
 })
 
+app.get('/api/getCinemas', (req, res) => {
+    Cinema.find({}, ).select("_id name city").exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json({
+            cinemasList: docs
+        })
+    })
+})
+
+
 //UPDATE
 app.post('/api/update_user', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
