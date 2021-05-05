@@ -16,12 +16,17 @@ class profile extends Component {
                 <div className="top-margin-header"></div>
                 <div className="container">
                     <h4 className="m-3 text-center">Personal Information</h4>
-                    <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
+                    <Button  className="btn-dark mt-2 mb-3 edit-profile" style={{ borderRadius: '100px' }}  type="submit">
                         Edit Profile
                     </Button>
-                    <p>Full Name: {user.name}</p>
-                    <p>Email: {user.email}</p>
-                    <p>Date of Birth: {user.dob}</p>
+                    <div className="edit-profile-hieght">
+                        <p>Full Name:<div  style={{ marginRight: "2.5em", display: "inline" }}></div> {user.name}</p>
+                        <hr />
+                        <p>Email:<div  style={{ marginRight: "4.5em", display: "inline" }}></div> {user.email}</p>
+                        <hr />
+                        <p>Date of Birth:<div  style={{ marginRight: "1.3em", display: "inline" }}></div> {user.dob}</p>
+                        <hr />
+                    </div>
                 </div>
                 <div className="bottom-margin-header"></div>
             </div>

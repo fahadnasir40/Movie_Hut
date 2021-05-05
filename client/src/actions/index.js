@@ -314,3 +314,29 @@ export function clearShowtime() {
         payload: {}
     }
 }
+
+export function getCinemas(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
+
+    const request = axios.get(`api/getCinemas?skip=${start}&limit=${limit}&order=${order}`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
+
+    return {
+        type: 'GET_CINEMAS_NAME',
+        payload: request
+    }
+}
