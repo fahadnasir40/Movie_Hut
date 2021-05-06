@@ -24,6 +24,17 @@
   color: #fff;
 }
 
+.sticky-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sticky-footer {
+  flex: 0 0 50px; /*or just height:50px;*/
+  margin-top: auto;
+}
+
 /* Header */
 .nav-brand {
   font-family: "Roboto Condensed";
@@ -697,12 +708,12 @@ body {
   font-weight: 600;
 }
 
-.edit-profile{
+.edit-profile {
   width: 10em;
-  float: right
+  float: right;
 }
 
-.edit-profile-hieght{
+.edit-profile-hieght {
   margin-top: 5em;
 }
 

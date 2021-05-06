@@ -87,7 +87,6 @@ export function getUsers(
     }
 }
 
-
 export function userRegister(user) {
     const request = axios.post(`/api/register`, user)
     return (dispatch) => {
@@ -147,6 +146,9 @@ export function getCinemaMovieShowtimes(cinemaId, movieId) {
 
 
 
+
+
+
 /*  MOVIES  */
 export function getHomeMovies() {
 
@@ -155,6 +157,18 @@ export function getHomeMovies() {
 
     return {
         type: 'GET_HOME_MOVIES',
+        payload: request
+    }
+}
+
+
+export function getCinemaShowingMovies(cinemaId) {
+
+    const request = axios.get(`/api/getMoviesRunningInCinemas?cinemaId=${cinemaId}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMA_MOVIES_SHOWING',
         payload: request
     }
 }
@@ -332,7 +346,7 @@ export function getCinemas(
     list = ''
 ) {
 
-    const request = axios.get(`api/getCinemas`)
+    const request = axios.get(`/api/getCinemas`)
         .then(response => {
             if (list) {
                 return [...list, ...response.data];

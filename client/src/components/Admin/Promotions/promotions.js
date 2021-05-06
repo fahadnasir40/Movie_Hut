@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Header from '../../Header/header'
 import { connect } from 'react-redux'
 import { getCinemas, sendPropmotionalEmails } from '../../../actions'
+
 class Promotions extends Component {
 
     state = {
@@ -19,8 +20,6 @@ class Promotions extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("Next Props", nextProps)
-
 
         if (nextProps.promotionalEmail) {
             if (nextProps.promotionalEmail.message) {
@@ -154,7 +153,6 @@ class Promotions extends Component {
                     </div>
 
                 </div>
-
             </div>
         )
     }

@@ -1,86 +1,175 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {getCinemas } from '../../actions/index'
+
 import Header from '../Header/header'
 import { Link } from 'react-router-dom'
+import Footer from '../Footer/footer'
+import { getCinemaShowingMovies, clearCinema } from '../../actions'
+import moment from 'moment'
 
 class MoviesCinmeas extends Component {
 
     state = {
-        city:"Lahore",
-        cinemasList: []
+        cinemaId: '',
+        current: 'now-showing',
+        cinema: '',
+        moviesList: [],
+        showtimes: [],
+        nowShowingList: [],
+        comingSoonList: [],
+        today: new moment(),
+        nowShowingCount: 0,
+        comingSoonCount: 0,
+        cachedProps: '',
+
+
     }
-    handleClick = (e) =>{
-        this.setState({city: e.target.id})
-        this.props.dispatch(getCinemas())
+
+    handleClick = (e) => {
+        this.setState({ current: e.target.id })
     }
+
     componentDidMount() {
-        // this.props.dispatch(getCinemas())
+        const cinemaId = this.props.match.params.cinemaId
+
+        if (!cinemaId) {
+            this.props.history.push('/cinemas')
+        }
+        else {
+            this.setState({ cinemaId: cinemaId });
+
+            this.props.dispatch(getCinemaShowingMovies(cinemaId));
+        }
     }
+
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("Next Props", nextProps)
-        if (nextProps.cinemas) {
-            if (nextProps.cinemas.cinemasList) {
-                console.log("Next Props inside", nextProps.cinemas)
+
+
+        if (nextProps.data) {
+            if (nextProps.data.cinema) {
+                const date = moment(prevState.today).add(0, "days").toDate();
+                let comingSoonList = [], nowShowingList = [];
+
+                nextProps.data.showData.forEach(show => {
+                    if (moment(show.showtimeDate).diff(date, 'days') > 0) {
+                        const movie = comingSoonList.find(({ movieId }) => movieId === show.movieId);
+                        if (!movie)
+                            comingSoonList.push(show)
+                    }
+                    else {
+                        const movie = nowShowingList.find(({ movieId }) => movieId === show.movieId);
+                        if (!movie)
+                            nowShowingList.push(show)
+                    }
+                });
+
                 return {
-                    
-                    cinemasList: nextProps.cinemas.cinemasList
+                    cinema: nextProps.data.cinema,
+                    moviesList: nextProps.data.movies,
+                    showtimes: nextProps.data.showData,
+                    nowShowingList: [...nowShowingList],
+                    comingSoonList: [...comingSoonList],
                 }
+
             }
         }
+
         return null;
     }
+
     showItems = () => {
-        console.log("Next Props",this.state.cinemasList)
-        return this.state.cinemasList.map((cinema, key) => {
-             if (this.state.city === cinema.city) return (<div className="col-12 col-md-4 mt-2">
-                        <div class="card shadow" styles={{ width: "9rem" }}>
-                            <div class="card-body">
-                                <h5 class="card-title">{cinema.name}</h5>
-                                <p class="card-text">{cinema.address}</p>
-                            <Link to='/admin-cinemas' class="btn btn-dark">View Info</Link>
-                            </div>
-                        </div>
-                    </div> 
-            )
-        
-        })
+
+
+        if (this.state.current === 'now-showing') {
+
+            return this.state.nowShowingList.map((show, key) => {
+                const movie = this.state.moviesList.find(({ _id }) => _id === show.movieId);
+
+                return (
+                    <div className=" movie-container m-3 " key={key}>
+                        <Link class="p-1" to={`/movie/${movie._id}`}>
+                            <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+                        </Link>
+                    </div>
+                )
+
+            })
+
+        }
+        else if (this.state.current === 'coming-soon') {
+            return this.state.comingSoonList.map((show, key) => {
+                const movie = this.state.moviesList.find(({ _id }) => _id === show.movieId);
+
+                return (
+                    <div className=" movie-container m-3 " key={key}>
+                        <Link class="p-1" to={`/movie/${movie._id}`}>
+                            <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+                        </Link>
+                    </div>
+                )
+
+            })
+        }
+
+
     }
-    checkCity = (value) =>{
-        if(this.state.city == value){
+
+    checkCity = (value) => {
+        if (this.state.current == value) {
             return "cities-names-active"
         }
     }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearCinema());
+    }
+
     render() {
-        // console.log("in render",this.state)
+
         return (
-            <div>
-                <Header user={this.props.user}/>
+            <div className="sticky-body">
+                <Header user={this.props.user} />
                 <div className="container">
-                    <div className="row mt-5 pl-2">
-                    <nav aria-label="breadcrumb" style={{ background: "white"}}>
-                        <ol class="breadcrumb heading" style={{ background: "inherit", color: "black"}}>
-                            <li class="breadcrumb-item" ><a href="/" style={{  color: "black"}}>HOME</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="/cities" style={{  color: "black"}}>CINEMAS</a></li>
-                            <li class="breadcrumb-item" ><a href="/" style={{  color: "black"}}>LAHORE</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">AMANAH MALL</li>
-                        </ol>
-                    </nav>                       
+                    <div className="row mt-3 pl-2">
+                        <nav aria-label="breadcrumb" style={{ background: "white" }}>
+                            <ol className="breadcrumb heading" style={{ background: "inherit", color: "black" }}>
+                                <li className="breadcrumb-item" ><Link to="/" style={{ color: "black" }}>HOME</Link></li>
+                                <li className="breadcrumb-item active" aria-current="page"><Link to="/cinemas" style={{ color: "black" }}>CINEMAS</Link></li>
+                                <li className="breadcrumb-item active text-uppercase" aria-current="page">{this.state.cinema.city}</li>
+
+                                <li className="breadcrumb-item active text-uppercase" aria-current="page">{this.state.cinema.name}</li>
+                            </ol>
+                        </nav>
                     </div>
-                    <div className="showtime-container ml-xl-1 row my-3">
-                        <div id="nowshowing" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("nowshowing")} `}>
+                    <div className="showtime-container ml-xl-1 row my-1">
+                        <div id="now-showing" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("now-showing")} `}>
                             NOW SHOWING
                         </div>
-                        <div id="comingsoon" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("comingsoon")} `}>
+                        <div id="coming-soon" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("coming-soon")} `}>
                             COMING SOON
                         </div>
                         <div id="recommended" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("recommended")} `}>
                             RECOMMENDED
                         </div>
-                    </div> 
-                    <div className="row">
-                        {this.showItems()}
                     </div>
+                    <div className="row">
+                        {
+                            this.showItems()
+                        }
+                        {this.state.nowShowingList.length === 0 && this.state.current === 'now-showing' ?
+                            <div className="col m-2 p-3">
+                                <h5 className="text-muted">No movie shows avaiable today.</h5>
+                            </div> :
+                            this.state.comingSoonList.length === 0 && this.state.current === 'coming-soon' ?
+                                <div className="col m-2 p-3">
+                                    <h5 className="text-muted">No upcomming shows available.</h5>
+                                </div> : null}
+                    </div>
+
+                </div>
+                <div className="sticky-footer">
+                    <Footer />
                 </div>
             </div>
         )
@@ -91,7 +180,7 @@ class MoviesCinmeas extends Component {
 
 function mapStateToProps(state) {
     return {
-        // movies: state.movies.moviesName
+        data: state.cinema.cinemaMovies
     }
 }
 
