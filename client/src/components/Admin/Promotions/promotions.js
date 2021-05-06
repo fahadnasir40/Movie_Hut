@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import Header from '../../Header/header'
 import { connect } from 'react-redux'
-import { getCinemas } from '../../../actions'
+import { getCinemas, sendPropmotionalEmails } from '../../../actions'
 class Promotions extends Component {
 
     state = {
         disabled: false,
+        error: false,
         message: '',
         cinemasList: [],
-        cinemaSelected: '',
-        audience: ''
+        cinemaSelected: 'All Cinemas',
+        audience: 'All Audience'
     }
 
     componentDidMount() {
@@ -19,27 +20,60 @@ class Promotions extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log("Next Props", nextProps)
-        if (nextProps.cinemas) {
-            if (nextProps.cinemas.cinemasList) {
 
+
+        if (nextProps.promotionalEmail) {
+            if (nextProps.promotionalEmail.message) {
                 return {
-                    cinemasList: nextProps.cinemas.cinemasList
+                    disabled: false,
+                    message: nextProps.promotionalEmail.message
                 }
             }
         }
 
+        if (nextProps.cinemas) {
+            if (nextProps.cinemas.cinemasList) {
+                return {
+                    cinemasList: nextProps.cinemas.cinemasList,
+                }
+            }
+        }
         return null;
     }
 
+    handleInputAudience = (event) => {
+        this.setState({ audience: event.target.value })
+    }
+
+    handleInputCinemas = (event) => {
+        this.setState({ cinemaSelected: event.target.value })
+    }
+
+
     handleSubmit = (e) => {
-        console.log("event");
+
         this.setState({ disabled: true })
+
+        if (this.state.cinemaSelected != "" && this.state.audience != "") {
+
+            let cinema = '';
+            if (this.state.cinemaSelected !== 'All Cinemas') {
+                cinema = this.state.cinemaSelected;
+            }
+            const emailData = {
+                audience: this.state.audience,
+                cinemas: cinema
+            }
+            this.props.dispatch(sendPropmotionalEmails(emailData));
+
+        }
+
     }
 
     render() {
         return (
             <div>
-                <Header />
+                <Header user={this.props.user} />
 
                 <div className="container">
                     <div className="row">
@@ -67,8 +101,8 @@ class Promotions extends Component {
                                     <div class="my-4 form-group form-inline">
                                         <label for="staticEmail" class=" col-form-label">Audience: </label>
                                         <div class="col-sm-10">
-                                            <select class="form-control  col-sm-12" id="audience">
-                                                <option>All Audience</option>
+                                            <select class="form-control  col-sm-12" id="audience" onChange={this.handleInputAudience}>
+                                                <option value="All Audience">All Audience</option>
                                             </select>
                                         </div>
                                     </div>
@@ -78,11 +112,11 @@ class Promotions extends Component {
                                     <div class="my-4 form-group form-inline">
                                         <label for="staticEmail" class=" col-form-label">Cinemas: </label>
                                         <div class="col-sm-10">
-                                            <select class="form-control  col-sm-12" id="audience">
-                                                {this.state.cinemasList.length > 0 ? <option>All Cinemas</option> : null}
+                                            <select class="form-control  col-sm-12" id="audience" onChange={this.handleInputCinemas}>
+                                                {this.state.cinemasList.length > 0 ? <option value="All Cinemas">All Cinemas</option> : null}
                                                 {this.state.cinemasList.map((item, key) => {
                                                     return (
-                                                        <option value={item._id} >{item.name}</option>
+                                                        <option value={item._id} key={key} >{item.name}</option>
                                                     )
                                                 })}
 
@@ -98,7 +132,10 @@ class Promotions extends Component {
                                                 this.state.disabled ?
                                                     <button type="button" className="btn btn-dark" disabled >Sending</button>
                                                     :
-                                                    <button type="button" onClick={this.handleSubmit} className="btn btn-dark" >Send Email</button>
+                                                    this.state.cinemasList.length > 0 && this.state.audience ?
+                                                        <button type="button" onClick={this.handleSubmit} className="btn btn-dark" >Send Email</button>
+                                                        : <button type="button" onClick={this.handleSubmit} className="btn btn-dark" disabled>Send Email</button>
+
                                             }
                                         </div>
                                     </div>
@@ -123,9 +160,10 @@ class Promotions extends Component {
     }
 }
 const mapStateToProps = (state) => {
-    console.log("State", state);
+
     return {
-        cinemas: state.cinema.cinemasName
+        cinemas: state.cinema.cinemasName,
+        promotionalEmail: state.cinema.promotionalMails
     }
 }
 export default connect(mapStateToProps)(Promotions);

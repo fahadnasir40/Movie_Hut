@@ -26,6 +26,8 @@ export default function (state = {}, action) {
             return { ...state, cinemaMovie: action.payload, cinemaMoviesList: action.payload }
         case 'GET_CINEMAS_NAME':
             return { ...state, cinemasName: action.payload }
+        case 'CINEMAS_PROMOTIONS_EMAILS':
+            return { ...state, promotionalMails: action.payload }
 
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}

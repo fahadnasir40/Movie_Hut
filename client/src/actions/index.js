@@ -4,8 +4,8 @@ import axios from 'axios';
 /* =========== USER ============== */
 
 export function forgotPassword(email) {
-    const request = axios.post('/api/forgotPassword',{ email })
-    .then(response => response.data);
+    const request = axios.post('/api/forgotPassword', { email })
+        .then(response => response.data);
     return {
         type: 'USER_FORGOT_PASSWORD',
         payload: request
@@ -14,7 +14,7 @@ export function forgotPassword(email) {
 
 export function resetPassword(resetPasswordToken) {
     const request = axios.get(`/api/reset?resetPasswordToken=${resetPasswordToken}`)
-    .then(response => response.data);
+        .then(response => response.data);
     return {
         type: 'USER_RESET_PASSWORD',
         payload: request
@@ -22,8 +22,8 @@ export function resetPassword(resetPasswordToken) {
 }
 
 export function updatePasswordEmail(resetPasswordToken, password) {
-    const request = axios.put("/api/updatePasswordViaEmail", {resetPasswordToken,password})
-    .then(response => response.data);
+    const request = axios.put("/api/updatePasswordViaEmail", { resetPasswordToken, password })
+        .then(response => response.data);
     return {
         type: 'USER_UPDATE_PASSWORD',
         payload: request
@@ -308,6 +308,16 @@ export function addShowtime(showtime) {
     }
 }
 
+export function sendPropmotionalEmails(emailData) {
+    const request = axios.post(`/api/sendPromotionalEmail`, emailData)
+        .then(response => response.data);
+    return {
+        type: 'CINEMAS_PROMOTIONS_EMAILS',
+        payload: request
+    }
+
+}
+
 export function clearShowtime() {
     return {
         type: 'CLEAR_SHOWTIME',
@@ -322,7 +332,7 @@ export function getCinemas(
     list = ''
 ) {
 
-    const request = axios.get(`api/getCinemas?skip=${start}&limit=${limit}&order=${order}`)
+    const request = axios.get(`api/getCinemas`)
         .then(response => {
             if (list) {
                 return [...list, ...response.data];
