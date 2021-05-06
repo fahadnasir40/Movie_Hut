@@ -182,7 +182,7 @@ class MovieDetails extends Component {
                                     <div className="ml-xl-4  ml-lg-n1 my-3 ">
                                         <div className="col-12  my-4">
                                             <div className="cinema-title font-text ml-xs-n2  font-weight-bold">
-                                                {cinema.name} {cinema.address}
+                                                {cinema.name} {cinema.address.substring(0, 21)}... {cinema.city}
                                             </div>
                                         </div>
                                         <div className="row">

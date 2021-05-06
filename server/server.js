@@ -518,7 +518,7 @@ app.get('/api/logout', auth, (req, res) => {
 })
 
 app.get('/api/getCinemas', (req, res) => {
-    Cinema.find({}).select("_id name city").exec((err, docs) => {
+    Cinema.find({}).select("_id name city address").exec((err, docs) => {
         if (err) return res.status(400).send(err);
         res.status(200).json({
             cinemasList: docs
