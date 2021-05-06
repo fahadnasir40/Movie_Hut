@@ -46,6 +46,7 @@ class CreateShowtime extends Component {
         moviesList: [],
         dupList: [],
         redirect: false,
+        cachedProps: ''
     }
 
     handleInputName = (event) => {
@@ -67,14 +68,16 @@ class CreateShowtime extends Component {
 
     static getDerivedStateFromProps(nextProps, state) {
 
-        if (nextProps.cinemaInfo) {
-            if (nextProps.cinemaInfo.movies) {
-                return {
-                    moviesList: nextProps.cinemaInfo.movies.reverse(),
-                    dupList: nextProps.cinemaInfo.movies.reverse()
+        if (nextProps != state.cachedProps) {
+            if (nextProps.cinemaInfo) {
+                if (nextProps.cinemaInfo.movies) {
+                    return {
+                        moviesList: nextProps.cinemaInfo.movies.reverse(),
+                        dupList: nextProps.cinemaInfo.movies.reverse(),
+                        cachedProps: nextProps
+                    }
                 }
             }
-
         }
         // console.log("Props", props)
         // if (props.showtimepost.showtime) {

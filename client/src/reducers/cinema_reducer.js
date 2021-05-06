@@ -21,11 +21,15 @@ export default function (state = {}, action) {
         case 'ADD_MOVIE_IN_CINEMA':
             return { ...state, cinemaMovie: action.payload }
         case 'CLEAR_CINEMA':
-            return { ...state, cinema: action.payload }
+            return { ...state, cinema: action.payload, cinemaMovies: action.payload }
         case 'CLEAR_CINEMA_MOVIE':
             return { ...state, cinemaMovie: action.payload, cinemaMoviesList: action.payload }
         case 'GET_CINEMAS_NAME':
             return { ...state, cinemasName: action.payload }
+        case 'CINEMAS_PROMOTIONS_EMAILS':
+            return { ...state, promotionalMails: action.payload }
+        case 'GET_CINEMA_MOVIES_SHOWING':
+            return { ...state, cinemaMovies: action.payload }
 
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}

@@ -241,7 +241,7 @@ class MovieDetails extends Component {
             cast = this.state.movieInfo.cast;
 
         return (
-            <div>
+            <div className="sticky-body">
                 <Header user={this.props.user} />
 
                 {
@@ -422,14 +422,16 @@ class MovieDetails extends Component {
                                 </section>
                             </div>
                         </div>
-                        : <div>
+                        : <div className="row p-4">
 
-                            <h2>Loading</h2>
+                            <h4>Loading</h4>
                         </div>
                 }
 
+                <div className=" sticky-footer">
+                    <Footer />
 
-                <Footer />
+                </div>
             </div >
 
         )

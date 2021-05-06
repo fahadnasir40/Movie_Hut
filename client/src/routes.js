@@ -5,7 +5,7 @@ import MovieDetails from './components/MovieDetails/details';
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
 import CreateReview from './components/CreateReview/createReview'
-import CreateCinema from './components/Admin/CreateCinema/createCinema'
+import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
 import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
@@ -26,9 +26,9 @@ const routes = () => {
         <Switch>
             <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/" exact component={Auth(Home, null)} />
-            <Route path="/cities" exact component={Auth(Cinemas, null)} />
+            <Route path="/cinemas/:city?" exact component={Auth(Cinemas, null)} />
             <Route path="/movie/:movieId" exact component={Auth(MovieDetails, null)} />
-            <Route path="/showMovies" exact component={Auth(CinemaMovie, null)} />
+            <Route path="/cinemaMovies/:cinemaId" exact component={Auth(CinemaMovie, null)} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />

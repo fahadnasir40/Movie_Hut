@@ -138,7 +138,7 @@ def getMovieDetails(movieID, castList, title):
     posterImg = ''
 
     if backImgPath:
-        backImg = 'https://image.tmdb.org/t/p/w500' + backImgPath
+        backImg = 'https://image.tmdb.org/t/p/w1280' + backImgPath
     posterImgPath = data.get('poster_path')
 
     if posterImgPath:

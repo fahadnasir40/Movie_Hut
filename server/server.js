@@ -270,9 +270,66 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
                 Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').sort({ createdAt: 'DESC' }).exec((err, movies) => {
                     if (err) return res.status(400).send(err);
                     return res.status(200).send({ movies });
+                    // console.log("Movies", movies)
+                    // if (cinema) {
+                    //     return res.status(200).send({ movies, doc });
+                    // }
+                    // else {
+
+                    // }
+
                 });
         }
     })
+})
+
+app.get('/api/getMoviesRunningInCinemas', (req, res) => {
+
+    let id = req.query.cinemaId
+    try {
+        Cinema.findOne({ _id: id }).select('_id name city address url').exec((err, cinema) => {
+            if (err) return res.status(400).send(err);
+
+            const today = moment().startOf('day');
+            Showtime.find({
+                cinemaId: cinema._id, date: {
+                    $gte: today.toDate(),
+                    $lte: moment(today).add(14, "days").toDate()
+                }
+            }).select('_id cinemaId movieId date').exec((err, showtimes) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(400).send(err)
+                }
+
+                var showData = [];
+                var movieIds = showtimes.map(function (s) {
+                    const show = {
+                        movieId: s.movieId,
+                        showtimeDate: s.date
+                    }
+
+                    showData.push(show);
+                    return s.movieId
+                });
+
+
+                const moviesList = Movie.find({ _id: { "$in": movieIds } }).select('_id movieId poster_url title runtime releaseDate rating title ').exec();
+                return moviesList.then(function (movies) {
+
+                    const data = { movies, cinema, showData };
+                    return res.status(200).send(data);
+                })
+
+            })
+
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send("error");
+    }
+
 })
 
 

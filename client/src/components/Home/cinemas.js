@@ -1,71 +1,89 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {getCinemas } from '../../actions/index'
+import { getCinemas } from '../../actions/index'
 import Header from '../Header/header'
 import { Link } from 'react-router-dom'
-
+import Footer from '../Footer/footer'
 class City extends Component {
 
     state = {
-        city:"Lahore",
-        cinemasList: []
+        city: "Lahore",
+        cinemasList: [],
+        cachedProps: '',
     }
-    handleClick = (e) =>{
-        this.setState({city: e.target.id})
-        this.props.dispatch(getCinemas())
+
+    handleClick = (e) => {
+        this.setState({ city: e.target.id })
     }
+
     componentDidMount() {
         this.props.dispatch(getCinemas())
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("Next Props", nextProps)
-        if (nextProps.cinemas) {
-            if (nextProps.cinemas.cinemasList) {
-                console.log("Next Props inside", nextProps.cinemas)
-                return {
-                    
-                    cinemasList: nextProps.cinemas.cinemasList
+
+        if (nextProps != prevState.cachedProps) {
+            let city = prevState.city;
+            if (nextProps.match.params.city) {
+                if (nextProps.match.params.city !== prevState.city) {
+                    const newCity = nextProps.match.params.city;
+                    if (city === "Lahore" || city === "Karachi" || city === "Islamabad" || city === "Multan") {
+                        city = newCity;
+                    }
+                }
+
+            }
+            if (nextProps.cinemas) {
+                if (nextProps.cinemas.cinemasList) {
+                    return {
+                        cinemasList: nextProps.cinemas.cinemasList,
+                        city: city,
+                        cachedProps: nextProps
+                    }
                 }
             }
+
         }
         return null;
     }
     showItems = () => {
-        console.log("Next Props",this.state.cinemasList)
         return this.state.cinemasList.map((cinema, key) => {
-             if (this.state.city === cinema.city) return (<div className="col-12 col-md-4 mt-2">
-                        <div class="card shadow" styles={{ width: "9rem" }}>
-                            <div class="card-body">
-                                <h5 class="card-title">{cinema.name}</h5>
-                                <p class="card-text">{cinema.address}</p>
-                            <Link to='/showMovies' class="btn btn-dark">View Info</Link>
-                            </div>
-                        </div>
-                    </div> 
+            if (this.state.city === cinema.city) return (<div className="col-12 col-md-4 mt-2">
+                <div class="card shadow" styles={{ width: "9rem" }}>
+                    <div class="card-body">
+                        <h5 class="card-title">{cinema.name}</h5>
+                        <p class="card-text">{cinema.address}</p>
+                        <Link to={`/cinemaMovies/${cinema._id}`} class="btn btn-dark">View Info</Link>
+                    </div>
+                </div>
+            </div>
             )
-        
+
         })
     }
-    checkCity = (value) =>{
-        if(this.state.city == value){
+    checkCity = (value) => {
+        if (this.state.city == value) {
             return "cities-names-active"
         }
     }
+
+
+
     render() {
-        // console.log("in render",this.state)
+
         return (
-            <div>
-                <Header user={this.props.user}/>
-                <div className="container">
-                    <div className="row mt-5 pl-2">
-                    <nav aria-label="breadcrumb" style={{ background: "white"}}>
-                        <ol class="breadcrumb heading" style={{ background: "inherit", color: "black"}}>
-                            <li class="breadcrumb-item" ><a href="/" style={{  color: "black"}}>HOME</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">CINEMAS</li>
-                        </ol>
-                    </nav>                       
+            <div className="sticky-body">
+                <Header user={this.props.user} />
+                <div className="container mb-5"  >
+                    <div className="row mt-3 pl-2">
+                        <nav aria-label="breadcrumb" style={{ background: "white" }}>
+                            <ol class="breadcrumb heading" style={{ background: "inherit", color: "black" }}>
+                                <li class="breadcrumb-item" ><a href="/" style={{ color: "black" }}>HOME</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">CINEMAS</li>
+                            </ol>
+                        </nav>
                     </div>
-                    <div className="showtime-container ml-xl-1 row my-3">
+                    <div className="showtime-container ml-xl-1 row mb-5">
                         <div id="Lahore" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("Lahore")} `}>
                             LAHORE
                         </div>
@@ -78,12 +96,18 @@ class City extends Component {
                         <div id="Multan" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("Multan")} `}>
                             MULTAN
                         </div>
-                    </div> 
+                    </div>
                     <div className="row">
                         {this.showItems()}
                     </div>
+
+                </div>
+
+                <div className="sticky-footer" >
+                    <Footer />
                 </div>
             </div>
+
         )
     }
 
