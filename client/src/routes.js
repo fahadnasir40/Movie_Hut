@@ -18,17 +18,17 @@ import Profile from './components/Profile/profile';
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
-import City from './components/Home/city';
-
-
+import Cinemas from './components/Home/cinemas';
+import CinemaMovie from './components/Home/moviesInCinema';
 
 const routes = () => {
     return (
         <Switch>
             <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/" exact component={Auth(Home, null)} />
-            <Route path="/cities" exact component={Auth(City, null)} />
+            <Route path="/cities" exact component={Auth(Cinemas, null)} />
             <Route path="/movie/:movieId" exact component={Auth(MovieDetails, null)} />
+            <Route path="/showMovies" exact component={Auth(CinemaMovie, null)} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
