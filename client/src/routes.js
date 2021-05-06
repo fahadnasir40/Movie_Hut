@@ -6,6 +6,7 @@ import Login from './components/Login/Login'
 import Register from './components/Register/Register'
 import CreateReview from './components/CreateReview/createReview'
 import CreateCinema from './components/Admin/CreateCinema/createCinema'
+import Promotions from './components/Admin/Promotions/promotions'
 import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
 import CinemasList from './components/Admin/Cinemas/cinemas'
@@ -17,17 +18,17 @@ import Profile from './components/Profile/profile';
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
-import City from './components/Home/city';
-
-
+import Cinemas from './components/Home/cinemas';
+import CinemaMovie from './components/Home/moviesInCinema';
 
 const routes = () => {
     return (
         <Switch>
             <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/" exact component={Auth(Home, null)} />
-            <Route path="/cities" exact component={Auth(City, null)} />
+            <Route path="/cities" exact component={Auth(Cinemas, null)} />
             <Route path="/movie/:movieId" exact component={Auth(MovieDetails, null)} />
+            <Route path="/showMovies" exact component={Auth(CinemaMovie, null)} />
             <Route path="/login" exact component={Auth(Login, false)} />
             <Route path="/register" exact component={Auth(Register, false)} />
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
@@ -35,6 +36,7 @@ const routes = () => {
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/create-review" exact component={Auth(CreateReview, true)} />
             <Route path="/create-cinema" exact component={Auth(CreateCinema, null, true)} />
+            <Route path="/promotions" exact component={Auth(Promotions, true, true)} />
             <Route path="/create-showtime/:cinemaId" exact component={Auth(CreateShowtime, true, true)} />
             <Route path="/addMovie/:cinemaId" exact component={Auth(AddMovie, true, true)} />
             <Route path="/showtimes" exact component={Auth(Showtimes, true, true)} />

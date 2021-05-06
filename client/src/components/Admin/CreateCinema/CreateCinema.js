@@ -61,7 +61,7 @@ class CreateCinema extends Component {
         }
         return (
             <div>
-                <Header />
+                <Header user={this.props.user}/>
                 <div className="top-margin-header"></div>
                 <div className="container">
                     <div className="Login">
@@ -82,10 +82,10 @@ class CreateCinema extends Component {
                                 <Form.Group className="input-style " controlId="city">
                                     <Form.Label>City</Form.Label>
                                     <select id="city" name="city" className="form-control" onChange={this.handleInputCity}>
-                                        <option value="lahore">Lahore</option>
-                                        <option value="islamabad">Islamabad</option>
-                                        <option value="multan">Multan</option>
-                                        <option value="faisalabad">Faisalabad</option>
+                                        <option value="Lahore">Lahore</option>
+                                        <option value="Islamabad">Islamabad</option>
+                                        <option value="Multan">Multan</option>
+                                        <option value="Karachi">Karachi</option>
                                     </select>
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="address">
