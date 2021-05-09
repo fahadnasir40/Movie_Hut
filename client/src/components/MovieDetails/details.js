@@ -64,7 +64,8 @@ class MovieDetails extends Component {
             return {
                 movieInfo: props.movie.movieInfo.movie,
                 showtimeInfo: props.movie.movieInfo.showtime,
-                cinemaInfo: props.movie.movieInfo.cinema
+                cinemaInfo: props.movie.movieInfo.cinema,
+                reviewInfo: props.movie.movieInfo.reviews
             }
         }
         return null;
@@ -236,6 +237,7 @@ class MovieDetails extends Component {
 
 
     render() {
+
         let cast = '';
         if (this.state.movieInfo)
             cast = this.state.movieInfo.cast;
@@ -348,7 +350,7 @@ class MovieDetails extends Component {
                                     </div> */}
                                     <div className="row my-4 order-last">
                                         <div className=" col-12 offset-lg-2 offset-xl-2 col-lg-10 ">
-                                            <Review />
+                                            <Review {...this.props} movie={this.state.movieInfo} reviews={this.state.reviewInfo} />
                                         </div>
                                     </div>
                                 </section>
@@ -440,6 +442,7 @@ class MovieDetails extends Component {
 
 
 function mapStateToProps(state) {
+
     return {
         movie: state.movie
     }

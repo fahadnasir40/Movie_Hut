@@ -4,7 +4,7 @@ import Home from './components/Home/home';
 import MovieDetails from './components/MovieDetails/details';
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
-import CreateReview from './components/CreateReview/createReview'
+import CreateReview from './components/Review/CreateReview/createReview'
 import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
 import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'

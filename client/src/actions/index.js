@@ -61,6 +61,8 @@ export function getProfile() {
 }
 
 
+
+
 export function getUsers(
     start = 0,
     limit = 0,
@@ -322,6 +324,16 @@ export function addShowtime(showtime) {
     }
 }
 
+
+export function addReview(review) {
+    const request = axios.post('/api/create-review', review)
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_REVIEW',
+        payload: request
+    }
+}
+
 export function sendPropmotionalEmails(emailData) {
     const request = axios.post(`/api/sendPromotionalEmail`, emailData)
         .then(response => response.data);
@@ -335,6 +347,13 @@ export function sendPropmotionalEmails(emailData) {
 export function clearShowtime() {
     return {
         type: 'CLEAR_SHOWTIME',
+        payload: {}
+    }
+}
+
+export function clearMovieReview() {
+    return {
+        type: 'CLEAR_MOVIE_REVIEW',
         payload: {}
     }
 }

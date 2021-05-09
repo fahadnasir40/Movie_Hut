@@ -33,6 +33,7 @@ const { User } = require("./models/user");
 const { Movie } = require("./models/movie");
 const { Cinema } = require("./models/cinema");
 const { Showtime } = require("./models/showtime");
+const { Review } = require("./models/review");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -383,11 +384,18 @@ app.get('/api/getMovieInfo', async function (req, res) {
             })
         }).then(function (data) {
             // do something with the cinemas here
-            return res.status(200).json({
-                showtime: data.showtimes,
-                cinema: data.cinemas,
-                movie: doc
-            });
+
+            Review.find({ movieId: doc._id }).sort({ createdAt: 'DESC' }).exec((err, reviews) => {
+                if (err) return res.status(400).send(err);
+
+                return res.status(200).json({
+                    showtime: data.showtimes,
+                    cinema: data.cinemas,
+                    movie: doc,
+                    reviews: reviews
+                });
+            })
+
         }).then(null, function (err) {
             // handle error here
             if (err) console.log(err);
@@ -473,6 +481,21 @@ app.post('/api/create-cinema', auth2, (req, res) => {
         res.status(200).json({
             post: true,
             cinemaId: cinema._id
+        })
+    });
+})
+
+app.post('/api/create-review', auth, (req, res) => {
+
+    const review = new Review(req.body);
+    review.save((error, review) => {
+        if (error) {
+            console.log(error)
+            return res.status(400).send(error);
+        }
+        res.status(200).json({
+            post: true,
+            reviewId: review._id
         })
     });
 })
