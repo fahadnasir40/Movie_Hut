@@ -77,7 +77,7 @@ class CreateReview extends Component {
 
     handleInputSpoiler = (e) => {
         this.setState({
-            isSpoiler: e.target.value
+            isSpoiler: e.target.checked
         })
     }
 
@@ -122,6 +122,7 @@ class CreateReview extends Component {
                 {
                     movie ?
                         <div>
+
                             <div className="top-margin-header"></div>
                             <div className="container">
 
@@ -171,7 +172,7 @@ class CreateReview extends Component {
 
                                         <Form.Group className="col-12 col-md-8" controlId="review">
                                             <Form.Label>Your review</Form.Label>
-                                            <Form.Control required as="textarea" rows={12} value={this.state.review} placeholer={"Your complete review here"} onChange={this.handleInputReview} />
+                                            <Form.Control required as="textarea" id="review-textarea" rows={12} value={this.state.review} placeholer={"Your complete review here"} onChange={this.handleInputReview} />
                                         </Form.Group>
                                         <Form.Group className="input-style col-12" controlId="isSpoiler">
                                             <Form.Label className="mr-3">Mark as Spoiler  </Form.Label>
