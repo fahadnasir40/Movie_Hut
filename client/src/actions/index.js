@@ -60,8 +60,25 @@ export function getProfile() {
     }
 }
 
+export function getUser(id) {
+    const request = axios.get(`/api/user-info?id=${id}`)
+        .then(response => response.data);
 
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
 
+export function updateUserInfo(user) {
+    const request = axios.post("/api/user-update", user)
+        .then(response => response.data);
+
+    return {
+        type: 'UPDATE_USER',
+        payload: request
+    }
+}
 
 export function getUsers(
     start = 0,
@@ -220,7 +237,7 @@ export function getMovieFromTMDB(name) {
 }
 
 export function changePassword(data) {
-    const request = axios.post(`/api/change_password`, data)
+    const request = axios.post(`/api/change_password`, {password: data.password, newPassword: data.newPassword, email: data.email})
         .then(response => response.data);
 
     return {
@@ -256,6 +273,20 @@ export function changeUser(user) {
         payload: request
     }
 
+}
+
+export function clearUser() {
+    return {
+        type:'CLEAR_USER',
+        payload:{}
+    }
+}
+
+export function clearUpdatePassword() {
+    return {
+        type:'CLEAR_UPDATE_PASSWORD',
+        payload:{}
+    }
 }
 
 export function changeUserPassword(user) {

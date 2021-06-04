@@ -606,14 +606,48 @@ app.get('/api/getCinemas', (req, res) => {
     })
 })
 
+app.get('/api/user-info', auth, (req, res) => {
+    User.findById(req.query.id ).select("name city dob").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            user: doc,
+        })
+    })
+})
+
 
 //UPDATE
-app.post('/api/update_user', auth, (req, res) => {
+app.post('/api/user-update', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
-            success: true,
-            doc
+            message: "Updated successfully"
+        })
+    })
+})
+
+app.post('/api/change_password', auth, (req, res) => {
+    User.findOne({ 'email': req.body.email }, (err, user) => {
+        if (!user) return res.json({ message: 'Email not found' })
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch) return res.json({
+                message: 'Current Password is wrong'
+            });
+            bcrypt.genSalt(10, function (error, salt) {
+                bcrypt.hash(req.body.newPassword, salt, function (error, hash) {
+                    if (error) return next(error);
+                    User.findOneAndUpdate({ email: user.email },{
+                        password: hash
+                    }, null, function (err, docs) {
+                        if (err) {
+                            console.log(err)
+                        }
+                        else {
+                            res.status(200).send({ message: 'Password updated' });
+                        }
+                    });
+                })
+            })
         })
     })
 })

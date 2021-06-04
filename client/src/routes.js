@@ -15,6 +15,8 @@ import CinemasList from './components/Admin/Cinemas/cinemas'
 import AddMovie from './components/Admin/AddMovie/addMovie'
 import Showtimes from './components/Admin/CreateShowtime/showtimes'
 import Profile from './components/Profile/profile';
+import UpdatePassword from './components/Profile/updatePassword';
+import UpdateProfile from './components/Profile/edit';
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
@@ -34,6 +36,8 @@ const routes = () => {
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
             <Route path="/reset/:id" exact component={Auth(ResetPassword, false)} />
             <Route path="/profile" exact component={Auth(Profile, true)} />
+            <Route path="/edit-profile" exact component={Auth(UpdateProfile, true)} />
+            <Route path="/updatePassword" exact component={Auth(UpdatePassword, true)} />
             <Route path="/create-review" exact component={Auth(CreateReview, true)} />
             <Route path="/create-cinema" exact component={Auth(CreateCinema, null, true)} />
             <Route path="/promotions" exact component={Auth(Promotions, true, true)} />
