@@ -4,8 +4,8 @@ import axios from 'axios';
 /* =========== USER ============== */
 
 export function forgotPassword(email) {
-    const request = axios.post('/api/forgotPassword',{ email })
-    .then(response => response.data);
+    const request = axios.post('/api/forgotPassword', { email })
+        .then(response => response.data);
     return {
         type: 'USER_FORGOT_PASSWORD',
         payload: request
@@ -14,7 +14,7 @@ export function forgotPassword(email) {
 
 export function resetPassword(resetPasswordToken) {
     const request = axios.get(`/api/reset?resetPasswordToken=${resetPasswordToken}`)
-    .then(response => response.data);
+        .then(response => response.data);
     return {
         type: 'USER_RESET_PASSWORD',
         payload: request
@@ -22,8 +22,8 @@ export function resetPassword(resetPasswordToken) {
 }
 
 export function updatePasswordEmail(resetPasswordToken, password) {
-    const request = axios.put("/api/updatePasswordViaEmail", {resetPasswordToken,password})
-    .then(response => response.data);
+    const request = axios.put("/api/updatePasswordViaEmail", { resetPasswordToken, password })
+        .then(response => response.data);
     return {
         type: 'USER_UPDATE_PASSWORD',
         payload: request
@@ -60,6 +60,25 @@ export function getProfile() {
     }
 }
 
+export function getUser(id) {
+    const request = axios.get(`/api/user-info?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
+
+export function updateUserInfo(user) {
+    const request = axios.post("/api/user-update", user)
+        .then(response => response.data);
+
+    return {
+        type: 'UPDATE_USER',
+        payload: request
+    }
+}
 
 export function getUsers(
     start = 0,
@@ -86,7 +105,6 @@ export function getUsers(
         payload: request
     }
 }
-
 
 export function userRegister(user) {
     const request = axios.post(`/api/register`, user)
@@ -147,6 +165,9 @@ export function getCinemaMovieShowtimes(cinemaId, movieId) {
 
 
 
+
+
+
 /*  MOVIES  */
 export function getHomeMovies() {
 
@@ -155,6 +176,18 @@ export function getHomeMovies() {
 
     return {
         type: 'GET_HOME_MOVIES',
+        payload: request
+    }
+}
+
+
+export function getCinemaShowingMovies(cinemaId) {
+
+    const request = axios.get(`/api/getMoviesRunningInCinemas?cinemaId=${cinemaId}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMA_MOVIES_SHOWING',
         payload: request
     }
 }
@@ -204,7 +237,7 @@ export function getMovieFromTMDB(name) {
 }
 
 export function changePassword(data) {
-    const request = axios.post(`/api/change_password`, data)
+    const request = axios.post(`/api/change_password`, {password: data.password, newPassword: data.newPassword, email: data.email})
         .then(response => response.data);
 
     return {
@@ -240,6 +273,20 @@ export function changeUser(user) {
         payload: request
     }
 
+}
+
+export function clearUser() {
+    return {
+        type:'CLEAR_USER',
+        payload:{}
+    }
+}
+
+export function clearUpdatePassword() {
+    return {
+        type:'CLEAR_UPDATE_PASSWORD',
+        payload:{}
+    }
 }
 
 export function changeUserPassword(user) {
@@ -308,9 +355,63 @@ export function addShowtime(showtime) {
     }
 }
 
+
+export function addReview(review) {
+    const request = axios.post('/api/create-review', review)
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_REVIEW',
+        payload: request
+    }
+}
+
+export function sendPropmotionalEmails(emailData) {
+    const request = axios.post(`/api/sendPromotionalEmail`, emailData)
+        .then(response => response.data);
+    return {
+        type: 'CINEMAS_PROMOTIONS_EMAILS',
+        payload: request
+    }
+
+}
+
 export function clearShowtime() {
     return {
         type: 'CLEAR_SHOWTIME',
         payload: {}
     }
 }
+
+export function clearMovieReview() {
+    return {
+        type: 'CLEAR_MOVIE_REVIEW',
+        payload: {}
+    }
+}
+
+export function getCinemas(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
+
+    const request = axios.get(`/api/getCinemas`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
+
+    return {
+        type: 'GET_CINEMAS_NAME',
+        payload: request
+    }
+}
+

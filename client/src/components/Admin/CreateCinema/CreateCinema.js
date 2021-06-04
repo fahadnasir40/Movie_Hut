@@ -57,11 +57,11 @@ class CreateCinema extends Component {
     render() {
         // console.log(this.props)
         if (this.state.redirect) {
-            return <Redirect to="/" />
+            return <Redirect to="/admin-cinemas" />
         }
         return (
             <div>
-                <Header />
+                <Header user={this.props.user}/>
                 <div className="top-margin-header"></div>
                 <div className="container">
                     <div className="Login">
@@ -73,20 +73,19 @@ class CreateCinema extends Component {
                                     <Form.Control
                                         autoFocus
                                         type="text"
-                                        pattern="[a-zA-Z]+"
-                                        oninvalid="setCustomValidity('Please enter alphabets only.')"
+                                        required
                                         placeholder="Cinema Name"
                                         value={this.state.name}
                                         onChange={this.handleInputName}
                                     />
                                 </Form.Group>
-                                <Form.Group className="input-style" controlId="city">
+                                <Form.Group className="input-style " controlId="city">
                                     <Form.Label>City</Form.Label>
-                                    <select id="city" name="city" onChange={this.handleInputCity}>
-                                        <option value="lahore">Lahore</option>
-                                        <option value="islamabad">Islamabad</option>
-                                        <option value="multan">Multan</option>
-                                        <option value="faisalabad">Faisalabad</option>
+                                    <select id="city" name="city" className="form-control" onChange={this.handleInputCity}>
+                                        <option value="Lahore">Lahore</option>
+                                        <option value="Islamabad">Islamabad</option>
+                                        <option value="Multan">Multan</option>
+                                        <option value="Karachi">Karachi</option>
                                     </select>
                                 </Form.Group>
                                 <Form.Group className="input-style" controlId="address">

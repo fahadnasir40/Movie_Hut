@@ -17,13 +17,14 @@ class reset extends Component {
     componentWillReceiveProps(nextProps){
       console.log(nextProps)
       if(nextProps.user.message == "password reset link is invalid or has expired"){
-          this.setState({error:'Password Reset Link is Invalid or has Expired', success:''})
-          setTimeout(()=>{this.setState({success:'',error:''}) }, 5000);
-          document.getElementById("mybtn").disabled = true;
+            nextProps.history.push("/reset-expired")
+        //   this.setState({error:'Password Reset Link is Invalid or has Expired', success:''})
+        //   setTimeout(()=>{this.setState({success:'',error:''}) }, 5000);
+        //   document.getElementById("mybtn").disabled = true;
       }
       else if(nextProps.user.message.message == "password updated"){
         this.setState({success:'Password updated successfully.'})
-        setTimeout(()=>{this.setState({success:'',error:''}) }, 5000);
+        setTimeout(()=>{nextProps.history.push("/login") }, 2000);
       }
       
     }    

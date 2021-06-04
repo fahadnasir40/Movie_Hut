@@ -60,12 +60,12 @@ class MovieDetails extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log("Props", props)
         if (props.movie.movieInfo) {
             return {
                 movieInfo: props.movie.movieInfo.movie,
                 showtimeInfo: props.movie.movieInfo.showtime,
-                cinemaInfo: props.movie.movieInfo.cinema
+                cinemaInfo: props.movie.movieInfo.cinema,
+                reviewInfo: props.movie.movieInfo.reviews
             }
         }
         return null;
@@ -166,7 +166,6 @@ class MovieDetails extends Component {
     }
 
     getScreenPlays = () => {
-        console.log("State", this.state);
         if (this.state.cinemaInfo) {
             if (this.state.showtimeInfo.some(item => moment(item.date).isSame(this.state.selectedDate, "date"))) {
 
@@ -177,7 +176,6 @@ class MovieDetails extends Component {
                             moment(item.date).isSame(this.state.selectedDate, "date")) return true;
                         else return false
                     });
-                    console.log("Showtimes", showtimeCinemas);
                     if (showtimeCinemas) {
                         return (
                             <div className="row col-12 ">
@@ -185,7 +183,7 @@ class MovieDetails extends Component {
                                     <div className="ml-xl-4  ml-lg-n1 my-3 ">
                                         <div className="col-12  my-4">
                                             <div className="cinema-title font-text ml-xs-n2  font-weight-bold">
-                                                {cinema.name} {cinema.address}
+                                                {cinema.name} {cinema.address.substring(0, 21)}... {cinema.city}
                                             </div>
                                         </div>
                                         <div className="row">
@@ -239,14 +237,14 @@ class MovieDetails extends Component {
 
 
     render() {
+
         let cast = '';
         if (this.state.movieInfo)
             cast = this.state.movieInfo.cast;
 
         return (
-            <div>
-                <Header />
-
+            <div className="sticky-body">
+                <Header user={this.props.user} />
 
                 {
                     this.state.movieInfo ?
@@ -352,7 +350,7 @@ class MovieDetails extends Component {
                                     </div> */}
                                     <div className="row my-4 order-last">
                                         <div className=" col-12 offset-lg-2 offset-xl-2 col-lg-10 ">
-                                            <Review />
+                                            <Review {...this.props} movie={this.state.movieInfo} reviews={this.state.reviewInfo} />
                                         </div>
                                     </div>
                                 </section>
@@ -426,14 +424,16 @@ class MovieDetails extends Component {
                                 </section>
                             </div>
                         </div>
-                        : <div>
+                        : <div className="row p-4">
 
-                            <h2>Loading</h2>
+                            <h4>Loading</h4>
                         </div>
                 }
 
+                <div className=" sticky-footer">
+                    <Footer />
 
-                <Footer />
+                </div>
             </div >
 
         )
@@ -442,6 +442,7 @@ class MovieDetails extends Component {
 
 
 function mapStateToProps(state) {
+
     return {
         movie: state.movie
     }

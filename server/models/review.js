@@ -1,38 +1,36 @@
 const mongoose = require("mongoose");
 
-const showtimeSchema = mongoose.Schema({
-
+const reviewSchema = mongoose.Schema({
+    rating: {
+        type: String,
+        required: true
+    },
+    isSpoiler: {
+        type: Boolean,
+        default: false
+    },
+    heading: {
+        type: String,
+        required: true
+    },
+    review: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: String,
+        required: true
+    },
+    userName: {
+        type: String,
+        required: true
+    },
     movieId: {
         type: String,
         required: true
     },
-    movieTitle: {
-        type: String,
-        required: true
-    },
-    cinemaId: {
-        type: String,
-        required: true
-    },
-    language: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    runtime: {
-        type: Date,
-        required: true
-    },
-    screenType: {
-        type: String,
-        required: true
-    },
-
 }, { timestamps: true })
 
-const Showtime = mongoose.model('Showtime', showtimeSchema);
+const Review = mongoose.model('Review', reviewSchema);
 
-module.exports = { Showtime }
+module.exports = { Review }

@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
-
-export default class Review extends Component {
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import Moment from 'react-moment'
+class Review extends Component {
     render() {
+
+        let reviews = this.props.reviews;
         return (
             <div className="container m-0">
                 <div className="card p-2 ">
@@ -16,34 +20,53 @@ export default class Review extends Component {
                                     <i class="fa fa-thumbs-up  "></i> 90% positive reivews
                                 </small>
                                 <span className="border border-dark rounded p-1 px-2  mx-2 text-nowrap ">
-                                    <a href="/create-review"  style={{ textDecoration: 'none', color: 'black' }}>Write a review</a>
+                                    <Link to={{
+                                        pathname: `/create-review`,
+                                        movieProps: {
+                                            movie: this.props.movie
+                                        }
+                                    }}
+                                        style={{ textDecoration: 'none', color: 'black' }}>Write a review</Link>
                                 </span>
                             </div>
 
                         </div>
                     </div>
                     <div className="card-body">
-                        <div className="row font-text review my-2">
-                            <div className="col-9">
-                                <h6 className="m-0">Best movie so far.</h6>
-                                <div className="p-0 m-0 text-nowrap">
-                                    <small>added by <span className="font-weight-bold">user1</span> on December 28,2020</small>
-                                </div>
-                            </div>
-                            <div className="col-3 text-right ">
-                                <small className="font-text m-1 font-weight-bold">Rated 10/10</small>
-                            </div>
-                            <div className="col-12">
-                                <span className='text-justify font-text font-weight-regular mt-3' style={{ fontSize: '15px', fontWeight: 400 }}>
+                        {
+                            reviews ?
+                                reviews.map((review, key) => (
 
-                                    All of the spongebob movies are great. Love all the voiceovers and
-                                    am waiting for next one.
-                                 </span>
+                                    <section key={key}>
+
+                                        <div className="row font-text review ">
+                                            <div className="col-9">
+                                                <h6 className="m-0">{review.heading}</h6>
+                                                <div className="p-0 m-0 text-nowrap">
+                                                    <small>added by <span className="font-weight-bold">{review.userName}</span> on <Moment date={review.createdAt} format="MMM DD, YYYY" /></small>
+                                                </div>
+                                            </div>
+                                            <div className="col-3 text-right ">
+                                                <small className="font-text m-1 font-weight-bold">Rated {review.rating}/10</small>
+                                            </div>
+                                            <div className="col-12">
+                                                <span className='text-justify font-text font-weight-regular mt-3' style={{ fontSize: '15px', fontWeight: 400 }}>
+                                                    {review.review}
+                                                </span>
+                                            </div>
+                                            <small className="col-12 text-right m-0 ">Report review</small>
+                                            <hr className="border col-10 border-light m-0 my-2" />
+                                        </div>
+                                    </section>
+
+                                ))
+
+                                : <div>
+                                    No reviews available
                             </div>
-                            <small className="col-12 text-right m-0 ">Report review</small>
-                            <hr className="border col-10 border-light m-0 my-2" />
-                        </div>
-                        <div className="row font-text review my-1 ">
+                        }
+
+                        {/* <div className="row font-text review my-1 ">
                             <div className="col-9">
                                 <h6 className="m-0 text-break ">Random, but enjoyable.</h6>
                                 <div className="p-0 m-0 ">
@@ -62,10 +85,17 @@ export default class Review extends Component {
                                  </span>
                             </div>
                             <small className="col-12 text-right m-0">Report review</small>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+    }
+}
+
+export default connect(mapStateToProps)(Review)

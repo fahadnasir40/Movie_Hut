@@ -63,6 +63,7 @@ class Login extends Component {
                                         placeholder="Email"
                                         value={this.state.email}
                                         onChange={this.handleInputEmail}
+                                        maxlength="50"
                                         required
                                     />
                                 </Form.Group>
@@ -73,6 +74,8 @@ class Login extends Component {
                                         placeholder="Password"
                                         value={this.state.password}
                                         onChange={this.handleInputPassword}
+                                        maxlength="20"
+                                        minlength="6"
                                         required
                                     />
                                 </Form.Group>

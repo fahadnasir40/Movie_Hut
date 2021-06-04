@@ -90,7 +90,7 @@ def getMovieID(movieName):
 
 
 def getMovieCredits(movieID, castList):
-    request = 'https://api.themoviedb.org/3/movie/{0}/credits?api_key={1}&language=en-US'.format(
+    request = 'https://api.themoviedb.org/3/movie/{0}/credits?api_key={1}'.format(
         movieID, key)
     response = requests.get(request)
     if response.status_code != 200:
@@ -124,7 +124,7 @@ def getCertifications(movieID):
 
 
 def getMovieDetails(movieID, castList, title):
-    request = 'https://api.themoviedb.org/3/movie/{0}?api_key={1}&language=en-US'.format(
+    request = 'https://api.themoviedb.org/3/movie/{0}?api_key={1}'.format(
         movieID, key)
     response = requests.get(request)
 
@@ -138,7 +138,7 @@ def getMovieDetails(movieID, castList, title):
     posterImg = ''
 
     if backImgPath:
-        backImg = 'https://image.tmdb.org/t/p/w500' + backImgPath
+        backImg = 'https://image.tmdb.org/t/p/w1280' + backImgPath
     posterImgPath = data.get('poster_path')
 
     if posterImgPath:
@@ -153,7 +153,7 @@ def getMovieDetails(movieID, castList, title):
     releaseDate = data.get("release_date")
     rating = data.get("vote_average")
     certificate = getCertifications(movieID)
-    request = 'https://api.themoviedb.org/3/movie/{0}/videos?api_key={1}&language=en-US'.format(
+    request = 'https://api.themoviedb.org/3/movie/{0}/videos?api_key={1}'.format(
         movieID, key)
     response = requests.get(request)
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // import FontAwesome from 'react-fontawesome';
 import { connect } from 'react-redux';
-import {NavDropdown} from 'react-bootstrap'
+import { NavDropdown, Dropdown, NavLink, NavItem } from 'react-bootstrap'
 
-const SidenavItems = ({user}) => {
+const SidenavItems = ({ user }) => {
 
     const items = [
         // {
@@ -15,19 +15,19 @@ const SidenavItems = ({user}) => {
         //     restricted:false
         // },
         {
-            type:'navItem',
+            type: 'navItem',
             // icon:'file-text-o',
-            text:'My Profile',
-            link:'/profile',
-            restricted:true
+            text: 'My Profile',
+            link: '/profile',
+            restricted: true
         },
         {
-            type:'navItem',
+            type: 'navItem',
             admin: true,
             // icon:'file-text-o',
-            text:'Admin Panel',
-            link:'/admin-panel',
-            restricted:true
+            text: 'Admin Panel',
+            link: '/admin-panel',
+            restricted: true
         },
         // {
         //     type:'navItem',
@@ -45,66 +45,77 @@ const SidenavItems = ({user}) => {
         //     exclude:true
         // },
         {
-            type:'navItem',
+            type: 'navItem',
             // icon:'file-text-o',
-            text:'My reviews',
-            link:'/user/user-reviews',
-            restricted:true
+            text: 'Favorites',
+            link: '/favorites',
+            restricted: true
         },
         {
-            type:'navItem',
+            type: 'navItem',
             // icon:'file-text-o',
-            text:'Add reviews',
-            link:'/user/add',
-            restricted:true
+            text: 'My reviews',
+            link: '/user/user-reviews',
+            restricted: true
         },
+        // {
+        //     type: 'navItem',
+        //     // icon:'file-text-o',
+        //     text: 'Add reviews',
+        //     link: '/create-review',
+        //     restricted: true
+        // },
         {
-            type:'navItem',
+            type: 'navItem',
             // icon:'file-text-o',
-            text:'Logout',
-            link:'/logout',
-            restricted:true
+            text: 'Logout',
+            link: '/logout',
+            restricted: true
         }
     ]
 
-    const element = (item,i) => (
-        <div key={i} className={item.type}>
+    const element = (item, i) => (
+        <div key={i} className={item.type + "ml-n5"}>
             <NavDropdown.Item href={item.link}>{item.text}</NavDropdown.Item>
         </div>
     )
 
     const showItems = () => (
         user.login ?
-            items.map((item,i)=>{
-                if(user.login.isAuth) {
-                    if(user.login.role == "administrator"){
+            items.map((item, i) => {
+                if (user.login.isAuth) {
+                    if (user.login.role == "administrator") {
                         return item.admin ?
-                        element(item,i)
-                        :element(item,i)
+                            element(item, i)
+                            : element(item, i)
                     }
                     else if (!item.admin)
-                        return element(item,i)
+                        return element(item, i)
                 } else {
                     return !item.restricted ?
-                        element(item,i)
-                    :null
+                        element(item, i)
+                        : null
                 }
             })
-        :null
+            : null
     )
 
     const userDropdown = () => {
         var str = ""
-        user.login ? 
-        user.login.isAuth ?
-            str= user.login.name
-        :str = ""
+        user.login ?
+            user.login.isAuth ?
+                str = user.login.name
+                : str = ""
             : str = ""
-        return str.substr(0,str.indexOf(' '))
+        
+        if (str.substr(0, str.indexOf(' ')) === "")
+            return str
+        return str.substr(0, str.indexOf(' '))
     }
-    const navDropdownTitle = (<span><i className="fa fa-user-circle"></i> {userDropdown()}</span>);
-    return (  
+    const navDropdownTitle = (<span style={{ color: "#ffff" }} className="title"><i className="fa fa-user-circle mr-1"></i> {userDropdown()}</span>);
+    return (
         <div>
+
             <NavDropdown title={navDropdownTitle} id="basic-nav-dropdown">
                 {showItems()}
             </NavDropdown>
@@ -112,8 +123,8 @@ const SidenavItems = ({user}) => {
     );
 };
 
-function mapStateToProps(state){
-    return{
+function mapStateToProps(state) {
+    return {
         user: state.user
     }
 }

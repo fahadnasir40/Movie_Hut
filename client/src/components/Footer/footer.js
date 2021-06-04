@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment'
+import { Link } from 'react-router-dom'
 
 class Footer extends Component {
     render() {
@@ -10,10 +11,10 @@ class Footer extends Component {
                         <div class="col-sm-12 col-md-3">
                             <h6 className="heading" style={{ color: '#d0d0d0' }}>Cinemas</h6>
                             <ul class="footer-links font-text">
-                                <li><a href="#">Cinemas in Lahore</a></li>
-                                <li><a href="#">Cinemas in Karachi</a></li>
-                                <li><a href="#">Cinemas in Islamabad</a></li>
-                                <li><a href="#">Cinemas in Multan</a></li>
+                                <li><Link to="/cinemas/Lahore">Cinemas in Lahore</Link></li>
+                                <li><Link to={`/cinemas/${"Karachi"}`}>Cinemas in Karachi</Link></li>
+                                <li><Link to="/cinemas/Islamabad">Cinemas in Islamabad</Link></li>
+                                <li><Link to="/cinemas/Multan">Cinemas in Multan</Link></li>
                             </ul>
                         </div>
 

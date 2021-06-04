@@ -22,14 +22,16 @@ export default function (ComposedClass, reload, access) {
                     this.props.history.push('/login');
                 }
             } else {
-                if(reload === false) {
+
+                if (reload === false) {
                     this.props.history.push('/')
                 }
-                // if (nextProps.user.login.role === 'worker' && access === true) {
-                //     if (reload === false) {
-                //         this.props.history.push('/orders')
-                //     }
-                // }
+
+                if (nextProps.user.login.role !== 'administrator' && access === true) {
+                    this.props.history.push('/')
+                }
+
+
                 // else if (nextProps.user.login.role === 'worker' && access === false) {
                 //     this.props.history.push('/orders');
                 // }

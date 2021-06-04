@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
-const async = require("async");
 const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -15,7 +14,8 @@ const { auth } = require("./middleware/auth");
 const { auth2 } = require("./middleware/auth2");
 
 const nodemailer = require('nodemailer');
-const Email = require('email-templates');
+const emailModule = require('./emails/emails');
+
 const handlebars = require('handlebars');
 // app.engine('html', require('ejs').renderFile);
 // app.set('view engine', 'html');
@@ -33,86 +33,89 @@ const { User } = require("./models/user");
 const { Movie } = require("./models/movie");
 const { Cinema } = require("./models/cinema");
 const { Showtime } = require("./models/showtime");
+const { Review } = require("./models/review");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(express.static("client/build"));
-const fs = require('fs')
+const fs = require('fs');
 
-app.post('/api/forgotPassword', (req, res) => {
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config.MOVIEHUT_EMAIL_AUTH_USER,
+        pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
+    },
+});
+
+
+app.post('/api/forgotPassword', async (req, res, next) => {
     if (req.body.email === '') {
         res.send('email required');
     }
     User.findOne({
         email: req.body.email,
     }).then((user) => {
-    if (user === null) {
-        res.send('email not in db');
-    }
-    else {
-        const token = crypto.randomBytes(20).toString('hex');
-        date =  new Date();
-        date.setHours(date.getHours() + 1)
-        User.findOneAndUpdate({ email: req.body.email }, 
-            {resetPasswordToken: token, resetPasswordExpires: date}, null, function (err, docs) {
-            if (err){
-                console.log(err)
-            }
-            else{
-                //node mailer code
-                const transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.MOVIEHUT_EMAIL_AUTH_USER,
-                        pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
-                    },
-                });
-
-                const mailOptions = {
-                    from: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    to: `${user.email}`,
-                    subject: 'Link To Reset Password',
-                    text:
-                        'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
-                        + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
-                        + `http://localhost:3000/reset/${token}\n\n`
-                        + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-                };
-
-                transporter.sendMail(mailOptions, (err, response) => {
+        if (user === null) {
+            res.send('email not in db');
+        }
+        else {
+            const token = crypto.randomBytes(20).toString('hex');
+            date = new Date();
+            date.setHours(date.getHours() + 1)
+            User.findOneAndUpdate({ email: req.body.email },
+                { resetPasswordToken: token, resetPasswordExpires: date }, null, function (err, docs) {
                     if (err) {
-                        console.error('there was an error: ', err);
-                    } 
+                        console.log(err)
+                    }
                     else {
-                        res.status(200).json('recovery email sent');
+
+                        const mailOptions = {
+                            from: config.MOVIEHUT_EMAIL_AUTH_USER,
+                            to: `${user.email}`,
+                            subject: 'Link To Reset Password',
+                            text:
+                                'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
+                                + 'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n'
+                                + `http://localhost:3000/reset/${token}\n\n`
+                                + 'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+                        };
+
+                        transporter.sendMail(mailOptions, (err, response) => {
+                            if (err) {
+                                console.error('there was an error: ', err);
+                            }
+                            else {
+                                res.status(200).json('recovery email sent');
+                            }
+                        });
                     }
                 });
-            }
-        });
-    }});
+        }
+    });
 });
 
 app.get('/api/reset', (req, res) => {
     User.findOne({
         resetPasswordToken: req.query.resetPasswordToken,
     }).then((user) => {
-    if (user == null) {
-            res.send('password reset link is invalid or has expired');
-    } 
-    else {
-        d = new Date()
-        if(user.resetPasswordExpires < d){
+        if (user == null) {
             res.send('password reset link is invalid or has expired');
         }
-        else{
-            res.status(200).send({
-                resetPasswordToken: user.resetPasswordToken,
-                message: 'password reset link a-ok',
-            });
+        else {
+            d = new Date()
+            if (user.resetPasswordExpires < d) {
+                res.send('password reset link is invalid or has expired');
+            }
+            else {
+                res.status(200).send({
+                    resetPasswordToken: user.resetPasswordToken,
+                    message: 'password reset link a-ok',
+                });
+            }
         }
-    }
-});
+    });
 });
 
 app.put('/api/updatePasswordViaEmail', (req, res) => {
@@ -123,135 +126,38 @@ app.put('/api/updatePasswordViaEmail', (req, res) => {
         if (user == null) {
             res.status(403).send('password reset link is invalid or has expired');
         }
-        else if(user.resetPasswordExpires < d){
+        else if (user.resetPasswordExpires < d) {
             res.status(403).send('password reset link is invalid or has expired');
         }
         else if (user != null) {
             bcrypt.genSalt(10, function (error, salt) {
                 bcrypt.hash(req.body.password, salt, function (error, hash) {
                     if (error) return next(error);
-                    User.findOneAndUpdate({ email: user.email }, 
-                        {resetPasswordToken: null,
+                    User.findOneAndUpdate({ email: user.email },
+                        {
+                            resetPasswordToken: null,
                             resetPasswordExpires: null,
-                            password: hash}, null, function (err, docs) {
-                        if (err){
-                            console.log(err)
-                        }
-                        else{
-                            res.status(200).send({ message: 'password updated' });
-                        }
-                    });
+                            password: hash
+                        }, null, function (err, docs) {
+                            if (err) {
+                                console.log(err)
+                            }
+                            else {
+                                res.status(200).send({ message: 'password updated' });
+                            }
+                        });
                 })
             }
-        )}
+            )
+        }
     })
 });
 // GET //
 
 
-app.get('/api/sendEmail', async (req, res) => {
+app.get('/api/sendEmail', auth2, async (req, res) => {
 
 
-    Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
-        if (err)
-            return res.status(500).json("error ");
-
-        const movie = doc.map((item, key) => {
-            return item;
-        })
-
-        const showtimes = Showtime.find().limit(3).lean().exec();
-
-        showtimes.then((showtime) => {
-
-            const shows = showtime.map((item, key) => {
-                return item;
-            })
-
-            var readHTMLFile = function (path, callback) {
-                fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                    if (err) {
-                        throw err;
-                        callback(err);
-                    }
-                    else {
-                        callback(null, html);
-                    }
-                });
-            };
-
-            // var testMailTemplate = new emailTemplate(templateDir)
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    pass: config.MOVIEHUT_EMAIL_AUTH_SECRET
-                }
-            });
-
-
-            var readHTMLFile = function (path, callback) {
-                fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                    if (err) {
-                        // console.log(err);
-                        throw err;
-                        callback(err);
-                    }
-                    else {
-                        callback(null, html);
-                    }
-                });
-            };
-
-            readHTMLFile('./server/email-templates/top-picks.html', function (err, html) {
-                // console.log("HTML", movie);
-                var template = handlebars.compile(html);
-                var replacements = {
-                    username: `Faizan`,
-                    top_movie_poster_url: movie[0].poster_url,
-                    top_movie_description: movie[0].description,
-                    top_movie_title: movie[0].title,
-                    top_rated_movie_1_title: movie[1].title,
-                    top_rated_movie_1_poster_url: movie[1].poster_url,
-                    top_rated_movie_1_description: movie[1].description,
-                    top_rated_movie_1_runtime: movie[1].runtime,
-                    top_rated_movie_1_rating: movie[1].rating,
-                    top_rated_movie_2_title: movie[2].title,
-                    top_rated_movie_2_poster_url: movie[2].poster_url,
-                    top_rated_movie_2_description: movie[2].description,
-                    top_rated_movie_2_runtime: movie[2].runtime,
-                    top_rated_movie_2_rating: movie[2].rating,
-                    showtime_1_title: 'Joker',
-                    showtime_1_time: moment(shows[0].date).format("hh:mm A"),
-                    showtime_2_title: 'Djanhgo Unchained',
-                    showtime_2_time: moment(shows[1].date).format("hh:mm A"),
-                    showtime_3_title: 'Descpicable Me 3',
-                    showtime_3_time: moment(shows[2].date).format("hh:mm A")
-
-                };
-
-                var htmlToSend = template(replacements);
-                var mailOptions = {
-                    from: config.MOVIEHUT_EMAIL_AUTH_USER,
-                    to: ['faizanbutt833@gmail.com'],
-                    subject: 'Movie Hut: Top Picks for you!',
-                    preview: true,
-                    html: htmlToSend
-                };
-
-                transporter.sendMail(mailOptions, function (error, response) {
-                    if (error) {
-                        // console.log(error);
-                        callback(error);
-                    }
-
-                    return res.status(200).json("Email sent successfully")
-                });
-            });
-
-        })
-
-    });
 
 
 
@@ -305,7 +211,7 @@ function saveMovie(title) {
     });
 }
 
-app.post('/api/create-showtime', (req, res) => {
+app.post('/api/create-showtime', auth2, (req, res) => {
     const showtime = new Showtime(req.body);
 
     showtime.save((error, showtime) => {
@@ -337,7 +243,7 @@ app.get("/api/auth", auth, (req, res) => {
     });
 });
 
-app.get('/api/getCinemasList', (req, res) => {
+app.get('/api/getCinemasList', auth2, (req, res) => {
     let skip = parseInt(req.query.skip);
     let limit = parseInt(req.query.limit);
     let order = req.query.order;
@@ -349,7 +255,7 @@ app.get('/api/getCinemasList', (req, res) => {
     })
 })
 
-app.get('/api/getCinemaMovies', (req, res) => {
+app.get('/api/getCinemaMovies', auth2, (req, res) => {
 
     // let skip = parseInt(req.query.skip);
     // let limit = parseInt(req.query.limit);
@@ -362,12 +268,69 @@ app.get('/api/getCinemaMovies', (req, res) => {
 
         if (doc.moviesList) {
             if (doc.moviesList.length > 0)
-                Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').exec((err, movies) => {
+                Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').sort({ createdAt: 'DESC' }).exec((err, movies) => {
                     if (err) return res.status(400).send(err);
                     return res.status(200).send({ movies });
+                    // console.log("Movies", movies)
+                    // if (cinema) {
+                    //     return res.status(200).send({ movies, doc });
+                    // }
+                    // else {
+
+                    // }
+
                 });
         }
     })
+})
+
+app.get('/api/getMoviesRunningInCinemas', (req, res) => {
+
+    let id = req.query.cinemaId
+    try {
+        Cinema.findOne({ _id: id }).select('_id name city address url').exec((err, cinema) => {
+            if (err) return res.status(400).send(err);
+
+            const today = moment().startOf('day');
+            Showtime.find({
+                cinemaId: cinema._id, date: {
+                    $gte: today.toDate(),
+                    $lte: moment(today).add(14, "days").toDate()
+                }
+            }).select('_id cinemaId movieId date').exec((err, showtimes) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(400).send(err)
+                }
+
+                var showData = [];
+                var movieIds = showtimes.map(function (s) {
+                    const show = {
+                        movieId: s.movieId,
+                        showtimeDate: s.date
+                    }
+
+                    showData.push(show);
+                    return s.movieId
+                });
+
+
+                const moviesList = Movie.find({ _id: { "$in": movieIds } }).select('_id movieId poster_url title runtime releaseDate rating title ').exec();
+                return moviesList.then(function (movies) {
+
+                    const data = { movies, cinema, showData };
+                    return res.status(200).send(data);
+                })
+
+            })
+
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send("error");
+    }
+
 })
 
 
@@ -421,11 +384,18 @@ app.get('/api/getMovieInfo', async function (req, res) {
             })
         }).then(function (data) {
             // do something with the cinemas here
-            return res.status(200).json({
-                showtime: data.showtimes,
-                cinema: data.cinemas,
-                movie: doc
-            });
+
+            Review.find({ movieId: doc._id }).sort({ createdAt: 'DESC' }).exec((err, reviews) => {
+                if (err) return res.status(400).send(err);
+
+                return res.status(200).json({
+                    showtime: data.showtimes,
+                    cinema: data.cinemas,
+                    movie: doc,
+                    reviews: reviews
+                });
+            })
+
         }).then(null, function (err) {
             // handle error here
             if (err) console.log(err);
@@ -439,7 +409,7 @@ app.get('/api/getMovieInfo', async function (req, res) {
 
 });
 
-app.get('/api/getCinemaMovieShowtimes', (req, res) => {
+app.get('/api/getCinemaMovieShowtimes', auth2, (req, res) => {
     Showtime.find({ cinemaId: req.query.cinemaId, movieId: req.query.movieId }, (err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
@@ -448,7 +418,7 @@ app.get('/api/getCinemaMovieShowtimes', (req, res) => {
     })
 })
 
-app.get('/api/getMovieTMDB', (req, res) => {
+app.get('/api/getMovieTMDB', auth2, (req, res) => {
 
     var dataToSend, err;
     // spawn new child process to call the python script
@@ -478,7 +448,7 @@ app.get('/api/getMovieTMDB', (req, res) => {
     });
 })
 
-app.get('/api/getMovieByName', (req, res) => {
+app.get('/api/getMovieByName', auth2, (req, res) => {
     // Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
     Movie.findOne({ title: req.query.name }, (err, doc) => {
         if (err) return res.status(400).send(err);
@@ -498,8 +468,9 @@ app.get('/api/getMovieByName', (req, res) => {
     });
 })
 
+
 //POST
-app.post('/api/create-cinema', (req, res) => {
+app.post('/api/create-cinema', auth2, (req, res) => {
 
     const cinema = new Cinema(req.body);
     cinema.save((error, cinema) => {
@@ -514,7 +485,22 @@ app.post('/api/create-cinema', (req, res) => {
     });
 })
 
-app.post('/api/addMovieInCinema', async (req, res) => {
+app.post('/api/create-review', auth, (req, res) => {
+
+    const review = new Review(req.body);
+    review.save((error, review) => {
+        if (error) {
+            console.log(error)
+            return res.status(400).send(error);
+        }
+        res.status(200).json({
+            post: true,
+            reviewId: review._id
+        })
+    });
+})
+
+app.post('/api/addMovieInCinema', auth2, async (req, res) => {
 
     let movieData = req.body;
     Cinema.findById(movieData.cinemaID, (err, docs) => {
@@ -571,7 +557,10 @@ app.post('/api/register', (req, res) => {
     const user = new User(req.body);
 
     user.save((err, doc) => {
-        if (err) return res.json({ success: false });
+        if (err) {
+            console.log(err);
+            return res.json({ success: false })
+        };
         res.status(200).json({
             success: true,
             user: doc
@@ -608,16 +597,178 @@ app.get('/api/logout', auth, (req, res) => {
     })
 })
 
-//UPDATE
-app.post('/api/update_user',(req,res)=>{
-    User.findByIdAndUpdate(req.body._id,req.body,{new:true},(err,doc)=>{
-        if(err) return res.status(400).send(err);
-        res.json({
-            success:true,
-            doc
+app.get('/api/getCinemas', (req, res) => {
+    Cinema.find({}).select("_id name city address").exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        res.status(200).json({
+            cinemasList: docs
         })
     })
 })
+
+app.get('/api/user-info', auth, (req, res) => {
+    User.findById(req.query.id ).select("name city dob").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            user: doc,
+        })
+    })
+})
+
+
+//UPDATE
+app.post('/api/user-update', auth, (req, res) => {
+    User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            message: "Updated successfully"
+        })
+    })
+})
+
+app.post('/api/change_password', auth, (req, res) => {
+    User.findOne({ 'email': req.body.email }, (err, user) => {
+        if (!user) return res.json({ message: 'Email not found' })
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch) return res.json({
+                message: 'Current Password is wrong'
+            });
+            bcrypt.genSalt(10, function (error, salt) {
+                bcrypt.hash(req.body.newPassword, salt, function (error, hash) {
+                    if (error) return next(error);
+                    User.findOneAndUpdate({ email: user.email },{
+                        password: hash
+                    }, null, function (err, docs) {
+                        if (err) {
+                            console.log(err)
+                        }
+                        else {
+                            res.status(200).send({ message: 'Password updated' });
+                        }
+                    });
+                })
+            })
+        })
+    })
+})
+
+app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
+
+
+    try {
+        User.find({}).select('email name').exec((err, users) => {
+            if (err) {
+                console.log("Error", err)
+                return res.status(400).send("Users not found");
+            }
+
+            users.map((user, key) => {
+
+                Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
+                    if (err)
+                        return res.status(500).json("error ");
+
+                    const movie = doc.map((item, key) => {
+                        return item;
+                    })
+
+                    const showtimes = Showtime.find().limit(3).lean().exec();
+
+                    showtimes.then((showtime) => {
+
+                        const shows = showtime.map((item, key) => {
+                            return item;
+                        })
+
+                        var readHTMLFile = function (path, callback) {
+                            fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                                if (err) {
+                                    throw err;
+                                    callback(err);
+                                }
+                                else {
+                                    callback(null, html);
+                                }
+                            });
+                        };
+
+
+                        readHTMLFile('./server/emails/email-templates/top-picks.html', function (err, html) {
+                            // console.log("HTML", movie);
+                            var template = handlebars.compile(html);
+
+                            const getFirstName = (str) => {
+                                if (str.substr(0, str.indexOf(' ')) === "")
+                                    return str
+                                return str.substr(0, str.indexOf(' '))
+                            }
+
+                            var userName = getFirstName(user.name);
+
+                            var replacements = {
+                                username: userName,
+                                top_movie_poster_url: movie[0].poster_url,
+                                top_movie_description: movie[0].description,
+                                top_movie_title: movie[0].title,
+                                top_rated_movie_1_title: movie[1].title,
+                                top_rated_movie_1_poster_url: movie[1].poster_url,
+                                top_rated_movie_1_description: movie[1].description,
+                                top_rated_movie_1_runtime: movie[1].runtime,
+                                top_rated_movie_1_rating: movie[1].rating,
+                                top_rated_movie_2_title: movie[2].title,
+                                top_rated_movie_2_poster_url: movie[2].poster_url,
+                                top_rated_movie_2_description: movie[2].description,
+                                top_rated_movie_2_runtime: movie[2].runtime,
+                                top_rated_movie_2_rating: movie[2].rating,
+                                showtime_1_title: shows[0].movieTitle,
+                                showtime_1_time: moment(shows[0].date).format("hh:mm A"),
+                                showtime_2_title: shows[1].movieTitle,
+                                showtime_2_time: moment(shows[1].date).format("hh:mm A"),
+                                showtime_3_title: shows[2].movieTitle,
+                                showtime_3_time: moment(shows[2].date).format("hh:mm A")
+
+                            };
+
+                            var htmlToSend = template(replacements);
+                            var mailOptions = {
+                                from: config.MOVIEHUT_EMAIL_AUTH_USER,
+                                to: [user.email],
+                                subject: 'Movie Hut: Top Picks for you!',
+                                preview: true,
+                                html: htmlToSend
+                            };
+
+                            return transporter.sendMail(mailOptions, function (error, response) {
+                                if (error) {
+                                    // console.log(error);
+                                    callback(error);
+                                }
+
+                                return res.status(200).json({ post: true, message: "Email sent successfully" })
+                            });
+                        });
+
+                    })
+
+                });
+
+            })
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(400).send("Error sending email");
+    }
+
+    // User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
+    //     if (err) return res.status(400).send(err);
+    //     res.json({
+    //         success: true,
+    //         doc
+    //     })
+    // })
+})
+
 
 
 if (process.env.NODE_ENV === "production") {

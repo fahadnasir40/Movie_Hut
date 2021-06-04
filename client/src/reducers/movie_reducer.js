@@ -10,8 +10,12 @@ export default function (state = {}, action) {
             return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
             return { ...state, moviesList: action.payload.moviesList }
+
+
         case 'CLEAR_MOVIE':
             return { ...state, movieDetails: action.payload }
+        case 'CLEAR_MOVIE_REVIEW':
+            return { ...state, movieReview: action.payload }
         // case 'GET_SHARED_DOCUMENT':
         //     return { ...state, sharedDocument: action.payload }
         // case 'UPDATE_DOCUMENT':
@@ -20,8 +24,8 @@ export default function (state = {}, action) {
         //         documentUpdated:action.payload.success,
         //         newDocument:action.payload.doc
         //     }
-        // case 'ADD_DOCUMENT':
-        //     return {...state,document:action.payload}
+        case 'ADD_MOVIE_REVIEW':
+            return { ...state, movieReview: action.payload }
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}
 
