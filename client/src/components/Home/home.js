@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Header from '../Header/header'
 import Footer from '../Footer/footer'
+import HomeSlider from '../Widgets/slider'
 import { Link } from 'react-router-dom'
 import { Carousel } from 'react-bootstrap'
-import HomeSlider from '../Widgets/slider'
 import { connect } from 'react-redux'
 import { getHomeMovies } from '../../actions'
 
@@ -70,12 +70,12 @@ class Home extends Component {
                 <Header user={this.props.user} />
                 <div className="container-fluid">
                     <div className="row">
-                        {/* <HomeSlider
+                        <HomeSlider
                             settings={{
                                 interval: '500'
                             }}
                             movies={movies}
-                        /> */}
+                        />
                     </div>
                     <div className="row">
 
