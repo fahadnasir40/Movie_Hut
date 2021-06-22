@@ -286,6 +286,17 @@ export function addMovieInCinema(movieData) {
 }
 
 
+export function reportReview(id) {
+    const request = axios.post('/api/reportReview', id)
+        .then(response => response.data);
+    return {
+        type: 'REPORT_REVIEW',
+        payload: request
+    }
+}
+
+
+
 export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',

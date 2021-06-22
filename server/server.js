@@ -15,11 +15,7 @@ const { auth2 } = require("./middleware/auth2");
 
 const nodemailer = require('nodemailer');
 const emailModule = require('./emails/emails');
-
 const handlebars = require('handlebars');
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
-// app.set('view engine', 'ejs');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DATABASE, {

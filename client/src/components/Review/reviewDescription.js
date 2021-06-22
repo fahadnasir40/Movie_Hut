@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 class ReviewDescription extends Component {
 
     state = {
-        textCutLength: 770,
-        textToDisplay: 770,
+        textCutLength: 570,
+        textToDisplay: 570,
         hideSpoiler: true
     }
 

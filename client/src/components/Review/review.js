@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import { Tooltip, OverlayTrigger, Button } from 'react-bootstrap'
 import ReviewDescription from './reviewDescription'
+import { reportReview } from '../../actions'
 class Review extends Component {
 
     state = {
-        reviewsToShow: 5
+        reviewsToShow: 3
     }
 
 
@@ -19,7 +20,7 @@ class Review extends Component {
 
     showLess = () => {
         this.setState({
-            reviewsToShow: 5
+            reviewsToShow: 3
         })
     }
 
@@ -27,8 +28,8 @@ class Review extends Component {
         var Filter = require('bad-words');
         var customFilter = new Filter({ placeHolder: '*' });
 
-        var newBadWords = ['gandu', 'bsdk', 'bullshit'];  //add as many bad words to this list
-        let removeWords = ['sexy', '']; //add bad words to remove
+        var newBadWords = ['gandu', 'bsdk', 'bullshit', 'madarchod'];  //add as many bad words to this list
+        let removeWords = ['sexy', 'sex']; //add bad words to remove
 
         customFilter.addWords(...newBadWords);
         customFilter.removeWords(...removeWords);
@@ -36,8 +37,26 @@ class Review extends Component {
         return customFilter.clean(comment);
     }
 
+
+    upvoteReview = (review) => {
+        // if (this.props.user.login.isAuth) {
+        //     this.props.dispatch(upvoteReview(reviewId));
+        // }
+    }
+
+    downvoteReview = (review) => {
+
+    }
+
+
+    reportReview = (review) => {
+        this.props.dispatch(reportReview(review._id));
+    }
+
+
     render() {
         let reviews = this.props.reviews;
+        let c = this.props.user.login.isAuth ? 'far' : 'far';
 
         return (
             <div className="container m-0">
@@ -109,20 +128,24 @@ class Review extends Component {
                                                             }
                                                         </span>
                                                     </div>
-                                                    <small className="col-12 text-right m-0 ">Report review</small>
+                                                    <div className="col-12 col-md-9  ">
+                                                        <small >Do you find this review helpful? <i className={`ml-1 ${c} fa-thumbs-up `} style={{ cursor: "pointer" }} onClick={this.upvoteReview}></i> 209 <i className={`${c}  fa-thumbs-down`} style={{ cursor: "pointer" }} onClick={this.downvoteReview}></i> 2.
+                                                            {this.props.user.login.isAuth == true ? null : <span> <Link style={{ color: 'black', fontWeight: '500' }} to="/login">Sign in</Link> to vote.</span>}</small>
+                                                    </div>
+                                                    <div className="col-md-3 col-12 text-right m-0"><small style={{ cursor: "pointer" }} onClick={this.reportReview}>Report review</small></div>
                                                     <hr className="border col-10 border-light m-0 my-2" />
                                                 </div >
                                             </section>
                                         ))}
                                     {this.state.reviewsToShow < reviews.length ?
                                         <div className="row"><div className="col fw-500 showmore text-center"><span onClick={this.showMore}>SHOW MORE</span></div></div>
-                                        : (reviews.length > 5 || (reviews.length == this.state.reviewsToShow && reviews.length > 5)) ?
+                                        : (reviews.length > 3 || (reviews.length == this.state.reviewsToShow && reviews.length > 3)) ?
                                             <div className="row"><div className="col fw-500 showmore text-center"><span onClick={this.showLess}>SHOW LESS</span></div></div>
                                             : null}
                                 </span>
                                 : <div>
                                     No reviews available
-                            </div>
+                                </div>
 
                         }
 
