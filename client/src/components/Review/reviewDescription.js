@@ -20,12 +20,14 @@ class ReviewDescription extends Component {
         })
     }
 
-
-
+    showSpoiler = () => {
+        this.setState({
+            hideSpoiler: false
+        })
+    }
 
     showReviewDescription = (reviewDescription) => {
         return (
-
             this.state.textToDisplay < reviewDescription.length ?
                 <span>
                     {reviewDescription.slice(0, this.state.textToDisplay)}... <span className="showmore text-inline " onClick={() => { this.showMore(reviewDescription) }}><strong>Show More</strong></span>
@@ -38,32 +40,23 @@ class ReviewDescription extends Component {
                     </span>
 
                     : <span>{reviewDescription}</span>
-
         )
     }
 
-    showSpoiler = () => {
-        this.setState({
-            hideSpoiler: false
-        })
-    }
+
 
     getReview = (review) => {
         const reviewDescription = this.props.filterProfanity(review.review);
 
-
         if (review.isSpoiler) {
-
             return (
-                <span>
+                <span >
                     {
                         this.state.hideSpoiler ?
                             <div className=" btn btn-sm btn-outline-dark " onClick={this.showSpoiler}>Show review</div>
-
                             : this.showReviewDescription(reviewDescription)
                     }
-
-                </span>
+                </span >
             )
         }
         else {
@@ -71,13 +64,8 @@ class ReviewDescription extends Component {
         }
     }
 
-
-
     render() {
         return this.getReview(this.props.review);
-
-
-
     }
 }
 

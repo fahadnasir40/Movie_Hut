@@ -4,11 +4,32 @@ import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import { Tooltip, OverlayTrigger, Button } from 'react-bootstrap'
 import ReviewDescription from './reviewDescription'
-import { reportReview } from '../../actions'
+import { clearReviewVote, reportReview, upvoteReview, downvoteReview } from '../../actions'
 class Review extends Component {
 
     state = {
-        reviewsToShow: 3
+        reviewsToShow: 3,
+        isVoted: false,
+        reviews: [],
+    }
+
+    componentDidMount() {
+        this.setState({
+            reviews: this.props.reviews
+        })
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+
+        if (nextProps.votedReview) {
+            var foundIndex = prevState.reviews.findIndex(x => x._id == nextProps.votedReview._id);
+            let reviews = prevState.reviews;
+            reviews[foundIndex] = nextProps.votedReview;
+            return {
+                reviews: reviews,
+            };
+        }
+        return null;
     }
 
 
@@ -39,24 +60,63 @@ class Review extends Component {
 
 
     upvoteReview = (review) => {
-        // if (this.props.user.login.isAuth) {
-        //     this.props.dispatch(upvoteReview(reviewId));
-        // }
+        if (this.props.user.login.isAuth) {
+            this.props.dispatch(upvoteReview(review._id));
+        }
+
     }
 
     downvoteReview = (review) => {
-
+        if (this.props.user.login.isAuth) {
+            this.props.dispatch(downvoteReview(review._id));
+        }
     }
 
+    getReviewUpvote = (review) => {
+        const reviewFound = review.votes.find(({ userId }) => userId == this.props.user.login.id);
+        if (reviewFound) {
+            if (reviewFound.vote == 1) {
+                return 'fas';
+            }
+        }
+        return 'far'
+    }
+    getReviewUpvoteCount = (review) => {
+        const reviewFound = [review.votes.filter(({ vote }) => vote === 1)];
+        if (reviewFound[0].length > 0) {
+            return reviewFound[0].length;
+        }
+        return 0;
+    }
+
+    getReviewDownvote = (review) => {
+        const reviewFound = review.votes.find(({ userId }) => userId == this.props.user.login.id);
+        if (reviewFound) {
+            if (reviewFound.vote == -1) {
+                return 'fas';
+            }
+        }
+        return 'far'
+    }
+
+    getReviewDownvoteCount = (review) => {
+        const reviewFound = [review.votes.filter(({ vote }) => vote === -1)];
+        if (reviewFound[0].length > 0) {
+            return reviewFound[0].length;
+        }
+        return 0;
+    }
 
     reportReview = (review) => {
         this.props.dispatch(reportReview(review._id));
     }
 
+    componentWillUnmount() {
+        this.props.dispatch(clearReviewVote);
+    }
 
     render() {
-        let reviews = this.props.reviews;
-        let c = this.props.user.login.isAuth ? 'far' : 'far';
+        let reviews = this.state.reviews;
 
         return (
             <div className="container m-0">
@@ -90,7 +150,6 @@ class Review extends Component {
                                 <span >
                                     {
                                         reviews.slice(0, this.state.reviewsToShow).map((review, key) => (
-
                                             <section key={key}>
 
                                                 < div className="row font-text review ">
@@ -121,15 +180,17 @@ class Review extends Component {
                                                     <div className="col-3 text-right ">
                                                         <small className="font-text m-1 font-weight-bold">Rated {review.rating}/10</small>
                                                     </div>
-                                                    <div className="col-12 mt-2 pr-5">
-                                                        <span className='text-justify font-text font-weight-regular mt-3 ' style={{ fontSize: '16px', fontWeight: 400 }}>
+                                                    <div className="col-12 mt-1 pr-5">
+                                                        <span className='text-justify font-text font-weight-regular  ' style={{ fontSize: '16px', fontWeight: 400 }}>
                                                             {
                                                                 <ReviewDescription review={review} filterProfanity={this.filterProfanity} />
                                                             }
                                                         </span>
                                                     </div>
                                                     <div className="col-12 col-md-9  ">
-                                                        <small >Do you find this review helpful? <i className={`ml-1 ${c} fa-thumbs-up `} style={{ cursor: "pointer" }} onClick={this.upvoteReview}></i> 209 <i className={`${c}  fa-thumbs-down`} style={{ cursor: "pointer" }} onClick={this.downvoteReview}></i> 2.
+                                                        <small >Do you find this review helpful? <i className={`ml-1 ${this.getReviewUpvote(review)} fa-thumbs-up `}
+                                                            style={{ cursor: "pointer" }} onClick={() => { return this.upvoteReview(review) }}></i> {this.getReviewUpvoteCount(review)} <i className={` ${this.getReviewDownvote(review)}  fa-thumbs-down`} style={{ cursor: "pointer" }}
+                                                                onClick={() => { return this.downvoteReview(review) }}></i> {this.getReviewDownvoteCount(review)}.
                                                             {this.props.user.login.isAuth == true ? null : <span> <Link style={{ color: 'black', fontWeight: '500' }} to="/login">Sign in</Link> to vote.</span>}</small>
                                                     </div>
                                                     <div className="col-md-3 col-12 text-right m-0"><small style={{ cursor: "pointer" }} onClick={this.reportReview}>Report review</small></div>
@@ -146,7 +207,6 @@ class Review extends Component {
                                 : <div>
                                     No reviews available
                                 </div>
-
                         }
 
                     </div>
@@ -158,6 +218,7 @@ class Review extends Component {
 
 function mapStateToProps(state) {
     return {
+        votedReview: state.movie.votedReview
     }
 }
 

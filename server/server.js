@@ -496,6 +496,38 @@ app.post('/api/create-review', auth, (req, res) => {
     });
 })
 
+
+app.post('/api/voteReview', auth, (req, res) => {
+
+    Review.findById(req.body.reviewId).lean().exec((err, review) => {
+        if (err) return res.status(400).json(err);
+
+        const reviewFound = review.votes.find(({ userId }) => userId == req.user._id);
+        if (reviewFound == null) {
+            if (req.body.voteType === 1 || req.body.voteType === -1)
+                review.votes.push({ userId: req.user._id, vote: req.body.voteType });
+        }
+        else {
+            const index = review.votes.indexOf(reviewFound);
+            if (req.body.voteType == reviewFound.vote) {
+                if (index > -1)
+                    review.votes.splice(index, 1);
+            }
+            else {
+                review.votes[index].vote = req.body.voteType;
+            }
+        }
+
+        Review.findByIdAndUpdate(review._id, review, { new: true }, (err, doc) => {
+            if (!err) return res.status(200).json(doc);
+            else {
+                console.log("Error: could not save vote", err);
+                return res.status(400).send(err);
+            }
+        })
+    })
+})
+
 app.post('/api/addMovieInCinema', auth2, async (req, res) => {
 
     let movieData = req.body;
