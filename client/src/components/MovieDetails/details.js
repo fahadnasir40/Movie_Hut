@@ -299,7 +299,7 @@ class MovieDetails extends Component {
                                     <div className="col-12 d-block d-md-none mt-2">
                                         <h6 className="heading">
                                             Movie Details
-                                    </h6>
+                                        </h6>
                                         <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment>
                                             {this.state.movieInfo.genreList.map((genre, i) => {
                                                 return (<span key={i} > {(i ? ', ' : '') + genre}</span>)
@@ -362,7 +362,7 @@ class MovieDetails extends Component {
                                         <div className="card ">
                                             <div className="card-header  heading text-center" style={{ borderBottom: 'none', background: '#fff' }}>
                                                 CAST {'&'} CREW
-                                        <hr className="mb-1 mt-1 ml-4 mr-4 " />
+                                                <hr className="mb-1 mt-1 ml-4 mr-4 " />
                                             </div>
                                             <div className="card-body ">
                                                 <section>

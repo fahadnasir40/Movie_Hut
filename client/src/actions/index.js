@@ -317,6 +317,45 @@ export function addMovieInCinema(movieData) {
 }
 
 
+export function reportReview(id) {
+    const request = axios.post('/api/reportReview', id)
+        .then(response => response.data);
+    return {
+        type: 'REPORT_REVIEW',
+        payload: request
+    }
+}
+
+
+export function upvoteReview(reviewId) {
+
+    const request = axios.post('/api/voteReview', { reviewId: reviewId, voteType: 1 })
+        .then(response => response.data);
+    return {
+        type: 'VOTE_REVIEW',
+        payload: request
+    }
+}
+
+
+export function downvoteReview(reviewId) {
+
+    const request = axios.post('/api/voteReview', { reviewId: reviewId, voteType: -1 })
+        .then(response => response.data);
+    return {
+        type: 'VOTE_REVIEW',
+        payload: request
+    }
+}
+
+
+export function clearReviewVote() {
+    return {
+        type: 'VOTE_REVIEW',
+        payload: {}
+    }
+}
+
 export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',

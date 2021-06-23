@@ -10,7 +10,8 @@ export default function (state = {}, action) {
             return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
             return { ...state, moviesList: action.payload.moviesList }
-
+        case 'VOTE_REVIEW':
+            return { ...state, votedReview: action.payload }
 
         case 'CLEAR_MOVIE':
             return { ...state, movieDetails: action.payload }

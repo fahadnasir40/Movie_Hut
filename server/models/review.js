@@ -29,6 +29,15 @@ const reviewSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    votes: [{
+        userId: {
+            type: String
+        },
+        vote: {
+            type: Number
+        }
+    }
+    ]
 }, { timestamps: true })
 
 const Review = mongoose.model('Review', reviewSchema);
