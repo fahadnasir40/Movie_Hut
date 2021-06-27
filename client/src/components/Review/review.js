@@ -21,6 +21,12 @@ class Review extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
+        if (nextProps.reviews != prevState.reviews) {
+            return {
+                reviews: nextProps.reviews
+            }
+        }
+
         if (nextProps.votedReview) {
             var foundIndex = prevState.reviews.findIndex(x => x._id == nextProps.votedReview._id);
             let reviews = prevState.reviews;
@@ -63,12 +69,17 @@ class Review extends Component {
         if (this.props.user.login.isAuth) {
             this.props.dispatch(upvoteReview(review._id));
         }
+        else {
+            this.props.history.push('/login');
+        }
 
     }
 
     downvoteReview = (review) => {
         if (this.props.user.login.isAuth) {
             this.props.dispatch(downvoteReview(review._id));
+        } else {
+            this.props.history.push('/login');
         }
     }
 

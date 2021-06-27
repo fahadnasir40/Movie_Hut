@@ -346,6 +346,13 @@ export function clearMovie() {
     }
 }
 
+export function clearMovieInfo() {
+    return {
+        type: 'CLEAR_MOVIE_INFO',
+        payload: {}
+    }
+}
+
 export function clearMovieShowtimes() {
     return {
         type: 'CLEAR_MOVIE_SHOWTIMES',

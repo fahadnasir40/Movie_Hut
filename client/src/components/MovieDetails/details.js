@@ -7,7 +7,7 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import Review from '../Review/review';
 
-import { getMovieInfo, } from '../../actions';
+import { getMovieInfo, clearMovieInfo } from '../../actions';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom'
@@ -55,8 +55,12 @@ class MovieDetails extends Component {
     }
 
 
-    componentDidMount = () => {
+    componentDidMount() {
         this.props.dispatch(getMovieInfo(this.props.match.params.movieId));
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(clearMovieInfo());
     }
 
     static getDerivedStateFromProps(props, state) {
