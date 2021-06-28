@@ -286,15 +286,6 @@ export function addMovieInCinema(movieData) {
 }
 
 
-export function reportReview(id) {
-    const request = axios.post('/api/reportReview', id)
-        .then(response => response.data);
-    return {
-        type: 'REPORT_REVIEW',
-        payload: request
-    }
-}
-
 
 export function upvoteReview(reviewId) {
 
@@ -380,6 +371,15 @@ export function addReview(review) {
     }
 }
 
+export function reportReview(report) {
+    const request = axios.post('/api/report-review', report)
+        .then(response => response.data);
+    return {
+        type: 'REPORT_MOVIE_REVIEW',
+        payload: request
+    }
+}
+
 export function sendPropmotionalEmails(emailData) {
     const request = axios.post(`/api/sendPromotionalEmail`, emailData)
         .then(response => response.data);
@@ -403,6 +403,13 @@ export function clearMovieReview() {
         payload: {}
     }
 }
+export function clearReviewReport() {
+    return {
+        type: 'CLEAR_REVIEW_REPORT',
+        payload: {}
+    }
+}
+
 
 export function getCinemas(
     start = 0,

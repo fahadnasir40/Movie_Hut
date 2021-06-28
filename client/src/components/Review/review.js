@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import { Tooltip, OverlayTrigger, Button } from 'react-bootstrap'
 import ReviewDescription from './reviewDescription'
+import ReportReview from './reportReview'
 import { clearReviewVote, reportReview, upvoteReview, downvoteReview } from '../../actions'
 class Review extends Component {
 
@@ -204,7 +205,7 @@ class Review extends Component {
                                                                 onClick={() => { return this.downvoteReview(review) }}></i> {this.getReviewDownvoteCount(review)}.
                                                             {this.props.user.login.isAuth == true ? null : <span> <Link style={{ color: 'black', fontWeight: '500' }} to="/login">Sign in</Link> to vote.</span>}</small>
                                                     </div>
-                                                    <div className="col-md-3 col-12 text-right m-0"><small style={{ cursor: "pointer" }} onClick={this.reportReview}>Report review</small></div>
+                                                    <ReportReview {...this.props} review={review} />
                                                     <hr className="border col-10 border-light m-0 my-2" />
                                                 </div >
                                             </section>

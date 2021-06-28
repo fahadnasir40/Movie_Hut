@@ -30,6 +30,7 @@ const { Movie } = require("./models/movie");
 const { Cinema } = require("./models/cinema");
 const { Showtime } = require("./models/showtime");
 const { Review } = require("./models/review");
+const { ReviewReport } = require("./models/review_report");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -494,6 +495,43 @@ app.post('/api/create-review', auth, (req, res) => {
             reviewId: review._id
         })
     });
+})
+
+app.post('/api/report-review', auth, (req, res) => {
+
+    let report = req.body;
+    report = {
+        ...report,
+        userId: req.user._id
+    }
+
+    ReviewReport.findOne({ userId: req.user._id, reviewId: report.reviewId }, (err, doc) => {
+        if (err) return res.status(400).send({ message: 'There is an error reporting review.', post: false });
+
+        if (doc === null) {
+            const reviewReport = new ReviewReport(report);
+            reviewReport.save((error, report) => {
+                if (error) {
+                    console.log(error)
+                    return res.status(400).send(error);
+                }
+                res.status(200).json({
+                    message: 'Review has been reported successfully.',
+                    post: true,
+                    reportId: report._id
+                })
+            });
+        }
+        else {
+            res.status(200).json({
+                message: 'Review already reported.',
+                post: false,
+                reviewId: doc.reviewId
+            })
+        }
+
+    })
+
 })
 
 

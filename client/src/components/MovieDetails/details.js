@@ -260,7 +260,7 @@ class MovieDetails extends Component {
                                     <div className="col-12 offset-lg-1 offset-xl-2  px-2">
                                         <div className="media p-1">
 
-                                            <img id="postertest" className='poster d-flex mr-3 ' src={this.state.movieInfo.poster_url} alt="movie-poster" />
+                                            <img id="postertest" className='poster d-flex mr-3 ' src={this.state.movieInfo.poster_url} alt={this.state.movieInfo.title} />
 
 
                                             <div className="media-body">
