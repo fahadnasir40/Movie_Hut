@@ -154,11 +154,6 @@ app.put('/api/updatePasswordViaEmail', (req, res) => {
 
 app.get('/api/sendEmail', auth2, async (req, res) => {
 
-
-
-
-
-
 })
 
 
@@ -484,7 +479,28 @@ app.post('/api/create-cinema', auth2, (req, res) => {
 
 app.post('/api/create-review', auth, (req, res) => {
 
-    const review = new Review(req.body);
+    function checkSentiment(comment) {
+        var Sentiment = require('sentiment');
+        var sentiment = new Sentiment();
+        var result = sentiment.analyze(comment);
+        console.log(result);
+        return result.score;
+        // if (result.score >= 1) {
+        //     return 'Positive';
+        // }
+        // else if (result.score >= 0) {
+        //     return 'Neutral';
+        // }
+        // else {
+        //     return 'Negative';
+        // }
+    }
+
+    const sentiment = checkSentiment(req.body.review);
+
+    let reviewBody = { ...req.body, sentiment: sentiment };
+
+    const review = new Review(reviewBody);
     review.save((error, review) => {
         if (error) {
             console.log(error)
@@ -533,8 +549,6 @@ app.post('/api/report-review', auth, (req, res) => {
     })
 
 })
-
-
 app.post('/api/voteReview', auth, (req, res) => {
 
     Review.findById(req.body.reviewId).lean().exec((err, review) => {
@@ -676,13 +690,24 @@ app.get('/api/getCinemas', (req, res) => {
 //UPDATE
 app.post('/api/update_user', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
-        if (err) return res.status(400).send(err);
+        if (err) return res.status(400).send({ success: false });
         res.json({
             success: true,
             doc
         })
     })
 })
+
+app.post('/api/addToFavorites', auth, (req, res) => {
+    const movieId = req.body.movieId;
+    User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            success: true,
+        })
+    })
+})
+
 
 app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
 

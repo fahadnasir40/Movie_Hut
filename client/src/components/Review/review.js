@@ -136,12 +136,17 @@ class Review extends Component {
                     <div className="card-header bg-white">
                         <div className="row">
                             <div className="col-6 m-0 ">
-                                <h5 className="heading text-capitalize">   User reviews</h5>
+                                <h5 className="heading text-capitalize">   User reviews </h5>
                             </div>
                             <div className="col-6 text-right ">
-                                <small className="font-text font-weight-normal" >
 
-                                    <i class="fa fa-thumbs-up  "></i> 90% positive reivews
+                                <small className="font-text font-weight-normal" >
+                                    {/* <small className="text-mute p-0 m-0">   {reviews.length > 1 ? reviews.length + ' reviews ' : reviews.length == 1 ? reviews.length + ' review ' : null}</small>
+ */}
+
+                                    {reviews.length > 1 ? reviews.length + ' reviews ' : reviews.length == 1 ? reviews.length + ' review ' : null}
+
+                                    {/* <i class="fa fa-thumbs-up  "></i> 90% positive reviews */}
                                 </small>
                                 <span className="border border-dark rounded p-1 px-2  mx-2 text-nowrap ">
                                     <Link to={{
@@ -186,11 +191,13 @@ class Review extends Component {
                                                                         </span>
                                                                         : null
                                                                 }
+
+
                                                             </small>
                                                         </div>
                                                     </div>
                                                     <div className="col-3 text-right ">
-                                                        <small className="font-text m-1 font-weight-bold">Rated {review.rating}/10</small>
+                                                        <small className="font-text m-1 font-weight-bold"> Rated {review.rating}/10  </small>
                                                     </div>
                                                     <div className="col-12 mt-1 pr-5">
                                                         <span className='text-justify font-text font-weight-regular  ' style={{ fontSize: '16px', fontWeight: 400 }}>

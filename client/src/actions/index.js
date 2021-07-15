@@ -267,6 +267,16 @@ export function changeUserPassword(user) {
     }
 }
 
+export function addMovieToFavorites(movieId) {
+    console.log("Movie Id", movieId);
+    const request = axios.post('/api/addToFavorites', { movieId: movieId })
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_TO_FAVORITES',
+        payload: request
+    }
+}
+
 export function addCinema(cinema) {
     const request = axios.post('/api/create-cinema', cinema)
         .then(response => response.data);

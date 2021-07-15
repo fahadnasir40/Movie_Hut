@@ -7,7 +7,7 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import Review from '../Review/review';
 
-import { getMovieInfo, clearMovieInfo } from '../../actions';
+import { getMovieInfo, clearMovieInfo, addMovieToFavorites } from '../../actions';
 import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom'
@@ -50,13 +50,17 @@ class MovieDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            castToDisplay: 14
+            castToDisplay: 14,
+            favorite: false
         };
     }
 
 
     componentDidMount() {
         this.props.dispatch(getMovieInfo(this.props.match.params.movieId));
+        if (this.props.user.login.isAuth) {
+
+        }
     }
 
     componentWillUnmount() {
@@ -64,12 +68,22 @@ class MovieDetails extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+
+
         if (props.movie.movieInfo) {
+
+            let favoriteAdded = false;
+            if (props.movie.favoriteAdded) {
+                if (props.movie.favoriteAdded.success == true)
+                    favoriteAdded = true;
+            }
+
             return {
                 movieInfo: props.movie.movieInfo.movie,
                 showtimeInfo: props.movie.movieInfo.showtime,
                 cinemaInfo: props.movie.movieInfo.cinema,
-                reviewInfo: props.movie.movieInfo.reviews
+                reviewInfo: props.movie.movieInfo.reviews,
+                favorite: favoriteAdded
             }
         }
         return null;
@@ -238,7 +252,15 @@ class MovieDetails extends Component {
         }
     }
 
+    addMovieToFavorites = () => {
+        this.props.dispatch(addMovieToFavorites(this.state.movieInfo._id));
+        // if (this.props.user.login.isAuth) {
 
+        // }
+        // else {
+        //     this.props.history.push('/login');
+        // }
+    }
 
     render() {
 
@@ -246,6 +268,8 @@ class MovieDetails extends Component {
         if (this.state.movieInfo)
             cast = this.state.movieInfo.cast;
 
+
+        console.log(this.state.movieInfo);
         return (
             <div className="sticky-body">
                 <Header user={this.props.user} />
@@ -273,7 +297,7 @@ class MovieDetails extends Component {
                                                         <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment></p>
                                                     </div>
                                                     <button className=" btn  btn-dark mr-2" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
-                                                    <button className=" btn-dark btn my-2 d-md-none " ><i className="fa fa-heart"> Favorite</i></button>
+                                                    <button className=" btn-dark btn my-2 d-md-none " onClick={this.addMovieToFavorites}><i className="fa fa-heart"> Favorite</i></button>
                                                 </div>
 
                                                 <div className="movie-details d-none d-md-block col-lg-8 col-xl-7">
@@ -293,7 +317,10 @@ class MovieDetails extends Component {
 
                                                     <div className="d-none d-md-block">
                                                         <button className=" btn  btn-dark" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
-                                                        <button className=" btn-dark btn-circle ml-2" ><i className="fa fa-heart"></i></button>
+                                                        {this.state.favorite == false ?
+                                                            <button onClick={this.addMovieToFavorites} className=" btn-dark btn-circle ml-2" ><i className="fa fa-heart"></i></button>
+                                                            : <button className="btn btn-dark ml-2" ><i className="fa fa-heart"></i> Added to Favorites</button>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -448,7 +475,7 @@ class MovieDetails extends Component {
 function mapStateToProps(state) {
 
     return {
-        movie: state.movie
+        movie: state.movie,
     }
 }
 

@@ -60,7 +60,7 @@ class MovieEncoder(JSONEncoder):
 def getShowtimes(code, city):
 
     try:
-        print("\n************"+str(city)+"************\n\n")
+        # print("\n************"+str(city)+"************\n\n")
         driver.get("https://www.cinepax.com/schedule//0/" + str(code))
 
         elements = driver.find_elements_by_class_name('item')
@@ -125,15 +125,15 @@ options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
-# options.add_argument('--headless')
+options.add_argument('--headless')
 driver = webdriver.Chrome(
-    "D:/User/Downloads/chromedriver_win32 (1)/chromedriver", chrome_options=options)
+    "D:/Projects/Movie Hut Project/Movie Hut/server/crawler/chromedriver", chrome_options=options)
 
 print("\nStarting Scraping Data....\n\n")
 
-print(*getShowtimes(4, "Lahore"), "\n")
-print(*getShowtimes(3, "Karachi"), "\n")
-print(*getShowtimes(10, "Islamabad"), "\n")
+print(*getShowtimes(4, "Lahore"))
+# print(*getShowtimes(3, "Karachi"), "\n")
+# print(*getShowtimes(10, "Islamabad"), "\n")
 
 print("Scraping Done.\n")
 
