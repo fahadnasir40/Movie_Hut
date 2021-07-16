@@ -13,6 +13,7 @@ import Moment from 'react-moment';
 import { Link } from 'react-router-dom'
 import moment from 'moment';
 import showtimes from '../Admin/CreateShowtime/showtimes';
+import { forEach } from 'async';
 
 
 const responsive = {
@@ -201,7 +202,7 @@ class MovieDetails extends Component {
                                     <div className="ml-xl-4  ml-lg-n1 my-3 ">
                                         <div className="col-12  my-4">
                                             <div className="cinema-title font-text ml-xs-n2  font-weight-bold">
-                                                {cinema.name} {cinema.address.substring(0, 21)}... {cinema.city}
+                                                {cinema.address.substring(0, 21)}... {cinema.city}
                                             </div>
                                         </div>
                                         <div className="row">
@@ -212,10 +213,18 @@ class MovieDetails extends Component {
                                                             <div className="col" key={key}>
                                                                 <div className=" session-container">
                                                                     <span className="text-capitalize session ">
-                                                                        Screen {showtime.screenType} {showtime.language == 'Urdu' ? '(Urdu)' : null}
+
+                                                                        {showtime.showType == 'cinema' ? null : 'Screen'} {showtime.screenType} {showtime.language == 'Urdu' ? '(Urdu)' : null}
                                                                     </span>
                                                                     <span className="attribute ml-2 border">
-                                                                        <Moment date={showtime.date} format="hh:mm A" />
+                                                                        {
+                                                                            showtime.showType == 'cinema' ?
+                                                                                showtime.time.map((time, i) => {
+                                                                                    return (time = time.substring(0, 4) + " " + time.substring(4, time.length) + "\t")
+                                                                                })
+                                                                                : <Moment date={showtime.date} format="hh:mm A" />
+                                                                        }
+
                                                                     </span>
                                                                 </div>
                                                             </div>

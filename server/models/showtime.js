@@ -22,9 +22,16 @@ const showtimeSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    time: [{
+        type: String,
+    }],
     runtime: {
         type: Date,
         required: true
+    },
+    showType: {
+        type: String,
+        default: 'admin'
     },
     screenType: {
         type: String,
