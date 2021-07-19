@@ -3,16 +3,18 @@ import Header from '../Header/header'
 import Footer from '../Footer/footer'
 import HomeSlider from '../Widgets/slider'
 import { Link } from 'react-router-dom'
-import { Carousel } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { getHomeMovies } from '../../actions'
+import ReactPaginate from "react-paginate";
+
 
 class Home extends Component {
 
-
     state = {
-        movies: ''
+        movies: [],
+        cachedProps: ''
     }
+    PER_PAGE = 12;
 
     responsive = {
         desktop: {
@@ -52,35 +54,66 @@ class Home extends Component {
 
     static getDerivedStateFromProps(props, state) {
 
-        if (props.movies) {
-            if (props.movies.length > 0) {
-                return {
-                    movies: props.movies
+        if (state.cachedProps != props) {
+            if (props.movies) {
+                if (props.movies.length > 0) {
+                    return {
+                        movies: props.movies,
+                        currentPage: 0,
+                        cachedProps: props
+                    }
                 }
             }
         }
+
         return null;
     }
 
 
+    handlePageClick = ({ selected: selectedPage }) => {
+        this.setState({
+            currentPage: selectedPage
+        })
+    }
+
     render() {
+
+        let offset = this.state.currentPage * this.PER_PAGE;
         let movies = this.state.movies;
+        let moviesLength = 0;
+        if (movies) { moviesLength = movies.length }
+        let pageCount = Math.ceil(moviesLength / this.PER_PAGE)
+
+
+        if (movies) {
+            movies = this.state.movies.slice(offset, offset + this.PER_PAGE).map((movie, key) => {
+                return (
+                    <div className=" movie-container " key={key}>
+                        <Link class="p-1" to={`/movie/${movie._id}`}>
+                            <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+
+                        </Link>
+
+                    </div>
+                )
+            })
+        }
         return (
             <div>
                 <Header user={this.props.user} />
-                <div className="container-fluid">
-                    <div className="row">
+                <div className="container-fluid sticky-body">
+                    <div className="row justify-content-center d-sm-none d-lg-block" style={{ backgroundColor: 'black' }}>
                         <HomeSlider
                             settings={{
-                                interval: '500'
+                                interval: '10000'
                             }}
-                            movies={movies}
+                            movies={this.state.movies}
                         />
                     </div>
                     <div className="row">
 
                         <div className="container">
-                            <div className="row mt-5 ml-5">
+                            <div className="row mt-3 ml-5">
                                 <button className="cbtn active my-1">
                                     NOW SHOWING
                                 </button>
@@ -93,72 +126,43 @@ class Home extends Component {
                             </div>
 
                             <div className="row mt-3 px-5">
+
                                 {
-                                    movies ?
-                                        movies.map((movie, key) => {
-                                            return (
-                                                <div className=" movie-container " key={key}>
-                                                    <Link class="p-1" to={`/movie/${movie._id}`}>
-                                                        <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+                                    movies
+                                    // movies.map((movie, key) => {
+                                    //     return (
+                                    //         <div className=" movie-container " key={key}>
+                                    //             <Link class="p-1" to={`/movie/${movie._id}`}>
+                                    //                 <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
 
-                                                    </Link>
+                                    //             </Link>
 
-                                                </div>
-                                            )
-                                        })
-
-                                        : null
+                                    //         </div>
+                                    //     )
+                                    // })
                                 }
 
                             </div>
+                            <div className="row mt-3 px-5">
+                                <div className="col-12 col-md-5">
+                                    <ReactPaginate
+                                        previousLabel={"← Previous"}
+                                        nextLabel={"Next →"}
+                                        pageCount={pageCount}
+                                        onPageChange={this.handlePageClick}
+                                        containerClassName={"pagination"}
+                                        previousLinkClassName={"pagination__link"}
+                                        nextLinkClassName={"pagination__link"}
+                                        disabledClassName={"pagination__link--disabled"}
+                                        activeClassName={"pagination__link--active"}
+                                    />
+
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
-
-
-                {/* <Carousel activeIndex={this.state.index} onSelect={this.handleSelect}>
-                    <Carousel.Item>
-                        <img
-                            className="d-block w-100"
-                            src={"holder.js/800x400?text=First slide&bg=373940"}
-                            alt="First slide"
-                        />
-                        <Carousel.Caption>
-                            <h3>First slide label</h3>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    <Carousel.Item>
-                        <img
-                            className="d-block w-100"
-                            src="holder.js/800x400?text=Second slide&bg=282c34"
-                            alt="Second slide"
-                        />
-
-                        <Carousel.Caption>
-                            <h3>Second slide label</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    <Carousel.Item>
-                        <img
-                            className="d-block w-100"
-                            src="holder.js/800x400?text=Third slide&bg=20232a"
-                            alt="Third slide"
-                        />
-
-                        <Carousel.Caption>
-                            <h3>Third slide label</h3>
-                            <p>
-                                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-          </p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                </Carousel> */}
-
-                <Footer />
+                <Footer className="sticky-footer" />
             </div >
         )
     }

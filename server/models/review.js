@@ -17,6 +17,10 @@ const reviewSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    sentiment: {
+        type: Number,
+        required: true
+    },
     userId: {
         type: String,
         required: true

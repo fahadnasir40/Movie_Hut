@@ -298,6 +298,16 @@ export function changeUserPassword(user) {
     }
 }
 
+export function addMovieToFavorites(movieId) {
+    console.log("Movie Id", movieId);
+    const request = axios.post('/api/addToFavorites', { movieId: movieId })
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_TO_FAVORITES',
+        payload: request
+    }
+}
+
 export function addCinema(cinema) {
     const request = axios.post('/api/create-cinema', cinema)
         .then(response => response.data);
@@ -316,15 +326,6 @@ export function addMovieInCinema(movieData) {
     }
 }
 
-
-export function reportReview(id) {
-    const request = axios.post('/api/reportReview', id)
-        .then(response => response.data);
-    return {
-        type: 'REPORT_REVIEW',
-        payload: request
-    }
-}
 
 
 export function upvoteReview(reviewId) {
@@ -377,6 +378,13 @@ export function clearMovie() {
     }
 }
 
+export function clearMovieInfo() {
+    return {
+        type: 'CLEAR_MOVIE_INFO',
+        payload: {}
+    }
+}
+
 export function clearMovieShowtimes() {
     return {
         type: 'CLEAR_MOVIE_SHOWTIMES',
@@ -404,6 +412,15 @@ export function addReview(review) {
     }
 }
 
+export function reportReview(report) {
+    const request = axios.post('/api/report-review', report)
+        .then(response => response.data);
+    return {
+        type: 'REPORT_MOVIE_REVIEW',
+        payload: request
+    }
+}
+
 export function sendPropmotionalEmails(emailData) {
     const request = axios.post(`/api/sendPromotionalEmail`, emailData)
         .then(response => response.data);
@@ -427,6 +444,13 @@ export function clearMovieReview() {
         payload: {}
     }
 }
+export function clearReviewReport() {
+    return {
+        type: 'CLEAR_REVIEW_REPORT',
+        payload: {}
+    }
+}
+
 
 export function getCinemas(
     start = 0,

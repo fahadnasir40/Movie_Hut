@@ -57,15 +57,15 @@ class MovieEncoder(JSONEncoder):
         return o.__dict__
 
 
-def getShowtimes(code, city):
+def getShowtimes(code, city, last):
 
     try:
-        print("\n************"+str(city)+"************\n\n")
+        # print("\n************"+str(city)+"************\n\n")
         driver.get("https://www.cinepax.com/schedule//0/" + str(code))
 
         elements = driver.find_elements_by_class_name('item')
         movies_list = list()
-
+        count = len(elements)
         for e in elements:
             a = e.find_elements_by_tag_name('a')
             for i in a:
@@ -74,19 +74,38 @@ def getShowtimes(code, city):
                 ActionChains(driver).move_to_element(i).click(i).perform()
                 time.sleep(1)
                 now = datetime.datetime.now()
+                showDate = datetime.datetime(
+                    now.year, now.month, (int(i.text[-2:], 10)))
+
+                if(showDate < now):
+                    if(showDate.month == 12 and showDate.year == now.year):
+                        showDate = datetime.datetime(
+                            now.year + 1, 1, (int(i.text[-2:], 10)))
+                    elif(showDate.year == now.year and showDate.month == now.month and showDate.day < now.day):
+                        showDate = datetime.datetime(
+                            now.year, now.month + 1, (int(i.text[-2:], 10)))
+
                 x = {
                     "city": str(city),
-                    "showDate": i.text,
+                    "showDate": str(showDate),
+                    "showDay": i.text[0:3],
                     "scrapeDate": str(now),
                     "movie": PrintShowtimeDetails()
                 }
 
                 movies = json.dumps(x, indent=4, cls=MovieEncoder)
+
                 movies_list.append(movies)
+            if(last == 1):
+                movies_list.append(",")
+            elif(last == 0 and count > 1):
+                movies_list.append(",")
+            count = count - 1
 
         return movies_list
-    except:
-        return "Error scrapping " + str(city) + " data."
+    except Exception as e:
+
+        return "Error scrapping " + str(city) + " data. "
 
 
 def PrintShowtimeDetails():
@@ -125,16 +144,31 @@ options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
-# options.add_argument('--headless')
+# options.add_experimental_option("excludeSwitches")
+options.add_argument('--headless')
 driver = webdriver.Chrome(
-    "D:/User/Downloads/chromedriver_win32 (1)/chromedriver", chrome_options=options)
+    "D:/Projects/Movie Hut Project/Movie Hut/server/crawler/chromedriver", options=options)
 
-print("\nStarting Scraping Data....\n\n")
+# print("\nStarting Scraping Data....\n\n")
+leftBracket = "["
+rightBracket = "]"
+# comma = ","
+print(leftBracket)
+print(*getShowtimes(10, "Islamabad", 1))
+print(*getShowtimes(3, "Karachi", 1))
+print(*getShowtimes(4, "Lahore", 0))
+# print(comma)
 
-print(*getShowtimes(4, "Lahore"), "\n")
-print(*getShowtimes(3, "Karachi"), "\n")
-print(*getShowtimes(10, "Islamabad"), "\n")
+# print(comma)
 
-print("Scraping Done.\n")
+print(rightBracket)
 
-driver.close()
+# print(leftBracket + *getShowtimes(4, "Lahore")+comma + str(*getShowtimes(3, "Karachi"))
+#       + comma + str(*getShowtimes(10, "Islamabad"))+rightBracket)
+# print('{', *getShowtimes(4, "Lahore"), ',' *getShowtimes(3, "Karachi"),
+#       ',', *getShowtimes(10, "Islamabad"), '}', flush=True)
+# print(*getShowtimes(3, "Karachi"))
+# print(*getShowtimes(10, "Islamabad"))
+
+# print("Scraping Done.\n")
+driver.quit()

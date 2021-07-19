@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Moment from 'react-moment'
 import { Tooltip, OverlayTrigger, Button } from 'react-bootstrap'
 import ReviewDescription from './reviewDescription'
+import ReportReview from './reportReview'
 import { clearReviewVote, reportReview, upvoteReview, downvoteReview } from '../../actions'
 class Review extends Component {
 
@@ -20,6 +21,12 @@ class Review extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+
+        if (nextProps.reviews != prevState.reviews) {
+            return {
+                reviews: nextProps.reviews
+            }
+        }
 
         if (nextProps.votedReview) {
             var foundIndex = prevState.reviews.findIndex(x => x._id == nextProps.votedReview._id);
@@ -63,12 +70,17 @@ class Review extends Component {
         if (this.props.user.login.isAuth) {
             this.props.dispatch(upvoteReview(review._id));
         }
+        else {
+            this.props.history.push('/login');
+        }
 
     }
 
     downvoteReview = (review) => {
         if (this.props.user.login.isAuth) {
             this.props.dispatch(downvoteReview(review._id));
+        } else {
+            this.props.history.push('/login');
         }
     }
 
@@ -124,12 +136,17 @@ class Review extends Component {
                     <div className="card-header bg-white">
                         <div className="row">
                             <div className="col-6 m-0 ">
-                                <h5 className="heading text-capitalize">   User reviews</h5>
+                                <h5 className="heading text-capitalize">   User reviews </h5>
                             </div>
                             <div className="col-6 text-right ">
-                                <small className="font-text font-weight-normal" >
 
-                                    <i class="fa fa-thumbs-up  "></i> 90% positive reivews
+                                <small className="font-text font-weight-normal" >
+                                    {/* <small className="text-mute p-0 m-0">   {reviews.length > 1 ? reviews.length + ' reviews ' : reviews.length == 1 ? reviews.length + ' review ' : null}</small>
+ */}
+
+                                    {reviews.length > 1 ? reviews.length + ' reviews ' : reviews.length == 1 ? reviews.length + ' review ' : null}
+
+                                    {/* <i class="fa fa-thumbs-up  "></i> 90% positive reviews */}
                                 </small>
                                 <span className="border border-dark rounded p-1 px-2  mx-2 text-nowrap ">
                                     <Link to={{
@@ -174,11 +191,13 @@ class Review extends Component {
                                                                         </span>
                                                                         : null
                                                                 }
+
+
                                                             </small>
                                                         </div>
                                                     </div>
                                                     <div className="col-3 text-right ">
-                                                        <small className="font-text m-1 font-weight-bold">Rated {review.rating}/10</small>
+                                                        <small className="font-text m-1 font-weight-bold"> Rated {review.rating}/10  </small>
                                                     </div>
                                                     <div className="col-12 mt-1 pr-5">
                                                         <span className='text-justify font-text font-weight-regular  ' style={{ fontSize: '16px', fontWeight: 400 }}>
@@ -193,7 +212,7 @@ class Review extends Component {
                                                                 onClick={() => { return this.downvoteReview(review) }}></i> {this.getReviewDownvoteCount(review)}.
                                                             {this.props.user.login.isAuth == true ? null : <span> <Link style={{ color: 'black', fontWeight: '500' }} to="/login">Sign in</Link> to vote.</span>}</small>
                                                     </div>
-                                                    <div className="col-md-3 col-12 text-right m-0"><small style={{ cursor: "pointer" }} onClick={this.reportReview}>Report review</small></div>
+                                                    <ReportReview {...this.props} review={review} />
                                                     <hr className="border col-10 border-light m-0 my-2" />
                                                 </div >
                                             </section>
