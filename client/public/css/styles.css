@@ -776,3 +776,40 @@ body {
   margin: auto 20px;
   transition: transform 0.7s;
 }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+}
+
+.pagination a {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.pagination a:hover {
+  color: #000;
+}
+
+.pagination__link {
+  font-weight: bold;
+}
+
+.pagination__link--active a {
+  color: #fff !important;
+  background: #000;
+}
+
+.pagination__link--disabled a {
+  color: rgb(198, 197, 202);
+  border: 1px solid rgb(198, 197, 202);
+}
+
+#color-overlay {
+  background-color: black;
+  opacity: 0.8;
+}

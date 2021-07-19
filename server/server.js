@@ -328,7 +328,7 @@ app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 
 
 app.get('/api/getHomeMovies', (req, res) => {
-    Movie.find({}).sort({ createdAt: -1 }).select('_id movieId poster_url title runtime videoLinks background_url description rating title').exec((err, doc) => {
+    Movie.find({}).sort({ releaseDate: -1 }).select('_id movieId poster_url title runtime videoLinks background_url description rating title').exec((err, doc) => {
         if (err) return res.status(400).send(err);
 
         res.status(200).json({
