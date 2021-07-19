@@ -1,9 +1,11 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import Auth from './hoc/auth';
 import Home from './components/Home/home';
-import MovieDetails from './components/MovieDetails/details';
 import Login from './components/Login/Login'
+import Logout from './components/Logout/logout'
 import Register from './components/Register/Register'
+import MovieDetails from './components/MovieDetails/details';
 import CreateReview from './components/Review/CreateReview/createReview'
 import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
@@ -12,11 +14,10 @@ import Dashboard from './components/Admin/Dashboard/dashboard'
 import CinemasList from './components/Admin/Cinemas/cinemas'
 import AddMovie from './components/Admin/AddMovie/addMovie'
 import Showtimes from './components/Admin/CreateShowtime/showtimes'
-import Logout from './components/Logout/logout'
-import Auth from './hoc/auth';
 import Profile from './components/Profile/profile';
 import UpdatePassword from './components/Profile/updatePassword';
 import UpdateProfile from './components/Profile/edit';
+import Settings from './components/Profile/settings'
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
@@ -26,8 +27,8 @@ import CinemaMovie from './components/Home/moviesInCinema';
 const routes = () => {
     return (
         <Switch>
-            <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/" exact component={Auth(Home, null)} />
+            <Route path="/admin-panel" exact component={Auth(Dashboard, true, true)} />
             <Route path="/cinemas/:city?" exact component={Auth(Cinemas, null)} />
             <Route path="/movie/:movieId" exact component={Auth(MovieDetails, null)} />
             <Route path="/cinemaMovies/:cinemaId" exact component={Auth(CinemaMovie, null)} />
@@ -38,6 +39,7 @@ const routes = () => {
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/edit-profile" exact component={Auth(UpdateProfile, true)} />
             <Route path="/updatePassword" exact component={Auth(UpdatePassword, true)} />
+            <Route path="/settings" exact component={Auth(Settings, true)} />
             <Route path="/create-review" exact component={Auth(CreateReview, true)} />
             <Route path="/create-cinema" exact component={Auth(CreateCinema, null, true)} />
             <Route path="/promotions" exact component={Auth(Promotions, true, true)} />
@@ -48,7 +50,6 @@ const routes = () => {
             <Route path="/logout" exact component={Logout} />
             <Route path="/reset-expired" exact component={ExpirePassword} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />
-
         </Switch>
     )
 }

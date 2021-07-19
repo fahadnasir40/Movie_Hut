@@ -29,9 +29,11 @@ class profile extends Component {
                         <p>Date of Birth:<div  style={{ marginRight: "1.3em", display: "inline" }}></div> {user.dob}</p>
                         <hr />
                     </div>
-                    <Button className="btn-dark mt-2 mb-3 edit-profile" style={{ borderRadius: '100px' }}  type="submit">
-                        Settings
-                    </Button>
+                    <Link to="/settings">
+                        <Button className="btn-dark mt-2 mb-3 edit-profile" style={{ borderRadius: '100px' }}  type="submit">
+                            Settings
+                        </Button>
+                    </Link>
                     <Link to="/updatePassword">
                         <Button className="btn-dark mt-2 mb-3 mr-2 edit-profile" style={{ borderRadius: '100px' }}  type="submit">
                             Change Password
