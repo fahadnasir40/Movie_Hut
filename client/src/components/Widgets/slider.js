@@ -65,7 +65,7 @@ class Slider extends Component {
                     <div className="trailer-body m-0 mt-n1 p-0 primary" >
                         <div className="trailer-container">
                             <iframe className="player" type="text/html" width="100%" height="100%"
-                                src={'https://www.youtube-nocookie.com/embed/' + this.getVideoId(videos) + '?autoplay=1&loop=1&modestbranding=1&playlist=' + this.getVideoId(videos[0])} frameborder="0"
+                                src={'https://www.youtube-nocookie.com/embed/' + this.getVideoId(videos) + '?autoplay=1&loop=1&modestbranding=1&playlist=' + this.getVideoId(videos)} frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; "
                                 allowfullscreen="1"
                                 webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
@@ -89,20 +89,20 @@ class Slider extends Component {
                         return (
                             <Carousel.Item key={i} interval={this.props.settings.interval} >
 
-                                <img style={{ width: "18%", objectFit: "cover", opacity: '0.5', backgroundColor: '#000' }}
+                                <img style={{ width: "19%", objectFit: "cover", opacity: '0.5', backgroundColor: '#000' }}
                                     src={(i - 1) >= 0 ? movies[i - 1].background_url : movies[length - 1].background_url}
                                     alt={item.title}
                                     height="420px"
 
                                 />
-                                <img className="shadow-lg  rounded" style={{ width: "64%" }}
+                                <img className="shadow-lg  rounded" style={{ width: "62%" }}
                                     src={item.background_url}
                                     alt={item.title}
                                     height="420px"
 
                                 />
                                 <img style={{
-                                    width: "18%", objectFit: "cover", opacity: '0.5', backgroundColor: '#000'
+                                    width: "19%", objectFit: "cover", opacity: '0.5', backgroundColor: '#000'
                                 }}
                                     src={i + 1 < length ? movies[i + 1].background_url : item.background_url
                                     }
@@ -116,7 +116,7 @@ class Slider extends Component {
                                         <p> {item.runtime} Minutes</p>
 
                                         <div className="row mr-2">
-                                            <div className="btn bg-white ml-auto mr-5 mb-3 mt-n5 " onClick={() => { this.handleShow(videoLinks) }}><i class="fas fa-video" style={{ opacity: '0.9' }}></i> Play Trailer</div>
+                                            <div className="btn bg-white ml-auto mr-5 mb-3 mt-n5 " style={{ opacity: '0.9' }} onClick={() => { this.handleShow(videoLinks) }}><i class="fas fa-video" style={{ opacity: '0.9' }}></i> Play Trailer</div>
 
                                         </div>
                                     </div>
@@ -131,7 +131,6 @@ class Slider extends Component {
     }
 
     render() {
-        console.log(this.state);
         return (
 
             <div>

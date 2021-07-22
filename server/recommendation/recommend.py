@@ -6,6 +6,8 @@ import nltk
 import numpy as np
 import pandas as pd
 import pymongo
+import sys
+import json
 
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["Movie_Hut"]
@@ -14,19 +16,26 @@ mycol = mydb["movies"]
 # construct pandas dataframe from pymongo collection
 df = pd.DataFrame(list(mycol.find()))
 
+# take input
+input_movie = 'Man of Steel'
+
+# check if input movie exists in DB
+if not df['title'].str.contains(input_movie).any():
+    print('Error: Movie not found in DB...')
+    sys.exit()
+
 # Required columns - Title and movie plot
 finaldata = df[["title", "description"]]
 finaldata = finaldata.set_index('title')  # Setting the movie title as index
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('wordnet')
+# uncomment downloads on very 1st run
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger')
+# nltk.download('wordnet')
+# nltk.download('stopwords')
 
 lemmatizer = WordNetLemmatizer()
-
-nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
-
 VERB_CODES = {'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ'}
 
 
@@ -58,9 +67,6 @@ finaldata["plot_processed"] = finaldata["description"].apply(
     preprocess_sentences)
 finaldata.head()
 
-print('done')
-
-
 # Vectorizing pre-processed movie plots using TF-IDF
 tfidfvec = TfidfVectorizer()
 tfidf_movieid = tfidfvec.fit_transform((finaldata["plot_processed"]))
@@ -83,7 +89,6 @@ def recommendations(title, cosine_sim=cos_sim):
     return recommended_movies
 
 
-output = recommendations('Man of Steel')
-print('Recommendations:')
-for m in output:
-    print(m)
+output = recommendations(input_movie)
+toJson = json.dumps({"movies": output})
+print(toJson)
