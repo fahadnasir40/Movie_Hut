@@ -327,23 +327,33 @@ app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 })
 
 
-app.get('/api/getHomeMovies', (req, res) => {
-    Movie.find({}).sort({ releaseDate: -1 }).select('_id movieId poster_url title runtime videoLinks background_url description rating title').exec((err, doc) => {
-        if (err) return res.status(400).send(err);
 
-        res.status(200).json({
-            moviesList: doc
-            // id: doc._id,
-            // movieId: doc.movieId,
-            // poster_url: doc.poster_url,
-            // title: doc.title,
-            // runtime: doc.runtime,
-            // description: doc.description,
-            // rating: doc.rating,
-            // background_url: doc.background_url,
-            // videoLinks: doc.videoLinks
+app.get('/api/getHomeMovies', async (req, res) => {
+
+    var upcommingShows = new Array();
+    const today = moment().startOf('day');
+    const p = Showtime.find({
+        date: {
+            $gte: today.toDate(),
+            $lte: moment(today).add(6, "days").toDate()
+        }
+    }).exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        upcommingShows = docs.map(function (s) {
+            return s.movieId;
+        });
+        const s = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index)
+        console.log(s);
+        Movie.find().sort({ releaseDate: -1 }).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
+            if (err) return res.status(400).send(err);
+
+            res.status(200).json({
+                moviesList: doc
+            })
         })
-    })
+    });
+
+
 })
 
 
@@ -438,6 +448,48 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
         catch {
             return res.status(404).json({ message: "Error getting movie info TMDB.", found: false });
         }
+    });
+})
+
+function getRecommendedMovies(movieTitle) {
+
+}
+
+app.get('/api/getRecommendations', (req, res) => {
+    var dataToSend, err;
+    // spawn new child process to call the python script
+    //variables file name, movie name, api key
+    const python = spawn('python', ['./server/recommendation/recommend.py', req.body.title]);
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...',);
+
+        dataToSend = data.toString();
+    });
+
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        try {
+            const r = JSON.parse(dataToSend);
+            const recommendations = r.movies;
+            return res.status(200).json({ recommendations });
+        }
+        catch {
+            return res.status(404).json({ message: "Error getting recommendations." });
+        }
+    });
+});
+
+app.get('/api/getCertification', (req, res) => {
+    Movie.find().exec((err, movies) => {
+        var certification = [];
+        movies.map((item, key) => {
+            certification.push(item.certification);
+        })
+
+        const withoutDups = certification.filter((item, index) => certification.indexOf(item) === index)
+        return res.status(200).send(withoutDups);
     });
 })
 
