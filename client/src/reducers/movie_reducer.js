@@ -9,7 +9,7 @@ export default function (state = {}, action) {
         case 'GET_MOVIE_FROM_TMDB':
             return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
-            return { ...state, moviesList: action.payload.moviesList }
+            return { ...state, moviesList: action.payload }
         case 'VOTE_REVIEW':
             return { ...state, votedReview: action.payload }
         case 'ADD_MOVIE_TO_FAVORITES':
