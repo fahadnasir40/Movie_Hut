@@ -23,6 +23,7 @@ import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
 import Cinemas from './components/Home/cinemas';
 import CinemaMovie from './components/Home/moviesInCinema';
+import UsersList from './components/Admin/Users/users'
 
 const routes = () => {
     return (
@@ -47,6 +48,7 @@ const routes = () => {
             <Route path="/addMovie/:cinemaId" exact component={Auth(AddMovie, true, true)} />
             <Route path="/showtimes" exact component={Auth(Showtimes, true, true)} />
             <Route path="/admin-cinemas" exact component={Auth(CinemasList, true, true)} />
+            <Route path="/admin-users" exact component={Auth(UsersList, true, true)} />
             <Route path="/logout" exact component={Logout} />
             <Route path="/reset-expired" exact component={ExpirePassword} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />

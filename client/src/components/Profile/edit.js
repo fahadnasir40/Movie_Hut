@@ -28,11 +28,11 @@ class EditProfile extends Component {
         this.setState({city:event.target.value})
     }
     componentDidMount = () => {
-        console.log(this.props)
+        // console.log(this.props)
         this.props.dispatch(getUser(this.props.user.login.id));
     }
     static getDerivedStateFromProps(nextProps, state) {
-        console.log("Curr" ,nextProps)
+        // console.log("Curr" ,nextProps)
         if(state.cachedProps !== nextProps){
             if(nextProps.currentUser){
                 if(nextProps.currentUser.user){
@@ -101,7 +101,7 @@ class EditProfile extends Component {
                                 </Form.Group>
                                 <Form.Group className="input-style " controlId="city">
                                     <Form.Label>City</Form.Label>
-                                    <select id="city" name="city" className="form-control" onChange={this.handleInputCity}>
+                                    <select id="city" name="city" value={this.state.city} className="form-control" onChange={this.handleInputCity}>
                                         <option value="Lahore">Lahore</option>
                                         <option value="Islamabad">Islamabad</option>
                                         <option value="Multan">Multan</option>

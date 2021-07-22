@@ -615,6 +615,15 @@ app.get('/api/user-info', auth, (req, res) => {
     })
 })
 
+app.get('/api/user-settings', auth, (req, res) => {
+    User.findById(req.query.id ).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            user: doc,
+        })
+    })
+})
+
 
 //UPDATE
 app.post('/api/user-update', auth, (req, res) => {
@@ -767,6 +776,18 @@ app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
     //         doc
     //     })
     // })
+})
+
+app.get('/api/users', auth2, (req, res) => {
+    let skip = parseInt(req.query.skip);
+    let limit = parseInt(req.query.limit);
+    let order = req.query.order;
+
+    // ORDER = asc || desc
+    User.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.send(doc);
+    })
 })
 
 

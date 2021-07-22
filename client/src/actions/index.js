@@ -70,6 +70,16 @@ export function getUser(id) {
     }
 }
 
+export function getUserSettings(id) {
+    const request = axios.get(`/api/user-settings?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
+
 export function updateUserInfo(user) {
     const request = axios.post("/api/user-update", user)
         .then(response => response.data);

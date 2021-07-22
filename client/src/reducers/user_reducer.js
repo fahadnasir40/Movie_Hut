@@ -35,6 +35,8 @@ export default function(state={},action){
                 ...state,
                 message:action.payload
             }
+        case 'GET_USERS':
+            return { ...state, userList: action.payload }
         case 'CLEAR_USER':
             return {
                 ...state,
