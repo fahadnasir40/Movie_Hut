@@ -777,6 +777,7 @@ body {
   transition: transform 0.7s;
 }
 
+<<<<<<< HEAD
 .form-left{
   float: left;
 }
@@ -790,3 +791,41 @@ body {
   margin: 0 0;
   max-width: fit-content;
 }
+=======
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+}
+
+.pagination a {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.pagination a:hover {
+  color: #000;
+}
+
+.pagination__link {
+  font-weight: bold;
+}
+
+.pagination__link--active a {
+  color: #fff !important;
+  background: #000;
+}
+
+.pagination__link--disabled a {
+  color: rgb(198, 197, 202);
+  border: 1px solid rgb(198, 197, 202);
+}
+
+#color-overlay {
+  background-color: black;
+  opacity: 0.8;
+}
+>>>>>>> 02a436e6f97fb42ed9ee1d50ab5a1904d10f4083

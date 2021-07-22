@@ -10,10 +10,14 @@ class City extends Component {
         city: "Lahore",
         cinemasList: [],
         cachedProps: '',
+        searchTerm: ''
     }
 
     handleClick = (e) => {
         this.setState({ city: e.target.id })
+    }
+    handleSearchTerm = (e) => {
+        this.setState({ searchTerm: e.target.value })
     }
 
     componentDidMount() {
@@ -48,7 +52,7 @@ class City extends Component {
     }
     showItems = () => {
         return this.state.cinemasList.map((cinema, key) => {
-            if (this.state.city === cinema.city) return (<div className="col-12 col-md-4 mt-2">
+            if (this.state.city === cinema.city && this.state.searchTerm == "") return (<div className="col-12 col-md-4 mt-2">
                 <div class="card shadow" styles={{ width: "9rem" }}>
                     <div class="card-body">
                         <h5 class="card-title">{cinema.name}</h5>
@@ -58,6 +62,16 @@ class City extends Component {
                 </div>
             </div>
             )
+            else if (this.state.city === cinema.city && cinema.name.toLowerCase().includes(this.state.searchTerm.toLowerCase())) return (<div className="col-12 col-md-4 mt-2">
+            <div class="card shadow" styles={{ width: "9rem" }}>
+                <div class="card-body">
+                    <h5 class="card-title">{cinema.name}</h5>
+                    <p class="card-text">{cinema.address}</p>
+                    <Link to={`/cinemaMovies/${cinema._id}`} class="btn btn-dark">View Info</Link>
+                </div>
+            </div>
+        </div>
+        )
 
         })
     }
@@ -83,6 +97,19 @@ class City extends Component {
                             </ol>
                         </nav>
                     </div>
+                    <div className="row">
+                            <div className="col">
+                                <div className="input-group col-md-4 col float-right mb-3">
+
+                                    <div class="input-group-prepend ">
+                                        <span class="input-group-text " style={{ backgroundColor: "black" }} id="basic-addon1">
+                                            <i className="fa fa-search" style={{ color: '#ffff' }}></i></span>
+                                    </div>
+                                    <input type="text" onChange={this.handleSearchTerm} class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
+                                </div>
+
+                            </div>
+                        </div>
                     <div className="showtime-container ml-xl-1 row mb-5">
                         <div id="Lahore" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("Lahore")} `}>
                             LAHORE
@@ -97,6 +124,7 @@ class City extends Component {
                             MULTAN
                         </div>
                     </div>
+                    
                     <div className="row">
                         {this.showItems()}
                     </div>

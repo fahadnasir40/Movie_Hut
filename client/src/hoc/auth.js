@@ -53,7 +53,6 @@ export default function (ComposedClass, reload, access) {
     }
 
     function mapStateToProps(state) {
-        console.log(state)
         return {
             user: state.user
         }

@@ -10,12 +10,19 @@ export default function (state = {}, action) {
             return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
             return { ...state, moviesList: action.payload.moviesList }
-
-
+        case 'VOTE_REVIEW':
+            return { ...state, votedReview: action.payload }
+        case 'ADD_MOVIE_TO_FAVORITES':
+            return { ...state, favoriteAdded: action.payload }
+        case 'REPORT_MOVIE_REVIEW':
+            return { ...state, reportReview: action.payload }
         case 'CLEAR_MOVIE':
-            return { ...state, movieDetails: action.payload }
+            return { ...state, movieDetails: action.payload, favoriteAdded: action.payload }
         case 'CLEAR_MOVIE_REVIEW':
             return { ...state, movieReview: action.payload }
+        case 'CLEAR_REVIEW_REPORT':
+            return { ...state, reportReview: action.payload }
+
         // case 'GET_SHARED_DOCUMENT':
         //     return { ...state, sharedDocument: action.payload }
         // case 'UPDATE_DOCUMENT':

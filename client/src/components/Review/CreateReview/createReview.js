@@ -13,7 +13,7 @@ class CreateReview extends Component {
 
     state = {
         movie: '',
-        rating: 5,
+        rating: 10,
         review: '',
         isSpoiler: false,
         message: '',

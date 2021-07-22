@@ -37,6 +37,8 @@ export default function(state={},action){
             }
         case 'GET_USERS':
             return { ...state, userList: action.payload }
+        case 'GET_REPORTS':
+            return { ...state, reportList: action.payload.reportList, reviewList: action.payload.reviewList }
         case 'CLEAR_USER':
             return {
                 ...state,

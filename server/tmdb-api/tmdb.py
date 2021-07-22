@@ -74,7 +74,7 @@ class Cast:
 
 
 def getMovieID(movieName):
-    request = 'https://api.themoviedb.org/3/search/movie?query={0}&api_key={1}&page=1&include_adult=false'.format(movieName,
+    request = 'https://api.themoviedb.org/3/search/movie?query={0}&api_key={1}&page=1&include_adult=true'.format(movieName,
                                                                                                                   key)
     response = requests.get(request)
     if response.status_code != 200:

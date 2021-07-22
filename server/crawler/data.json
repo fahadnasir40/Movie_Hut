@@ -1,0 +1,7 @@
+[
+{ "_id" : 1, "title" : "Toy Story", "genre" : "Animation", "rating" : "8.5", "cast": ["Tom Hanks", "Tim Allen"] },
+{ "_id" : 2, "title" : "Interstellar", "genre" : "Sci-fi", "rating" : "9.2", "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"] },
+{ "_id" : 3, "title" : "Black Widow", "genre" : "Action", "rating" : "NA", "cast": ["Scarlett Johansson", "Florence Pugh", "David Harbour", "Rachel Weisz"] },
+{ "_id" : 4, "title" : "The Martian", "genre" : "Sci-fi", "rating" : "8", "cast": ["Matt Damon"] },
+{ "_id" : 5, "title" : "Isle of Dogs", "genre" : "Animation", "rating" : "7.8", "cast": ["Bryan Cranston", "Scarlett Johansson"] }
+]

@@ -17,6 +17,10 @@ const reviewSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    sentiment: {
+        type: Number,
+        required: true
+    },
     userId: {
         type: String,
         required: true
@@ -29,6 +33,15 @@ const reviewSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    votes: [{
+        userId: {
+            type: String
+        },
+        vote: {
+            type: Number
+        }
+    }
+    ]
 }, { timestamps: true })
 
 const Review = mongoose.model('Review', reviewSchema);

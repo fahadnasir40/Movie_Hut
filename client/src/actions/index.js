@@ -116,6 +116,32 @@ export function getUsers(
     }
 }
 
+export function getReports(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
+
+    const request = axios.get(`api/getReportsList?skip=${start}&limit=${limit}&order=${order}`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
+
+    return {
+        type: 'GET_REPORTS',
+        payload: request
+    }
+}
+
 export function userRegister(user) {
     const request = axios.post(`/api/register`, user)
     return (dispatch) => {
@@ -308,6 +334,16 @@ export function changeUserPassword(user) {
     }
 }
 
+export function addMovieToFavorites(movieId) {
+    console.log("Movie Id", movieId);
+    const request = axios.post('/api/addToFavorites', { movieId: movieId })
+        .then(response => response.data);
+    return {
+        type: 'ADD_MOVIE_TO_FAVORITES',
+        payload: request
+    }
+}
+
 export function addCinema(cinema) {
     const request = axios.post('/api/create-cinema', cinema)
         .then(response => response.data);
@@ -327,6 +363,36 @@ export function addMovieInCinema(movieData) {
 }
 
 
+
+export function upvoteReview(reviewId) {
+
+    const request = axios.post('/api/voteReview', { reviewId: reviewId, voteType: 1 })
+        .then(response => response.data);
+    return {
+        type: 'VOTE_REVIEW',
+        payload: request
+    }
+}
+
+
+export function downvoteReview(reviewId) {
+
+    const request = axios.post('/api/voteReview', { reviewId: reviewId, voteType: -1 })
+        .then(response => response.data);
+    return {
+        type: 'VOTE_REVIEW',
+        payload: request
+    }
+}
+
+
+export function clearReviewVote() {
+    return {
+        type: 'VOTE_REVIEW',
+        payload: {}
+    }
+}
+
 export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',
@@ -344,6 +410,13 @@ export function clearCinemaMovie() {
 export function clearMovie() {
     return {
         type: 'CLEAR_MOVIE',
+        payload: {}
+    }
+}
+
+export function clearMovieInfo() {
+    return {
+        type: 'CLEAR_MOVIE_INFO',
         payload: {}
     }
 }
@@ -375,6 +448,15 @@ export function addReview(review) {
     }
 }
 
+export function reportReview(report) {
+    const request = axios.post('/api/report-review', report)
+        .then(response => response.data);
+    return {
+        type: 'REPORT_MOVIE_REVIEW',
+        payload: request
+    }
+}
+
 export function sendPropmotionalEmails(emailData) {
     const request = axios.post(`/api/sendPromotionalEmail`, emailData)
         .then(response => response.data);
@@ -398,6 +480,13 @@ export function clearMovieReview() {
         payload: {}
     }
 }
+export function clearReviewReport() {
+    return {
+        type: 'CLEAR_REVIEW_REPORT',
+        payload: {}
+    }
+}
+
 
 export function getCinemas(
     start = 0,

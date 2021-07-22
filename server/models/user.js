@@ -56,6 +56,12 @@ const userSchema = mongoose.Schema({
         trim: true,
         default: ""
     },
+    favorites: [
+        {
+            type: String,
+            sparse: true
+        }
+    ],
     modifiedBy: {
         type: String,
         default: ""

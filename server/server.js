@@ -15,11 +15,7 @@ const { auth2 } = require("./middleware/auth2");
 
 const nodemailer = require('nodemailer');
 const emailModule = require('./emails/emails');
-
 const handlebars = require('handlebars');
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
-// app.set('view engine', 'ejs');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DATABASE, {
@@ -34,6 +30,7 @@ const { Movie } = require("./models/movie");
 const { Cinema } = require("./models/cinema");
 const { Showtime } = require("./models/showtime");
 const { Review } = require("./models/review");
+const { ReviewReport } = require("./models/review_report");
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -152,20 +149,14 @@ app.put('/api/updatePasswordViaEmail', (req, res) => {
         }
     })
 });
+
 // GET //
-
-
 app.get('/api/sendEmail', auth2, async (req, res) => {
-
-
-
-
-
 
 })
 
 
-function saveMovie(title) {
+function saveMovie(title, cinemaId) {
 
     var dataToSend, err;
     // spawn new child process to call the python script
@@ -197,11 +188,13 @@ function saveMovie(title) {
                     return err;
                 }
 
-                return true;
-                // res.status(200).json({
-                //     post: true,
-                //     movie: document
-                // })
+                Cinema.findByIdAndUpdate(cinemaId, { $addToSet: { moviesList: document._id } },
+                    function (err, docs) {
+                        if (err) {
+                            return err;
+                        }
+                        return true;
+                    })
             });
         }
         catch {
@@ -252,6 +245,20 @@ app.get('/api/getCinemasList', auth2, (req, res) => {
     Cinema.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.send(doc);
+    })
+})
+
+app.get('/api/getReportsList', auth2, (req, res) => {
+    let skip = parseInt(req.query.skip);
+    let limit = parseInt(req.query.limit);
+    let order = req.query.order;
+
+    // ORDER = asc || desc
+    ReviewReport.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        var reviews = doc.map((reports)=>{return reports.reviewId});
+        Review.find({_id: {$in: reviews}}).exec((err,review)=>{res.status(200).json({reviewList: review, reportList: doc})})
+        // res.send(doc);
     })
 })
 
@@ -334,23 +341,33 @@ app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 })
 
 
-app.get('/api/getHomeMovies', (req, res) => {
-    Movie.find({}).sort({ createdAt: -1 }).select('_id movieId poster_url title runtime videoLinks background_url description rating title').exec((err, doc) => {
-        if (err) return res.status(400).send(err);
 
-        res.status(200).json({
-            moviesList: doc
-            // id: doc._id,
-            // movieId: doc.movieId,
-            // poster_url: doc.poster_url,
-            // title: doc.title,
-            // runtime: doc.runtime,
-            // description: doc.description,
-            // rating: doc.rating,
-            // background_url: doc.background_url,
-            // videoLinks: doc.videoLinks
+app.get('/api/getHomeMovies', async (req, res) => {
+
+    var upcommingShows = new Array();
+    const today = moment().startOf('day');
+    const p = Showtime.find({
+        date: {
+            $gte: today.toDate(),
+            $lte: moment(today).add(6, "days").toDate()
+        }
+    }).exec((err, docs) => {
+        if (err) return res.status(400).send(err);
+        upcommingShows = docs.map(function (s) {
+            return s.movieId;
+        });
+        const s = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index)
+        console.log(s);
+        Movie.find().sort({ releaseDate: -1 }).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
+            if (err) return res.status(400).send(err);
+
+            res.status(200).json({
+                moviesList: doc
+            })
         })
-    })
+    });
+
+
 })
 
 
@@ -448,6 +465,255 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
     });
 })
 
+function getRecommendedMovies(movieTitle) {
+
+}
+
+app.get('/api/getRecommendations', (req, res) => {
+    var dataToSend, err;
+    // spawn new child process to call the python script
+    //variables file name, movie name, api key
+    const python = spawn('python', ['./server/recommendation/recommend.py', req.body.title]);
+
+    // collect data from script
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...',);
+
+        dataToSend = data.toString();
+    });
+
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        try {
+            const r = JSON.parse(dataToSend);
+            const recommendations = r.movies;
+            return res.status(200).json({ recommendations });
+        }
+        catch {
+            return res.status(404).json({ message: "Error getting recommendations." });
+        }
+    });
+});
+
+app.get('/api/getCertification', (req, res) => {
+    Movie.find().exec((err, movies) => {
+        var certification = [];
+        movies.map((item, key) => {
+            certification.push(item.certification);
+        })
+
+        const withoutDups = certification.filter((item, index) => certification.indexOf(item) === index)
+        return res.status(200).send(withoutDups);
+    });
+})
+
+app.get('/api/getCinepaxData', (req, res) => {
+    var dataToSend, err;
+
+    // const data = [
+    //     {
+    //         "city": "Islamabad",
+    //         "showDate": "2021-07-16 00:00:00",
+    //         "showDay": "FRI",
+    //         "scrapeDate": "2021-07-15 16:11:26.397770",
+    //         "movie": {
+    //             "showtimes": [
+    //                 {
+    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
+    //                     "screen": [
+    //                         "SCREEN 1- SILVER",
+    //                         "3:00PM",
+    //                         "6:00PM",
+    //                         "9:00PM"
+    //                     ]
+    //                 }
+    //             ],
+    //             "title": "Black Widow 3D Eng"
+    //         }
+    //     },
+    //     {
+    //         "city": "Islamabad",
+    //         "showDate": "2021-07-17 00:00:00",
+    //         "showDay": "SAT",
+    //         "scrapeDate": "2021-07-15 16:11:28.027686",
+    //         "movie": {
+    //             "showtimes": [
+    //                 {
+    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
+    //                     "screen": [
+    //                         "SCREEN 1- SILVER",
+    //                         "1:00PM",
+    //                         "4:00PM",
+    //                         "7:00PM",
+    //                         "10:00PM"
+    //                     ]
+    //                 }
+    //             ],
+    //             "title": "Black Widow 3D Eng"
+    //         }
+    //     },
+    //     {
+    //         "city": "Islamabad",
+    //         "showDate": "2021-07-18 00:00:00",
+    //         "showDay": "SUN",
+    //         "scrapeDate": "2021-07-15 16:11:29.662571",
+    //         "movie": {
+    //             "showtimes": [
+    //                 {
+    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
+    //                     "screen": [
+    //                         "SCREEN 1- SILVER",
+    //                         "1:00PM",
+    //                         "4:00PM",
+    //                         "7:00PM",
+    //                         "10:00PM"
+    //                     ]
+    //                 }
+    //             ],
+    //             "title": "Black Widow 3D Eng"
+    //         }
+    //     },
+    //     {
+    //         "city": "Islamabad",
+    //         "showDate": "2021-07-19 00:00:00",
+    //         "showDay": "MON",
+    //         "scrapeDate": "2021-07-15 16:11:31.307512",
+    //         "movie": {
+    //             "showtimes": [
+    //                 {
+    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
+    //                     "screen": [
+    //                         "SCREEN 1- SILVER",
+    //                         "1:00PM",
+    //                         "4:00PM",
+    //                         "7:00PM",
+    //                         "10:00PM"
+    //                     ]
+    //                 }
+    //             ],
+    //             "title": "Black Widow 3D Eng"
+    //         }
+    //     },
+    //     {
+    //         "city": "Lahore",
+    //         "showDate": "2021-07-15 00:00:00",
+    //         "showDay": "THU",
+    //         "scrapeDate": "2021-07-15 16:11:38.247884",
+    //         "movie": {
+    //             "showtimes": [
+    //                 {
+    //                     "address": "CINEPAX PACKAGES MALL - Lahore",
+    //                     "screen": [
+    //                         "Gluco Minipax",
+    //                         "4:20PM",
+    //                         "7:00PM"
+    //                     ]
+    //                 },
+    //                 {
+    //                     "address": "CINEPAX AMANAH MALL - Lahore",
+    //                     "screen": [
+    //                         "SILVER 3",
+    //                         "5:30PM"
+    //                     ]
+    //                 }
+    //             ],
+    //             "title": "Sonic the Hedgehog"
+    //         }
+    //     }
+    // ];
+
+    const python2 = spawn('python', ['./server/crawler/cinepax.py']);
+
+    // collect data from script
+    python2.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...',);
+        console.log(data.toString());
+        dataToSend = data.toString();
+    });
+
+
+    python2.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        try {
+            var data = JSON.parse(dataToSend);
+            data.forEach(element => {
+
+                let showtimes = new Array();
+                if (element.movie) {
+                    element.movie.showtimes.forEach(show => {
+                        showtimes.push(show);
+
+                        Cinema.findOne({ name: "Cinepax", address: show.address, city: element.city }).select('_id').exec((err, cinema) => {
+                            if (err) return res.status(400).send(err);
+
+                            if (cinema != null) {
+                                console.log(cinema)
+                                console.log(element.movie.title);
+
+                                Movie.findOne({ title: { $regex: '.*' + element.movie.title + '.*' } }, (err, movie) => {
+                                    if (err) return res.status(400).send(err);
+                                    if (movie == null) {
+                                        console.log("Movie not found");
+                                        // const movieSaved = saveMovie(element.movie.title, cinema._id);
+
+                                        // if (movieSaved == false) {
+                                        //     return res.status(200).json({ message: 'Movie not found' })
+                                        // }
+                                        // return res.status(200).json({ message: 'Movie not found' })
+                                    }
+
+                                    console.log(movie.title)
+                                    let time = new Array();
+                                    for (i = 1; i < show.screen.length; i++) {
+                                        time.push(show.screen[i]);
+                                    }
+
+                                    const showData = {
+                                        movieId: movie._id,
+                                        cinemaId: cinema._id,
+                                        date: new Date(element.showDate),
+                                        movieTitle: movie.title,
+                                        runtime: movie.runtime,
+                                        language: 'English',
+                                        showType: 'cinema',
+                                        screenType: show.screen[0],
+                                        time: time
+                                    }
+                                    const showtime = new Showtime(showData);
+
+                                    showtime.save((error, showtime) => {
+                                        if (error) {
+                                            console.log(error)
+                                            return res.status(400).send(error);
+                                        }
+                                        // return res.status(200).json({
+                                        //     post: true,
+                                        //     showtime: showtime._id
+                                        // })
+                                    })
+                                })
+                            }
+
+                        })
+                    });
+                }
+            });
+
+
+        }
+        catch (e) {
+            console.log(e);
+            return res.status(404).json({ message: "Error getting data info cinepax.", found: false });
+        }
+    });
+
+
+    // res.status(200).send({ "message": data });
+
+
+
+});
+
 app.get('/api/getMovieByName', auth2, (req, res) => {
     // Movie.findOne({ title: { $regex: '.*' + req.query.name + '.*' } }, (err, doc) => {
     Movie.findOne({ title: req.query.name }, (err, doc) => {
@@ -487,7 +753,28 @@ app.post('/api/create-cinema', auth2, (req, res) => {
 
 app.post('/api/create-review', auth, (req, res) => {
 
-    const review = new Review(req.body);
+    function checkSentiment(comment) {
+        var Sentiment = require('sentiment');
+        var sentiment = new Sentiment();
+        var result = sentiment.analyze(comment);
+        console.log(result);
+        return result.score;
+        // if (result.score >= 1) {
+        //     return 'Positive';
+        // }
+        // else if (result.score >= 0) {
+        //     return 'Neutral';
+        // }
+        // else {
+        //     return 'Negative';
+        // }
+    }
+
+    const sentiment = checkSentiment(req.body.review);
+
+    let reviewBody = { ...req.body, sentiment: sentiment };
+
+    const review = new Review(reviewBody);
     review.save((error, review) => {
         if (error) {
             console.log(error)
@@ -498,6 +785,73 @@ app.post('/api/create-review', auth, (req, res) => {
             reviewId: review._id
         })
     });
+})
+
+app.post('/api/report-review', auth, (req, res) => {
+
+    let report = req.body;
+    report = {
+        ...report,
+        userId: req.user._id
+    }
+
+    ReviewReport.findOne({ userId: req.user._id, reviewId: report.reviewId }, (err, doc) => {
+        if (err) return res.status(400).send({ message: 'There is an error reporting review.', post: false });
+
+        if (doc === null) {
+            const reviewReport = new ReviewReport(report);
+            reviewReport.save((error, report) => {
+                if (error) {
+                    console.log(error)
+                    return res.status(400).send(error);
+                }
+                res.status(200).json({
+                    message: 'Review has been reported successfully.',
+                    post: true,
+                    reportId: report._id
+                })
+            });
+        }
+        else {
+            res.status(200).json({
+                message: 'Review already reported.',
+                post: false,
+                reviewId: doc.reviewId
+            })
+        }
+
+    })
+
+})
+app.post('/api/voteReview', auth, (req, res) => {
+
+    Review.findById(req.body.reviewId).lean().exec((err, review) => {
+        if (err) return res.status(400).json(err);
+
+        const reviewFound = review.votes.find(({ userId }) => userId == req.user._id);
+        if (reviewFound == null) {
+            if (req.body.voteType === 1 || req.body.voteType === -1)
+                review.votes.push({ userId: req.user._id, vote: req.body.voteType });
+        }
+        else {
+            const index = review.votes.indexOf(reviewFound);
+            if (req.body.voteType == reviewFound.vote) {
+                if (index > -1)
+                    review.votes.splice(index, 1);
+            }
+            else {
+                review.votes[index].vote = req.body.voteType;
+            }
+        }
+
+        Review.findByIdAndUpdate(review._id, review, { new: true }, (err, doc) => {
+            if (!err) return res.status(200).json(doc);
+            else {
+                console.log("Error: could not save vote", err);
+                return res.status(400).send(err);
+            }
+        })
+    })
 })
 
 app.post('/api/addMovieInCinema', auth2, async (req, res) => {
@@ -628,7 +982,7 @@ app.get('/api/user-settings', auth, (req, res) => {
 //UPDATE
 app.post('/api/user-update', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
-        if (err) return res.status(400).send(err);
+        if (err) return res.status(400).send({ success: false });
         res.json({
             message: "Updated successfully"
         })
@@ -660,6 +1014,17 @@ app.post('/api/change_password', auth, (req, res) => {
         })
     })
 })
+
+app.post('/api/addToFavorites', auth, (req, res) => {
+    const movieId = req.body.movieId;
+    User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            success: true,
+        })
+    })
+})
+
 
 app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
 
