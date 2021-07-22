@@ -779,12 +779,14 @@ body {
 
 .pagination {
   display: flex;
-  justify-content: space-between;
+  margin: 4px;
+  justify-content: start;
   list-style: none;
   cursor: pointer;
 }
 
 .pagination a {
+  margin: 8px;
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #000;
