@@ -277,6 +277,7 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
             if (doc.moviesList.length > 0)
                 Movie.find({ _id: { $in: doc.moviesList } }).select('_id movieId poster_url title runtime videoLinks releaseDate background_url description rating title ').sort({ createdAt: 'DESC' }).exec((err, movies) => {
                     if (err) return res.status(400).send(err);
+
                     return res.status(200).send({ movies });
                     // console.log("Movies", movies)
                     // if (cinema) {
@@ -341,33 +342,50 @@ app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 })
 
 
+app.get('/api/getCinemasHomeMovies', async (req, res) => {
 
-app.get('/api/getHomeMovies', async (req, res) => {
-
-    var upcommingShows = new Array();
-    const today = moment().startOf('day');
     const p = Showtime.find({
         date: {
-            $gte: today.toDate(),
-            $lte: moment(today).add(6, "days").toDate()
+            $gte: moment().startOf("Day").toDate(),
+            $lte: moment().add(7, "days").toDate()
         }
     }).exec((err, docs) => {
         if (err) return res.status(400).send(err);
-        upcommingShows = docs.map(function (s) {
-            return s.movieId;
+        var upcommingShows = [];
+        var todayShows = [];
+
+        console.log(docs);
+
+        docs.map(function (s) {
+            if (s.date > moment().toDate())
+                upcommingShows.push(s.movieId);
+            else
+                todayShows.push(s.movieId);
         });
-        const s = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index)
-        console.log(s);
-        Movie.find().sort({ releaseDate: -1 }).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
+
+        const commingSoon = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index);
+        const nowShowing = todayShows.filter((item, index) => todayShows.indexOf(item) === index);
+        console.log("comming soon", commingSoon, " now showing", nowShowing);
+        return res.status(200).json({ commingSoon: commingSoon, nowShowing: nowShowing })
+    });
+});
+
+app.get('/api/getHomeMovies', async (req, res) => {
+
+    Movie.find({ releaseDate: { $gt: moment().toDate() } }).sort({ releaseDate: -1 }).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+
+        const upcommingMovies = [...doc];
+        Movie.find({ releaseDate: { $lte: moment().toDate() } }).sort({ releaseDate: -1 }).limit(96).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
             if (err) return res.status(400).send(err);
 
-            res.status(200).json({
+            return res.status(200).json({
+                commingSoon: upcommingMovies,
                 moviesList: doc
             })
+
         })
-    });
-
-
+    })
 })
 
 
@@ -468,6 +486,8 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
 function getRecommendedMovies(movieTitle) {
 
 }
+
+
 
 app.get('/api/getRecommendations', (req, res) => {
     var dataToSend, err;
@@ -881,6 +901,7 @@ app.post('/api/addMovieInCinema', auth2, async (req, res) => {
 
 
                 if (movieData.tmdb === true) {
+                    movieData.movie.releaseDate = moment(movieData.movie.releaseDate).toDate();
                     const movie = new Movie(movieData.movie);
                     return movie.save((error, document) => {
                         if (error) {
@@ -977,6 +998,7 @@ app.get('/api/user-settings', auth, (req, res) => {
         })
     })
 })
+
 
 
 //UPDATE
