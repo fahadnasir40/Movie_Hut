@@ -21,8 +21,8 @@ class Footer extends Component {
                         <div class="col-xs-6 col-md-3">
                             <h6 className="heading" style={{ color: '#d0d0d0' }}>Movies</h6>
                             <ul class="footer-links font-text">
-                                <li><a href="#">Top Movies</a></li>
-                                <li><a href="#">Coming Soon</a></li>
+                                <li><a href="/">Top Movies</a></li>
+                                <li><a href="/">Coming Soon</a></li>
                             </ul>
                         </div>
                         <div class="col-xs-6 col-md-3">

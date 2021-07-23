@@ -180,6 +180,27 @@ export function getHomeMovies() {
     }
 }
 
+export function getRecommendedMovies() {
+
+    const request = axios.get(`/api/getRecommendations`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_HOME_RECEOMMENDED_MOVIES',
+        payload: request
+    }
+}
+
+export function getCinemaHomeMovies() {
+
+    const request = axios.get(`/api/getCinemaHomeMovies`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_HOME_CINEMA_MOVIES',
+        payload: request
+    }
+}
 
 export function getCinemaShowingMovies(cinemaId) {
 

@@ -37,7 +37,7 @@ class HomeMovies extends Component {
                 savedFilter: {
                     genres: [],
                     ratings: []
-                }
+                },
             })
         }
     }
@@ -59,7 +59,7 @@ class HomeMovies extends Component {
                         savedFilter: {
                             genres: [],
                             ratings: []
-                        }
+                        },
                     }
                 }
             }
@@ -285,32 +285,48 @@ class HomeMovies extends Component {
         if (this.state.movieFiltered == true) {
             this.filterMovies();
         }
-
         let offset = this.state.currentPage * this.PER_PAGE;
         let movies = this.state.filteredMovies;
         let moviesLength = 0;
         if (movies) { moviesLength = movies.length }
         let pageCount = Math.ceil(moviesLength / this.PER_PAGE)
+        if (this.props.pagination !== false) {
+            if (movies) {
+                movies = this.state.filteredMovies.slice(offset, offset + this.PER_PAGE).map((movie, key) => {
+                    return (
+                        <div className=" movie-container " key={key}>
+                            <Link class="p-1" to={`/movie/${movie._id}`}>
+                                <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
 
-        if (movies) {
-            movies = this.state.filteredMovies.slice(offset, offset + this.PER_PAGE).map((movie, key) => {
-                return (
-                    <div className=" movie-container " key={key}>
-                        <Link class="p-1" to={`/movie/${movie._id}`}>
-                            <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+                            </Link>
 
-                        </Link>
-
-                    </div>
-                )
-            })
+                        </div>
+                    )
+                })
+            }
         }
+        else {
+            if (movies) {
+                movies = this.state.filteredMovies.map((movie, key) => {
+                    return (
+                        <div className=" movie-container " key={key}>
+                            <Link class="p-1" to={`/movie/${movie._id}`}>
+                                <img id="postertest" className='movie-poster d-flex ' src={movie.poster_url} alt={movie.title} />
+
+                            </Link>
+
+                        </div>
+                    )
+                })
+            }
+        }
+
         return (
             <div className="container">
 
                 {this.filterMoviesModal()}
                 <div className="row px-5 mr-md-5">
-                    <div className={'btn btn-sm  ml-auto my-1 mr-md-5 ' + `${this.getFilterCheck()}`} onClick={this.handleShow}>
+                    <div className={'btn btn-sm  ml-auto mb-1 mr-md-5 ' + `${this.getFilterCheck()}`} onClick={this.handleShow}>
                         <i class="fas fa-filter" style={{ opacity: '0.8' }}></i>  Filter
                     </div>
                 </div>
@@ -321,22 +337,26 @@ class HomeMovies extends Component {
                     }
 
                 </div>
-                <div className="row mt-3 px-5">
-                    <div className="col-12 col-lg-6">
-                        <ReactPaginate
-                            previousLabel={"← Previous"}
-                            nextLabel={"Next →"}
-                            pageCount={pageCount}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={"pagination"}
-                            previousLinkClassName={"pagination__link"}
-                            nextLinkClassName={"pagination__link"}
-                            disabledClassName={"pagination__link--disabled"}
-                            activeClassName={"pagination__link--active"}
-                        />
+                {
+                    this.props.pagination !== false ?
+                        <div className="row mt-3 mb-2 px-5">
+                            <div className="col-12 col-lg-6">
+                                <ReactPaginate
+                                    previousLabel={"← Previous"}
+                                    nextLabel={"Next →"}
+                                    pageCount={pageCount}
+                                    onPageChange={this.handlePageClick}
+                                    containerClassName={"pagination"}
+                                    previousLinkClassName={"pagination__link"}
+                                    nextLinkClassName={"pagination__link"}
+                                    disabledClassName={"pagination__link--disabled"}
+                                    activeClassName={"pagination__link--active"}
+                                />
 
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                        : null
+                }
             </div>
         )
     }
