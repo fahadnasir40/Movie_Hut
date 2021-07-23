@@ -17,11 +17,24 @@ mycol = mydb["movies"]
 df = pd.DataFrame(list(mycol.find()))
 
 # take input
-input_movie = 'Man of Steel'
+titleList = []
+
+titleArguments = json.loads(sys.argv[1])
+for title in titleArguments:
+    titleList.append(title)
+
+inputList = []
 
 # check if input movie exists in DB
-if not df['title'].str.contains(input_movie).any():
-    print('Error: Movie not found in DB...')
+for title in titleList:
+    if not (df['title'] == title).any():
+        print(json.dumps({"movies": []}))
+    else:
+        inputList.append(title)
+
+
+if not inputList:
+    print(json.dumps({"movies": []}))
     sys.exit()
 
 # Required columns - Title and movie plot
@@ -83,12 +96,22 @@ def recommendations(title, cosine_sim=cos_sim):
     index = indices[indices == title].index[0]
     similarity_scores = pd.Series(
         cosine_sim[index]).sort_values(ascending=False)
-    top_10_movies = list(similarity_scores.iloc[1:11].index)
+    top_10_movies = list(similarity_scores.iloc[1:4].index)
     for i in top_10_movies:
         recommended_movies.append(list(finaldata.index)[i])
     return recommended_movies
 
 
-output = recommendations(input_movie)
+output = []
+for input_movie in inputList:
+    temp = recommendations(input_movie)
+    for t in temp:
+        if t not in output:  # avoid duplicate recommendations
+            output.append(t)
+
+for input_movie in inputList:
+    if input_movie in output:
+        output.remove(input_movie)  # remove input movies from recommendations
+
 toJson = json.dumps({"movies": output})
 print(toJson)

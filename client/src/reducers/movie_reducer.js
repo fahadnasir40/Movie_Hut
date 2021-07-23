@@ -10,6 +10,10 @@ export default function (state = {}, action) {
             return { ...state, movieDetails: action.payload }
         case 'GET_HOME_MOVIES':
             return { ...state, moviesList: action.payload }
+        case 'GET_HOME_RECEOMMENDED_MOVIES':
+            return { ...state, recommendedMovies: action.payload }
+        case 'GET_HOME_CINEMA_MOVIES':
+            return { ...state, cinemaMovies: action.payload }
         case 'VOTE_REVIEW':
             return { ...state, votedReview: action.payload }
         case 'ADD_MOVIE_TO_FAVORITES':
