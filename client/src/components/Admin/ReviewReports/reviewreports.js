@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../../Header/header'
 import DataTable from 'react-data-table-component'
-import { getReports } from '../../../actions'
+import { getReports, deleteReview, resolveReport } from '../../../actions'
 import { connect } from 'react-redux'
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 class ReviewReports extends Component {
     state = {
         reportList: [],
@@ -16,12 +17,23 @@ class ReviewReports extends Component {
     componentDidMount() {
         this.props.dispatch(getReports())
     }
+    deleteReportFromDB = (event) => {
+        console.log("delete", event)
+        this.props.dispatch(deleteReview(event))
+        window.location.reload();
+    }
+    resolveReport = (event) => {
+        console.log("resolve", event)
+        this.props.dispatch(resolveReport(event))
+        window.location.reload();
+    }
     static getDerivedStateFromProps(props, state) {
         // console.log("NEW PROPS", props)
         if (props.reportList) {
             if (props.reportList.length > 0) {
                 return {
-                    reportList: props.reportList
+                    reportList: props.reportList,
+                    reviewList: props.reviewList
                 }
             }
         }
@@ -80,12 +92,14 @@ class ReviewReports extends Component {
             name: 'Action',
             hide: 'md',
             cell: row => (
-                <span><strong>...</strong></span>
-                // <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-                //     <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                //     <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                //     <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                // </DropdownButton>
+                // <span>
+                //     <button className="btn btn-primary">Resolve</button>
+                //     <button className="btn btn-danger">Delete</button>
+                // </span>
+                <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+                    <Dropdown.Item onClick={()=>{this.resolveReport(row._id)}}>Resolve</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>{this.deleteReportFromDB(this.state.reviewList.map((review) => {if(review._id == row.reviewId){return row.reviewId}}))}}>Delete</Dropdown.Item>
+                </DropdownButton>
                 // <div className="nk-tb-col nk-tb-col-tools">
                 //     <ul className="nk-tb-actions gx-1 my-n1">
                 //         <li className="mr-n1">
@@ -126,11 +140,7 @@ class ReviewReports extends Component {
     SampleExpandedComponent = ({ data }) => {
         return (
             <div className="container-fluid">
-               <div className="row d-lg-none">
-                    <div className="col">
-                        <span className="title fw-medium">Id# </span> <span className="fw-normal"> {data.reasonDescription}</span>
-                    </div>
-                </div>
+                <p>{this.state.reviewList.map((review) => {if(review._id == data.reviewId){return review.review}})}</p>
             </div>
         )
     };
@@ -158,7 +168,7 @@ class ReviewReports extends Component {
                             pagination
                             // onRowClicked={(data) => { this.showData(data) }}
                             paginationPerPage={10}
-                            expandableRows
+                            expandableRows={true}
                             expandableRowsComponent={<this.SampleExpandedComponent />}
                         />
                     </div>

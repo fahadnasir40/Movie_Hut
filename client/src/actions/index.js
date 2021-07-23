@@ -514,3 +514,22 @@ export function getCinemas(
     }
 }
 
+export function deleteReview(id){
+    const request = axios.delete(`/api/delete_review?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'DELETE_REVIEW',
+        payload:request
+    }
+}
+
+export function resolveReport(id){
+    const request = axios.post(`/api/resolve_report?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'RESOLVE_REPORT',
+        payload:request
+    }
+}

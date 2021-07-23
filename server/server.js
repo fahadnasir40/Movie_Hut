@@ -378,7 +378,7 @@ app.get('/api/getHomeMovies', async (req, res) => {
         const upcommingMovies = [...doc];
         Movie.find({ releaseDate: { $lte: moment().toDate() } }).sort({ releaseDate: -1 }).limit(96).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
             if (err) return res.status(400).send(err);
-
+            // console.log(doc)
             return res.status(200).json({
                 commingSoon: upcommingMovies,
                 moviesList: doc
@@ -1177,7 +1177,23 @@ app.get('/api/users', auth2, (req, res) => {
     })
 })
 
+app.post('/api/resolve_report',(req,res)=>{
+    let id = req.query.id;
 
+    ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
+        if(err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
+
+app.delete('/api/delete_review',(req,res)=>{
+    let id = req.query.id;
+    console.log(id)
+    Review.findByIdAndRemove(id,(err,doc)=>{
+        if(err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

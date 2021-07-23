@@ -39,6 +39,10 @@ export default function(state={},action){
             return { ...state, userList: action.payload }
         case 'GET_REPORTS':
             return { ...state, reportList: action.payload.reportList, reviewList: action.payload.reviewList }
+        case 'DELETE_REVIEW':
+            return { ...state, reportedDeleted: action.payload }
+        case 'RESOLVE_REPORT':
+            return { ...state, reportedResolved: action.payload }
         case 'CLEAR_USER':
             return {
                 ...state,
