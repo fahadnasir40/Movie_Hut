@@ -96,7 +96,7 @@ class ReviewReports extends Component {
                 //     <button className="btn btn-primary">Resolve</button>
                 //     <button className="btn btn-danger">Delete</button>
                 // </span>
-                <DropdownButton id="dropdown-basic-button" title="">
+                <DropdownButton id="dropdown-basic-button" variant="light" title="">
                     <Dropdown.Item onClick={()=>{this.resolveReport(row._id)}}>Resolve</Dropdown.Item>
                     <Dropdown.Item onClick={()=>{this.deleteReportFromDB(this.state.reviewList.filter((review) => {if(review._id == row.reviewId){return row.reviewId}}))}}>Delete</Dropdown.Item>
                 </DropdownButton>

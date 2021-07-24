@@ -10,6 +10,10 @@ export default function(state={},action){
             return {...state,user:action.payload}
         case 'UPDATE_USER':
             return {...state,user:action.payload}
+        case 'SUSPEND_USER':
+            return {...state,user:action.payload}
+        case 'UNSUSPEND_USER':
+            return {...state,user:action.payload}
         case 'USER_REGISTER':
             return {
                 ...state,
@@ -35,6 +39,7 @@ export default function(state={},action){
                 ...state,
                 message:action.payload
             }
+
         case 'GET_USERS':
             return { ...state, userList: action.payload }
         case 'GET_REPORTS':

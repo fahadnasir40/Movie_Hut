@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../../Header/header'
 import DataTable from 'react-data-table-component'
-import { getUsers } from '../../../actions'
+import { getUsers, suspendUser, unSuspendUser } from '../../../actions'
 import { connect } from 'react-redux'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 class User extends Component {
@@ -12,6 +12,16 @@ class User extends Component {
     }
     handleInputSearch = (event) => {
         this.setState({search:event.target.value})
+    }
+    handleSuspend = (e) => {
+        // console.log(e)
+        this.props.dispatch(suspendUser(e))
+        window.location.reload();
+    }
+    handleUnSuspend = (e) => {
+        // console.log(e)
+        this.props.dispatch(unSuspendUser(e))
+        window.location.reload();
     }
     componentDidMount() {
         this.props.dispatch(getUsers())
@@ -38,6 +48,11 @@ class User extends Component {
                     <strong>{row.name}</strong>
                 </span>
             )
+        },
+        {
+            name: 'Status',
+            selector: 'status',
+            sortable: true,
         },
         {
             name: 'Email',
@@ -75,12 +90,14 @@ class User extends Component {
             name: 'Action',
             hide: 'md',
             cell: row => (
-                <span><strong>...</strong></span>
-                // <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-                //     <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                //     <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                //     <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                // </DropdownButton>
+                // <span><strong>...</strong></span>
+                <DropdownButton id="dropdown-basic-button" variant="light" title="">
+                    {row.status == "active" ? 
+                    <Dropdown.Item onClick={()=>{this.handleSuspend(row._id)}}>Suspend</Dropdown.Item> :
+                    <Dropdown.Item onClick={()=>{this.handleUnSuspend(row._id)}}>Un-suspend</Dropdown.Item>
+                } 
+                    
+                </DropdownButton>
                 // <div className="nk-tb-col nk-tb-col-tools">
                 //     <ul className="nk-tb-actions gx-1 my-n1">
                 //         <li className="mr-n1">
@@ -139,10 +156,10 @@ class User extends Component {
                         <DataTable
                             columns={this.columns}
                             data={ this.state.userList.filter((val)=>{
-                                if(this.state.search == ""){
+                                if(this.state.search == "" && val.role == "user"){
                                     return val;
                                 }
-                                else if(val.name.toLowerCase().includes(this.state.search.toLowerCase())){
+                                else if(val.name.toLowerCase().includes(this.state.search.toLowerCase()) && val.role == "user"){
                                     return val;
                                 }
                             })}

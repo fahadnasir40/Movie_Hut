@@ -9,7 +9,10 @@ const auth = (req, res, next) => {
         if (!user) return res.json({
             error: true
         });
-
+        // if (user.status) {
+        //     if (user.status === 'suspended')
+        //         return res.status(401).json({ message: 'Unauthorized' });
+        // }
         req.token = token;
         req.user = user;
         next();
