@@ -60,8 +60,35 @@ export function getProfile() {
     }
 }
 
+export function getUser(id) {
+    const request = axios.get(`/api/user-info?id=${id}`)
+        .then(response => response.data);
 
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
 
+export function getUserSettings(id) {
+    const request = axios.get(`/api/user-settings?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
+
+export function updateUserInfo(user) {
+    const request = axios.post("/api/user-update", user)
+        .then(response => response.data);
+
+    return {
+        type: 'UPDATE_USER',
+        payload: request
+    }
+}
 
 export function getUsers(
     start = 0,
@@ -85,6 +112,32 @@ export function getUsers(
 
     return {
         type: 'GET_USERS',
+        payload: request
+    }
+}
+
+export function getReports(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
+
+    const request = axios.get(`api/getReportsList?skip=${start}&limit=${limit}&order=${order}`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
+
+    return {
+        type: 'GET_REPORTS',
         payload: request
     }
 }
@@ -252,7 +305,7 @@ export function getMovieFromTMDB(name) {
 }
 
 export function changePassword(data) {
-    const request = axios.post(`/api/change_password`, data)
+    const request = axios.post(`/api/change_password`, {password: data.password, newPassword: data.newPassword, email: data.email})
         .then(response => response.data);
 
     return {
@@ -288,6 +341,20 @@ export function changeUser(user) {
         payload: request
     }
 
+}
+
+export function clearUser() {
+    return {
+        type:'CLEAR_USER',
+        payload:{}
+    }
+}
+
+export function clearUpdatePassword() {
+    return {
+        type:'CLEAR_UPDATE_PASSWORD',
+        payload:{}
+    }
 }
 
 export function changeUserPassword(user) {
@@ -479,3 +546,22 @@ export function getCinemas(
     }
 }
 
+export function deleteReview(id){
+    const request = axios.delete(`/api/delete_review?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'DELETE_REVIEW',
+        payload:request
+    }
+}
+
+export function resolveReport(id){
+    const request = axios.post(`/api/resolve_report?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'RESOLVE_REPORT',
+        payload:request
+    }
+}

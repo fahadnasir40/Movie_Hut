@@ -248,6 +248,20 @@ app.get('/api/getCinemasList', auth2, (req, res) => {
     })
 })
 
+app.get('/api/getReportsList', auth2, (req, res) => {
+    let skip = parseInt(req.query.skip);
+    let limit = parseInt(req.query.limit);
+    let order = req.query.order;
+
+    // ORDER = asc || desc
+    ReviewReport.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        var reviews = doc.map((reports)=>{return reports.reviewId});
+        Review.find({_id: {$in: reviews}}).exec((err,review)=>{res.status(200).json({reviewList: review, reportList: doc})})
+        // res.send(doc);
+    })
+})
+
 app.get('/api/getCinemaMovies', auth2, (req, res) => {
 
     // let skip = parseInt(req.query.skip);
@@ -376,7 +390,7 @@ app.get('/api/getHomeMovies', async (req, res) => {
         const upcommingMovies = [...doc];
         Movie.find({ releaseDate: { $lte: moment().toDate() } }).sort({ releaseDate: -1 }).limit(96).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, doc) => {
             if (err) return res.status(400).send(err);
-
+            // console.log(doc)
             return res.status(200).json({
                 commingSoon: upcommingMovies,
                 moviesList: doc
@@ -978,15 +992,58 @@ app.get('/api/getCinemas', (req, res) => {
     })
 })
 
+app.get('/api/user-info', auth, (req, res) => {
+    User.findById(req.query.id ).select("name city dob").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            user: doc,
+        })
+    })
+})
+
+app.get('/api/user-settings', auth, (req, res) => {
+    User.findById(req.query.id ).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            user: doc,
+        })
+    })
+})
+
 
 
 //UPDATE
-app.post('/api/update_user', auth, (req, res) => {
+app.post('/api/user-update', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
         if (err) return res.status(400).send({ success: false });
         res.json({
-            success: true,
-            doc
+            message: "Updated successfully"
+        })
+    })
+})
+
+app.post('/api/change_password', auth, (req, res) => {
+    User.findOne({ 'email': req.body.email }, (err, user) => {
+        if (!user) return res.json({ message: 'Email not found' })
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch) return res.json({
+                message: 'Current Password is wrong'
+            });
+            bcrypt.genSalt(10, function (error, salt) {
+                bcrypt.hash(req.body.newPassword, salt, function (error, hash) {
+                    if (error) return next(error);
+                    User.findOneAndUpdate({ email: user.email },{
+                        password: hash
+                    }, null, function (err, docs) {
+                        if (err) {
+                            console.log(err)
+                        }
+                        else {
+                            res.status(200).send({ message: 'Password updated' });
+                        }
+                    });
+                })
+            })
         })
     })
 })
@@ -1131,7 +1188,41 @@ app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
     // })
 })
 
+app.get('/api/users', auth2, (req, res) => {
+    let skip = parseInt(req.query.skip);
+    let limit = parseInt(req.query.limit);
+    let order = req.query.order;
 
+    // ORDER = asc || desc
+    User.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.send(doc);
+    })
+})
+
+app.post('/api/resolve_report',(req,res)=>{
+    let id = req.query.id;
+
+    ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
+        if(err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
+
+app.delete('/api/delete_review',(req,res)=>{
+    let id = req.query.id;
+    console.log(id)
+    Review.findByIdAndRemove(id,(err,doc)=>{
+        if(err){ 
+            return res.status(400).send(err);}
+        else{
+            ReviewReport.updateMany({ reviewId: id }, {status: "resolved and deleted"}, null, function(err,doc){
+                if(err) return res.status(400).send(err);
+                res.json(true)
+            })
+        }        
+    })
+})
 
 if (process.env.NODE_ENV === "production") {
     const path = require("path");

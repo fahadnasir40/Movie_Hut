@@ -6,8 +6,10 @@ export default function(state={},action){
             return {...state,login:action.payload}
         // case 'GET_USER_POSTS':
         //     return {...state,userPosts:action.payload}
-        // case 'GET_USER':
-        //     return {...state,users:action.payload}
+        case 'GET_USER':
+            return {...state,user:action.payload}
+        case 'UPDATE_USER':
+            return {...state,user:action.payload}
         case 'USER_REGISTER':
             return {
                 ...state,
@@ -28,6 +30,29 @@ export default function(state={},action){
                 ...state,
                 message:action.payload
             }
+        case 'CHANGE_PASSWORD':
+            return {
+                ...state,
+                message:action.payload
+            }
+        case 'GET_USERS':
+            return { ...state, userList: action.payload }
+        case 'GET_REPORTS':
+            return { ...state, reportList: action.payload.reportList, reviewList: action.payload.reviewList }
+        case 'DELETE_REVIEW':
+            return { ...state, reportedDeleted: action.payload }
+        case 'RESOLVE_REPORT':
+            return { ...state, reportedResolved: action.payload }
+        case 'CLEAR_USER':
+            return {
+                ...state,
+                user:action.payload
+            }
+        case 'CLEAR_UPDATE_PASSWORD':
+            return {
+                ...state,
+                message:action.payload
+            }  
         default:
             return state;
     }

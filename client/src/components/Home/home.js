@@ -196,9 +196,11 @@ class Home extends Component {
                                         movies={this.state.movies}
                                     /> :
                                     this.state.active === 'Comming Soon' ?
+                                        this.state.commingSoon.length > 0 ?
                                         <HomeMovies
                                             movies={this.state.commingSoon}
                                         />
+                                        : <span className="row m-5 nt-3">No coming soon movies available</span>
                                         : this.state.active === 'Recommended' ?
                                             this.state.recommendedMovies ?
                                                 < HomeMovies
