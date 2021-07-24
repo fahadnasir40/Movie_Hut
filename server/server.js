@@ -180,7 +180,6 @@ function saveMovie(title, cinemaId) {
         try {
             var movieObject = JSON.parse(dataToSend);
             const movie = new Movie(movieObject);
-            // console.log("Movie Info", movie);
             movie.save((error, document) => {
 
                 if (error) {
@@ -257,8 +256,8 @@ app.get('/api/getReportsList', auth2, (req, res) => {
     // ORDER = asc || desc
     ReviewReport.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
         if (err) return res.status(400).send(err);
-        var reviews = doc.map((reports)=>{return reports.reviewId});
-        Review.find({_id: {$in: reviews}}).exec((err,review)=>{res.status(200).json({reviewList: review, reportList: doc})})
+        var reviews = doc.map((reports) => { return reports.reviewId });
+        Review.find({ _id: { $in: reviews } }).exec((err, review) => { res.status(200).json({ reviewList: review, reportList: doc }) })
         // res.send(doc);
     })
 })
@@ -280,18 +279,13 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
                     if (err) return res.status(400).send(err);
 
                     return res.status(200).send({ movies });
-                    // console.log("Movies", movies)
-                    // if (cinema) {
-                    //     return res.status(200).send({ movies, doc });
-                    // }
-                    // else {
-
-                    // }
 
                 });
         }
     })
 })
+
+
 
 app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 
@@ -355,7 +349,6 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
         var upcommingShows = [];
         var todayShows = [];
         var shows = [];
-        console.log(docs);
 
         docs.map(function (s) {
             if (moment(s.date).startOf("day").diff(moment().startOf("day")) > 0)
@@ -390,6 +383,15 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
         });
     });
 });
+
+app.get('/api/getFavoriteMovies', auth, (req, res) => {
+    Movie.find({ _id: { $in: req.user.favorites } }).sort({ createdAt: -1 }).select('_id poster_url title runtime  description rating title ').exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+
+        return res.status(200).json({ "movies": doc })
+    })
+})
+
 
 app.get('/api/getHomeMovies', async (req, res) => {
 
@@ -680,7 +682,6 @@ app.get('/api/getCinepaxData', (req, res) => {
     // collect data from script
     python2.stdout.on('data', function (data) {
         console.log('Pipe data from python script ...',);
-        console.log(data.toString());
         dataToSend = data.toString();
     });
 
@@ -700,19 +701,12 @@ app.get('/api/getCinepaxData', (req, res) => {
                             if (err) return res.status(400).send(err);
 
                             if (cinema != null) {
-                                console.log(cinema)
                                 console.log(element.movie.title);
 
                                 Movie.findOne({ title: { $regex: '.*' + element.movie.title + '.*' } }, (err, movie) => {
                                     if (err) return res.status(400).send(err);
                                     if (movie == null) {
                                         console.log("Movie not found");
-                                        // const movieSaved = saveMovie(element.movie.title, cinema._id);
-
-                                        // if (movieSaved == false) {
-                                        //     return res.status(200).json({ message: 'Movie not found' })
-                                        // }
-                                        // return res.status(200).json({ message: 'Movie not found' })
                                     }
 
                                     console.log(movie.title)
@@ -739,10 +733,6 @@ app.get('/api/getCinepaxData', (req, res) => {
                                             console.log(error)
                                             return res.status(400).send(error);
                                         }
-                                        // return res.status(200).json({
-                                        //     post: true,
-                                        //     showtime: showtime._id
-                                        // })
                                     })
                                 })
                             }
@@ -810,7 +800,6 @@ app.post('/api/create-review', auth, (req, res) => {
         var Sentiment = require('sentiment');
         var sentiment = new Sentiment();
         var result = sentiment.analyze(comment);
-        console.log(result);
         return result.score;
         // if (result.score >= 1) {
         //     return 'Positive';
@@ -985,13 +974,13 @@ app.post('/api/login', (req, res) => {
                 isAuth: false,
                 message: 'Invalid Email or Password'
             });
-            else if(user.status == "suspended"){
+            else if (user.status == "suspended") {
                 return res.json({
                     isAuth: false,
                     message: 'Account is Suspended!'
                 });
             }
-            else{
+            else {
                 user.generateToken((err, user) => {
                     if (err) return res.status(400).send(err);
                     res.cookie('auth', user.token).json({
@@ -1022,7 +1011,7 @@ app.get('/api/getCinemas', (req, res) => {
 })
 
 app.get('/api/user-info', auth, (req, res) => {
-    User.findById(req.query.id ).select("name city dob").exec((err, doc) => {
+    User.findById(req.query.id).select("name city dob").exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
             user: doc,
@@ -1031,7 +1020,7 @@ app.get('/api/user-info', auth, (req, res) => {
 })
 
 app.get('/api/user-settings', auth, (req, res) => {
-    User.findById(req.query.id ).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
+    User.findById(req.query.id).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
             user: doc,
@@ -1061,7 +1050,7 @@ app.post('/api/change_password', auth, (req, res) => {
             bcrypt.genSalt(10, function (error, salt) {
                 bcrypt.hash(req.body.newPassword, salt, function (error, hash) {
                     if (error) return next(error);
-                    User.findOneAndUpdate({ email: user.email },{
+                    User.findOneAndUpdate({ email: user.email }, {
                         password: hash
                     }, null, function (err, docs) {
                         if (err) {
@@ -1229,45 +1218,46 @@ app.get('/api/users', auth2, (req, res) => {
     })
 })
 
-app.post('/api/resolve_report', auth2, (req,res)=>{
+app.post('/api/resolve_report', auth2, (req, res) => {
     let id = req.query.id;
 
-    ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
-        if(err) return res.status(400).send(err);
+    ReviewReport.findOneAndUpdate({ _id: id }, { status: "resolved" }, null, function (err, doc) {
+        if (err) return res.status(400).send(err);
         res.json(true)
     })
 })
 
-app.post('/api/user-suspend', auth2, (req,res)=>{
-    let id = req.query.id;
-    // console.log(id)
-    User.findOneAndUpdate({ _id: id }, {status: "suspended"}, null, function(err,doc){
-        if(err) return res.status(400).send(err);
-        res.json(true)
-    })
-})
-
-app.post('/api/user-unsuspend', auth2, (req,res)=>{
+app.post('/api/user-suspend', auth2, (req, res) => {
     let id = req.query.id;
     // console.log(id)
-    User.findOneAndUpdate({ _id: id }, {status: "active"}, null, function(err,doc){
-        if(err) return res.status(400).send(err);
+    User.findOneAndUpdate({ _id: id }, { status: "suspended" }, null, function (err, doc) {
+        if (err) return res.status(400).send(err);
         res.json(true)
     })
 })
 
-app.delete('/api/delete_review',(req,res)=>{
+app.post('/api/user-unsuspend', auth2, (req, res) => {
+    let id = req.query.id;
+    // console.log(id)
+    User.findOneAndUpdate({ _id: id }, { status: "active" }, null, function (err, doc) {
+        if (err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
+
+app.delete('/api/delete_review', (req, res) => {
     let id = req.query.id;
     console.log(id)
-    Review.findByIdAndRemove(id,(err,doc)=>{
-        if(err){ 
-            return res.status(400).send(err);}
-        else{
-            ReviewReport.updateMany({ reviewId: id }, {status: "resolved and deleted"}, null, function(err,doc){
-                if(err) return res.status(400).send(err);
+    Review.findByIdAndRemove(id, (err, doc) => {
+        if (err) {
+            return res.status(400).send(err);
+        }
+        else {
+            ReviewReport.updateMany({ reviewId: id }, { status: "resolved and deleted" }, null, function (err, doc) {
+                if (err) return res.status(400).send(err);
                 res.json(true)
             })
-        }        
+        }
     })
 })
 
