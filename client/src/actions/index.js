@@ -196,6 +196,17 @@ export function getCinemaShowingMovies(cinemaId) {
     }
 }
 
+
+export function getFavoriteMovies() {
+    const request = axios.get(`/api/getFavoriteMovies`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_FAVORITE_MOVIES',
+        payload: request
+    }
+}
+
 export function getMovieInfo(id) {
 
     const request = axios.get(`/api/getMovieInfo?id=${id}`)

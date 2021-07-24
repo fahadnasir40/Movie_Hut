@@ -180,7 +180,6 @@ function saveMovie(title, cinemaId) {
         try {
             var movieObject = JSON.parse(dataToSend);
             const movie = new Movie(movieObject);
-            // console.log("Movie Info", movie);
             movie.save((error, document) => {
 
                 if (error) {
@@ -232,6 +231,7 @@ app.get("/api/auth", auth, (req, res) => {
         name: req.user.name,
         dob: req.user.dob,
         role: req.user.role,
+        favorites: req.user.favorites,
         error: false
     });
 });
@@ -265,13 +265,6 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
                     if (err) return res.status(400).send(err);
 
                     return res.status(200).send({ movies });
-                    // console.log("Movies", movies)
-                    // if (cinema) {
-                    //     return res.status(200).send({ movies, doc });
-                    // }
-                    // else {
-
-                    // }
 
                 });
         }
@@ -340,7 +333,6 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
         var upcommingShows = [];
         var todayShows = [];
         var shows = [];
-        console.log(docs);
 
         docs.map(function (s) {
             if (moment(s.date).startOf("day").diff(moment().startOf("day")) > 0)
@@ -665,7 +657,6 @@ app.get('/api/getCinepaxData', (req, res) => {
     // collect data from script
     python2.stdout.on('data', function (data) {
         console.log('Pipe data from python script ...',);
-        console.log(data.toString());
         dataToSend = data.toString();
     });
 
@@ -685,19 +676,12 @@ app.get('/api/getCinepaxData', (req, res) => {
                             if (err) return res.status(400).send(err);
 
                             if (cinema != null) {
-                                console.log(cinema)
                                 console.log(element.movie.title);
 
                                 Movie.findOne({ title: { $regex: '.*' + element.movie.title + '.*' } }, (err, movie) => {
                                     if (err) return res.status(400).send(err);
                                     if (movie == null) {
                                         console.log("Movie not found");
-                                        // const movieSaved = saveMovie(element.movie.title, cinema._id);
-
-                                        // if (movieSaved == false) {
-                                        //     return res.status(200).json({ message: 'Movie not found' })
-                                        // }
-                                        // return res.status(200).json({ message: 'Movie not found' })
                                     }
 
                                     console.log(movie.title)
@@ -724,10 +708,6 @@ app.get('/api/getCinepaxData', (req, res) => {
                                             console.log(error)
                                             return res.status(400).send(error);
                                         }
-                                        // return res.status(200).json({
-                                        //     post: true,
-                                        //     showtime: showtime._id
-                                        // })
                                     })
                                 })
                             }
@@ -795,7 +775,6 @@ app.post('/api/create-review', auth, (req, res) => {
         var Sentiment = require('sentiment');
         var sentiment = new Sentiment();
         var result = sentiment.analyze(comment);
-        console.log(result);
         return result.score;
         // if (result.score >= 1) {
         //     return 'Positive';
@@ -1014,12 +993,24 @@ app.post('/api/update_user', auth, (req, res) => {
 
 app.post('/api/addToFavorites', auth, (req, res) => {
     const movieId = req.body.movieId;
-    User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
-        if (err) return res.status(400).send(err);
-        res.json({
-            success: true,
+    const found = req.user.favorites.find((item) => (item === movieId))
+    if (found) {
+        User.findByIdAndUpdate(req.user._id, { $pull: { favorites: movieId } }, (err, doc) => {
+            if (err) return res.status(400).send(err);
+            res.json({
+                success: false,
+            })
         })
-    })
+    }
+    else {
+        User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
+            if (err) return res.status(400).send(err);
+            res.json({
+                success: true,
+            })
+        })
+
+    }
 })
 
 
