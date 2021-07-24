@@ -29,7 +29,7 @@ class Dashboard extends PureComponent {
                                 <div class="card-body">
                                     <h5 class="card-title">Users</h5>
                                     <p class="card-text">User information and update their account status.</p>
-                                    <Link to='#' class="btn btn-dark">See users</Link>
+                                    <Link to='/admin-users' class="btn btn-dark">See users</Link>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@ class Dashboard extends PureComponent {
                                 <div class="card-body">
                                     <h5 class="card-title">Reports</h5>
                                     <p class="card-text">See user reports and queries related information.</p>
-                                    <Link to='#' class="btn btn-dark">See reports</Link>
+                                    <Link to='/admin-reports' class="btn btn-dark">See reports</Link>
                                 </div>
                             </div>
                         </div>

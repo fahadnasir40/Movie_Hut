@@ -777,6 +777,21 @@ body {
   transition: transform 0.7s;
 }
 
+<<<<<<< HEAD
+.form-left{
+  float: left;
+}
+
+.textsize{
+  font-size: 1.3em;
+  /* white-space:pre */
+}
+
+#myform{
+  margin: 0 0;
+  max-width: fit-content;
+}
+=======
 .pagination {
   display: flex;
   margin: 4px;
@@ -815,3 +830,4 @@ body {
   background-color: black;
   opacity: 0.8;
 }
+>>>>>>> 02a436e6f97fb42ed9ee1d50ab5a1904d10f4083

@@ -70,6 +70,16 @@ export function getUser(id) {
     }
 }
 
+export function getUserSettings(id) {
+    const request = axios.get(`/api/user-settings?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_USER',
+        payload: request
+    }
+}
+
 export function updateUserInfo(user) {
     const request = axios.post("/api/user-update", user)
         .then(response => response.data);
@@ -102,6 +112,32 @@ export function getUsers(
 
     return {
         type: 'GET_USERS',
+        payload: request
+    }
+}
+
+export function getReports(
+    start = 0,
+    limit = 0,
+    order = 'desc',
+    list = ''
+) {
+
+    const request = axios.get(`api/getReportsList?skip=${start}&limit=${limit}&order=${order}`)
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data];
+            }
+            else {
+                return response.data;
+            }
+        })
+        .catch(error => {
+
+        });
+
+    return {
+        type: 'GET_REPORTS',
         payload: request
     }
 }
@@ -499,3 +535,22 @@ export function getCinemas(
     }
 }
 
+export function deleteReview(id){
+    const request = axios.delete(`/api/delete_review?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'DELETE_REVIEW',
+        payload:request
+    }
+}
+
+export function resolveReport(id){
+    const request = axios.post(`/api/resolve_report?id=${id}`)
+                    .then(response => response.data)
+
+    return {
+        type:'RESOLVE_REPORT',
+        payload:request
+    }
+}

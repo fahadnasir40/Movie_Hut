@@ -17,11 +17,14 @@ import Showtimes from './components/Admin/CreateShowtime/showtimes'
 import Profile from './components/Profile/profile';
 import UpdatePassword from './components/Profile/updatePassword';
 import UpdateProfile from './components/Profile/edit';
+import Settings from './components/Profile/settings'
 import ForgotPassword from './components/Forgot/forgot';
 import ResetPassword from './components/Reset/reset';
 import ExpirePassword from './components/Reset/expiredPassword';
 import Cinemas from './components/Home/cinemas';
 import CinemaMovie from './components/Home/moviesInCinema';
+import UsersList from './components/Admin/Users/users';
+import ReportsList from './components/Admin/ReviewReports/reviewreports'
 
 const routes = () => {
     return (
@@ -38,6 +41,7 @@ const routes = () => {
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/edit-profile" exact component={Auth(UpdateProfile, true)} />
             <Route path="/updatePassword" exact component={Auth(UpdatePassword, true)} />
+            <Route path="/settings" exact component={Auth(Settings, true)} />
             <Route path="/create-review" exact component={Auth(CreateReview, true)} />
             <Route path="/create-cinema" exact component={Auth(CreateCinema, null, true)} />
             <Route path="/promotions" exact component={Auth(Promotions, true, true)} />
@@ -45,6 +49,8 @@ const routes = () => {
             <Route path="/addMovie/:cinemaId" exact component={Auth(AddMovie, true, true)} />
             <Route path="/showtimes" exact component={Auth(Showtimes, true, true)} />
             <Route path="/admin-cinemas" exact component={Auth(CinemasList, true, true)} />
+            <Route path="/admin-users" exact component={Auth(UsersList, true, true)} />
+            <Route path="/admin-reports" exact component={Auth(ReportsList, true, true)} />
             <Route path="/logout" exact component={Logout} />
             <Route path="/reset-expired" exact component={ExpirePassword} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />
