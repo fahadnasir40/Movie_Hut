@@ -232,6 +232,7 @@ app.get("/api/auth", auth, (req, res) => {
         name: req.user.name,
         dob: req.user.dob,
         role: req.user.role,
+        favorites: req.user.favorites,
         error: false
     });
 });
@@ -1078,12 +1079,24 @@ app.post('/api/change_password', auth, (req, res) => {
 
 app.post('/api/addToFavorites', auth, (req, res) => {
     const movieId = req.body.movieId;
-    User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
-        if (err) return res.status(400).send(err);
-        res.json({
-            success: true,
+    const found = req.user.favorites.find((item) => (item === movieId))
+    if (found) {
+        User.findByIdAndUpdate(req.user._id, { $pull: { favorites: movieId } }, (err, doc) => {
+            if (err) return res.status(400).send(err);
+            res.json({
+                success: false,
+            })
         })
-    })
+    }
+    else {
+        User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: movieId } }, (err, doc) => {
+            if (err) return res.status(400).send(err);
+            res.json({
+                success: true,
+            })
+        })
+
+    }
 })
 
 
