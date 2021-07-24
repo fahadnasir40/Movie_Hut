@@ -18,12 +18,12 @@ class ReviewReports extends Component {
         this.props.dispatch(getReports())
     }
     deleteReportFromDB = (event) => {
-        console.log("delete", event)
-        this.props.dispatch(deleteReview(event))
+        // console.log("delete", event[0]._id)
+        this.props.dispatch(deleteReview(event[0]._id))
         window.location.reload();
     }
     resolveReport = (event) => {
-        console.log("resolve", event)
+        // console.log("resolve", event)
         this.props.dispatch(resolveReport(event))
         window.location.reload();
     }
@@ -96,9 +96,9 @@ class ReviewReports extends Component {
                 //     <button className="btn btn-primary">Resolve</button>
                 //     <button className="btn btn-danger">Delete</button>
                 // </span>
-                <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+                <DropdownButton id="dropdown-basic-button" title="">
                     <Dropdown.Item onClick={()=>{this.resolveReport(row._id)}}>Resolve</Dropdown.Item>
-                    <Dropdown.Item onClick={()=>{this.deleteReportFromDB(this.state.reviewList.map((review) => {if(review._id == row.reviewId){return row.reviewId}}))}}>Delete</Dropdown.Item>
+                    <Dropdown.Item onClick={()=>{this.deleteReportFromDB(this.state.reviewList.filter((review) => {if(review._id == row.reviewId){return row.reviewId}}))}}>Delete</Dropdown.Item>
                 </DropdownButton>
                 // <div className="nk-tb-col nk-tb-col-tools">
                 //     <ul className="nk-tb-actions gx-1 my-n1">
@@ -140,7 +140,8 @@ class ReviewReports extends Component {
     SampleExpandedComponent = ({ data }) => {
         return (
             <div className="container-fluid">
-                <p>{this.state.reviewList.map((review) => {if(review._id == data.reviewId){return review.review}})}</p>
+                <p>{this.state.reviewList.map((review) => {if(review._id == data.reviewId){return review.review}}) != '' ? 
+                this.state.reviewList.map((review) => {if(review._id == data.reviewId){return review.review}}) : 'N/A'}</p>
             </div>
         )
     };

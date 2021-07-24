@@ -52,15 +52,15 @@ class MoviesCinmeas extends Component {
                 let comingSoonList = [], nowShowingList = [];
 
                 nextProps.data.showData.forEach(show => {
-                    if (moment(show.showtimeDate).diff(date, 'days') > 0) {
-                        const movie = comingSoonList.find(({ movieId }) => movieId === show.movieId);
-                        if (!movie)
-                            comingSoonList.push(show)
-                    }
-                    else {
+                    if (moment(show.showtimeDate).startOf("day").diff(moment()) < 0) {
                         const movie = nowShowingList.find(({ movieId }) => movieId === show.movieId);
                         if (!movie)
                             nowShowingList.push(show)
+                    }
+                    else {
+                        const movie = comingSoonList.find(({ movieId }) => movieId === show.movieId);
+                        if (!movie)
+                            comingSoonList.push(show)
                     }
                 });
 
@@ -148,9 +148,6 @@ class MoviesCinmeas extends Component {
                         </div>
                         <div id="coming-soon" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("coming-soon")} `}>
                             COMING SOON
-                        </div>
-                        <div id="recommended" onClick={this.handleClick} className={` my-1 pl-4 pr-4 cities-names ${this.checkCity("recommended")} `}>
-                            RECOMMENDED
                         </div>
                     </div>
                     <div className="row">

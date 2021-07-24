@@ -342,7 +342,7 @@ app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 })
 
 
-app.get('/api/getCinemasHomeMovies', async (req, res) => {
+app.get('/api/getCinemaHomeMovies', async (req, res) => {
 
     const p = Showtime.find({
         date: {
@@ -353,20 +353,40 @@ app.get('/api/getCinemasHomeMovies', async (req, res) => {
         if (err) return res.status(400).send(err);
         var upcommingShows = [];
         var todayShows = [];
-
+        var shows = [];
         console.log(docs);
 
         docs.map(function (s) {
-            if (s.date > moment().toDate())
+            if (moment(s.date).startOf("day").diff(moment().startOf("day")) > 0)
                 upcommingShows.push(s.movieId);
             else
                 todayShows.push(s.movieId);
+            shows.push(s.movieId);
         });
 
-        const commingSoon = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index);
-        const nowShowing = todayShows.filter((item, index) => todayShows.indexOf(item) === index);
-        console.log("comming soon", commingSoon, " now showing", nowShowing);
-        return res.status(200).json({ commingSoon: commingSoon, nowShowing: nowShowing })
+
+        const commingSoonIds = upcommingShows.filter((item, index) => upcommingShows.indexOf(item) === index);
+        const nowShowingIds = todayShows.filter((item, index) => todayShows.indexOf(item) === index);
+
+        Movie.find({ _id: { $in: shows } }).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, movies) => {
+            if (err) return res.status(400).send(err);
+
+            var commingSoonMovies = [];
+            var nowShowingMovies = [];
+
+            movies.map((movie) => {
+                commingSoonIds.map((item) => {
+                    if (item == movie._id)
+                        commingSoonMovies.push(movie);
+                })
+                nowShowingIds.map((item) => {
+                    if (item == movie._id)
+                        nowShowingMovies.push(movie);
+                })
+            })
+
+            return res.status(200).json({ commingSoon: commingSoonMovies, nowShowing: nowShowingMovies })
+        });
     });
 });
 
@@ -483,36 +503,48 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
     });
 })
 
-function getRecommendedMovies(movieTitle) {
 
-}
-
-
-
-app.get('/api/getRecommendations', (req, res) => {
+app.get('/api/getRecommendations', auth, async (req, res) => {
     var dataToSend, err;
     // spawn new child process to call the python script
     //variables file name, movie name, api key
-    const python = spawn('python', ['./server/recommendation/recommend.py', req.body.title]);
+    Movie.find({ _id: { $in: req.user.favorites } }).select('title').exec((err, movies) => {
+        if (err) return res.status(400).send(err);
 
-    // collect data from script
-    python.stdout.on('data', function (data) {
-        console.log('Pipe data from python script ...',);
+        if (movies) {
 
-        dataToSend = data.toString();
-    });
+            const titles = movies.map((m) => (m.title));
+            const python = spawn('python', ['./server/recommendation/recommend.py', JSON.stringify(titles)]);
 
-    python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
-        try {
-            const r = JSON.parse(dataToSend);
-            const recommendations = r.movies;
-            return res.status(200).json({ recommendations });
+            // collect data from script
+            python.stdout.on('data', function (data) {
+
+                dataToSend = data.toString();
+            });
+
+            python.on('close', (code) => {
+                try {
+                    const r = JSON.parse(dataToSend);
+                    const recommendations = r.movies;
+
+                    Movie.find({ title: { $in: recommendations } }).sort({ releaseDate: -1 }).limit(12).select('_id poster_url title runtime  videoLinks background_url description rating title genreList certification').exec((err, movies) => {
+                        if (err) return res.status(400).send(err);
+                        return res.status(200).send(movies);
+                    })
+                }
+                catch (err) {
+                    console.log(err);
+                    return res.status(404).json({ message: "Error getting recommendations." });
+                }
+            });
+
         }
-        catch {
-            return res.status(404).json({ message: "Error getting recommendations." });
+        else {
+            return res.status(200).json({ "movies": [] })
         }
-    });
+
+    })
+
 });
 
 app.get('/api/getCertification', (req, res) => {
@@ -1190,8 +1222,14 @@ app.delete('/api/delete_review',(req,res)=>{
     let id = req.query.id;
     console.log(id)
     Review.findByIdAndRemove(id,(err,doc)=>{
-        if(err) return res.status(400).send(err);
-        res.json(true)
+        if(err){ 
+            return res.status(400).send(err);}
+        else{
+            ReviewReport.updateMany({ reviewId: id }, {status: "resolved and deleted"}, null, function(err,doc){
+                if(err) return res.status(400).send(err);
+                res.json(true)
+            })
+        }        
     })
 })
 
