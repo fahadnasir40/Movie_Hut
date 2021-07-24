@@ -12,8 +12,6 @@ import { connect } from 'react-redux';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom'
 import moment from 'moment';
-import showtimes from '../Admin/CreateShowtime/showtimes';
-import { forEach } from 'async';
 
 
 const responsive = {
@@ -52,7 +50,8 @@ class MovieDetails extends Component {
         super(props);
         this.state = {
             castToDisplay: 14,
-            favorite: false
+            favorite: false,
+            added: false
         };
     }
 
@@ -60,23 +59,41 @@ class MovieDetails extends Component {
     componentDidMount() {
         this.props.dispatch(getMovieInfo(this.props.match.params.movieId));
         if (this.props.user.login.isAuth) {
-
+            if (this.props.user.login.favorites) {
+                var found = this.props.user.login.favorites.find((item) => (item === this.props.match.params.movieId));
+                if (found) {
+                    this.setState({
+                        favorite: true
+                    })
+                }
+                else {
+                    this.setState({
+                        favorite: false
+                    })
+                }
+            }
         }
+
+
     }
 
     componentWillUnmount() {
         this.props.dispatch(clearMovieInfo());
     }
 
-    static getDerivedStateFromProps(props, state) {
-
-
+    static getDerivedStateFromProps(props, prevState) {
         if (props.movie.movieInfo) {
-
             let favoriteAdded = false;
+
+            if (prevState.favorite == true)
+                favoriteAdded = true;
+
+
             if (props.movie.favoriteAdded) {
-                if (props.movie.favoriteAdded.success == true)
+                if (props.movie.favoriteAdded.success === true)
                     favoriteAdded = true;
+                else if (props.movie.favoriteAdded.success === false)
+                    favoriteAdded = false;
             }
 
             return {
@@ -172,7 +189,7 @@ class MovieDetails extends Component {
             const date = moment(today).add(i++, "days").toDate();
             let c = (moment(this.state.selectedDate).isSame(date, "date")) ? 'showtime-date-active' : '';
             return (
-                <div className={`showtime-date ${c}`} onClick={() => { return this.handleSelectedDate(date) }}>
+                <div key={key} className={`showtime-date ${c}`} onClick={() => { return this.handleSelectedDate(date) }}>
                     <div>
                         <Moment date={date} format="MMM" />
                     </div>
@@ -262,13 +279,16 @@ class MovieDetails extends Component {
     }
 
     addMovieToFavorites = () => {
-        this.props.dispatch(addMovieToFavorites(this.state.movieInfo._id));
-        // if (this.props.user.login.isAuth) {
+        if (this.props.user.login.isAuth) {
+            this.props.dispatch(addMovieToFavorites(this.state.movieInfo._id));
+        }
+        else {
+            this.props.history.push('/login');
+        }
+        this.setState({
+            added: !this.state.added
+        })
 
-        // }
-        // else {
-        //     this.props.history.push('/login');
-        // }
     }
 
     render() {
@@ -278,7 +298,6 @@ class MovieDetails extends Component {
             cast = this.state.movieInfo.cast;
 
 
-        console.log(this.state.movieInfo);
         return (
             <div className="sticky-body">
                 <Header user={this.props.user} />
@@ -305,8 +324,14 @@ class MovieDetails extends Component {
                                                         </h5>
                                                         <p><Moment format="DD/MM/YYYY">{this.state.movieInfo.releaseDate}</Moment></p>
                                                     </div>
+
                                                     <button className=" btn  btn-dark mr-2" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
-                                                    <button className=" btn-dark btn my-2 d-md-none " onClick={this.addMovieToFavorites}><i className="fa fa-heart"> Favorite</i></button>
+                                                    {
+                                                        this.state.favorite ?
+                                                            <button className=" btn-dark btn my-2 d-md-none " onClick={this.addMovieToFavorites}><i className="fa fa-heart"></i> Added to Favorites</button>
+                                                            :
+                                                            <button className=" btn-dark btn my-2 d-md-none " onClick={this.addMovieToFavorites}><i className="fa fa-heart"></i>  Favorite</button>
+                                                    }
                                                 </div>
 
                                                 <div className="movie-details d-none d-md-block col-lg-8 col-xl-7">
@@ -326,9 +351,10 @@ class MovieDetails extends Component {
 
                                                     <div className="d-none d-md-block">
                                                         <button className=" btn  btn-dark" onClick={this.handleShow}><i className="fa fa-play"></i> Play Trailer</button>
-                                                        {this.state.favorite == false ?
+                                                        {this.state.favorite ?
+                                                            <button className="btn btn-dark ml-2" onClick={this.addMovieToFavorites}><i className="fa fa-heart"></i> Added to Favorites</button>
+                                                            :
                                                             <button onClick={this.addMovieToFavorites} className=" btn-dark btn-circle ml-2" ><i className="fa fa-heart"></i></button>
-                                                            : <button className="btn btn-dark ml-2" ><i className="fa fa-heart"></i> Added to Favorites</button>
                                                         }
                                                     </div>
                                                 </div>

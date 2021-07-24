@@ -249,6 +249,17 @@ export function getCinemaShowingMovies(cinemaId) {
     }
 }
 
+
+export function getFavoriteMovies() {
+    const request = axios.get(`/api/getFavoriteMovies`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_FAVORITE_MOVIES',
+        payload: request
+    }
+}
+
 export function getMovieInfo(id) {
 
     const request = axios.get(`/api/getMovieInfo?id=${id}`)
@@ -294,7 +305,7 @@ export function getMovieFromTMDB(name) {
 }
 
 export function changePassword(data) {
-    const request = axios.post(`/api/change_password`, {password: data.password, newPassword: data.newPassword, email: data.email})
+    const request = axios.post(`/api/change_password`, { password: data.password, newPassword: data.newPassword, email: data.email })
         .then(response => response.data);
 
     return {
@@ -334,15 +345,15 @@ export function changeUser(user) {
 
 export function clearUser() {
     return {
-        type:'CLEAR_USER',
-        payload:{}
+        type: 'CLEAR_USER',
+        payload: {}
     }
 }
 
 export function clearUpdatePassword() {
     return {
-        type:'CLEAR_UPDATE_PASSWORD',
-        payload:{}
+        type: 'CLEAR_UPDATE_PASSWORD',
+        payload: {}
     }
 }
 
@@ -535,22 +546,22 @@ export function getCinemas(
     }
 }
 
-export function deleteReview(id){
+export function deleteReview(id) {
     const request = axios.delete(`/api/delete_review?id=${id}`)
-                    .then(response => response.data)
+        .then(response => response.data)
 
     return {
-        type:'DELETE_REVIEW',
-        payload:request
+        type: 'DELETE_REVIEW',
+        payload: request
     }
 }
 
-export function resolveReport(id){
+export function resolveReport(id) {
     const request = axios.post(`/api/resolve_report?id=${id}`)
-                    .then(response => response.data)
+        .then(response => response.data)
 
     return {
-        type:'RESOLVE_REPORT',
-        payload:request
+        type: 'RESOLVE_REPORT',
+        payload: request
     }
 }
