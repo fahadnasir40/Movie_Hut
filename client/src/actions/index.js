@@ -90,6 +90,26 @@ export function updateUserInfo(user) {
     }
 }
 
+export function suspendUser(id) {
+    const request = axios.post(`/api/user-suspend?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'SUSPEND_USER',
+        payload: request
+    }
+}
+
+export function unSuspendUser(id) {
+    const request = axios.post(`/api/user-unsuspend?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'UNSUSPEND_USER',
+        payload: request
+    }
+}
+
 export function getUsers(
     start = 0,
     limit = 0,

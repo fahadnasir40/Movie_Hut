@@ -977,22 +977,29 @@ app.post('/api/register', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     User.findOne({ 'email': req.body.email }, (err, user) => {
-        if (!user) return res.json({ isAuth: false, message: 'Auth failed, email not found' })
+        if (!user) return res.json({ isAuth: false, message: 'Invalid Email or Password' })
 
         user.comparePassword(req.body.password, (err, isMatch) => {
             if (!isMatch) return res.json({
                 isAuth: false,
-                message: 'Wrong password'
+                message: 'Invalid Email or Password'
             });
-
-            user.generateToken((err, user) => {
-                if (err) return res.status(400).send(err);
-                res.cookie('auth', user.token).json({
-                    isAuth: true,
-                    id: user._id,
-                    email: user.email
+            else if(user.status == "suspended"){
+                return res.json({
+                    isAuth: false,
+                    message: 'Account is Suspended!'
+                });
+            }
+            else{
+                user.generateToken((err, user) => {
+                    if (err) return res.status(400).send(err);
+                    res.cookie('auth', user.token).json({
+                        isAuth: true,
+                        id: user._id,
+                        email: user.email
+                    })
                 })
-            })
+            }
         })
     })
 })
@@ -1213,6 +1220,24 @@ app.post('/api/resolve_report',(req,res)=>{
     let id = req.query.id;
 
     ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
+        if(err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
+
+app.post('/api/user-suspend',(req,res)=>{
+    let id = req.query.id;
+    // console.log(id)
+    User.findOneAndUpdate({ _id: id }, {status: "suspended"}, null, function(err,doc){
+        if(err) return res.status(400).send(err);
+        res.json(true)
+    })
+})
+
+app.post('/api/user-unsuspend',(req,res)=>{
+    let id = req.query.id;
+    // console.log(id)
+    User.findOneAndUpdate({ _id: id }, {status: "active"}, null, function(err,doc){
         if(err) return res.status(400).send(err);
         res.json(true)
     })

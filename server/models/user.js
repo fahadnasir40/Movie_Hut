@@ -54,7 +54,7 @@ const userSchema = mongoose.Schema({
     status: {
         type: String,
         trim: true,
-        default: ""
+        default: "active"
     },
     favorites: [
         {
