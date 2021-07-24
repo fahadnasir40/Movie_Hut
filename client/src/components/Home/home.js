@@ -30,7 +30,6 @@ class Home extends Component {
     }
 
     static getDerivedStateFromProps(props, prevState) {
-        console.log(props);
         if (prevState.cachedProps !== props) {
 
             if (props.recommendedMovies != prevState.recommendedMovies) {
@@ -41,7 +40,7 @@ class Home extends Component {
             }
 
             if (props.cinemaMovies != prevState.cinemaMovies) {
-                if (props.movies.moviesList) {
+                if (props.movies) {
                     if (props.movies.moviesList) {
                         if (props.movies.moviesList.length > 0) {
                             return {

@@ -14,6 +14,8 @@ export default function (state = {}, action) {
             return { ...state, recommendedMovies: action.payload }
         case 'GET_HOME_CINEMA_MOVIES':
             return { ...state, cinemaMovies: action.payload }
+        case 'GET_FAVORITE_MOVIES':
+            return { ...state, favoriteMovies: action.payload.movies }
         case 'VOTE_REVIEW':
             return { ...state, votedReview: action.payload }
         case 'ADD_MOVIE_TO_FAVORITES':
@@ -22,6 +24,8 @@ export default function (state = {}, action) {
             return { ...state, reportReview: action.payload }
         case 'CLEAR_MOVIE':
             return { ...state, movieDetails: action.payload, favoriteAdded: action.payload }
+        case 'CLEAR_FAVOTIE_MOVIES':
+            return { ...state, favoriteMovies: action.payload }
         case 'CLEAR_MOVIE_REVIEW':
             return { ...state, movieReview: action.payload }
         case 'CLEAR_REVIEW_REPORT':

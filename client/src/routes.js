@@ -11,6 +11,7 @@ import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
 import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
+import Favorites from './components/Favorites/favorites';
 import CinemasList from './components/Admin/Cinemas/cinemas'
 import AddMovie from './components/Admin/AddMovie/addMovie'
 import Showtimes from './components/Admin/CreateShowtime/showtimes'
@@ -38,6 +39,7 @@ const routes = () => {
             <Route path="/register" exact component={Auth(Register, false)} />
             <Route path="/forgot" exact component={Auth(ForgotPassword, false)} />
             <Route path="/reset/:id" exact component={Auth(ResetPassword, false)} />
+            <Route path="/favorites" exact component={Auth(Favorites, true)} />
             <Route path="/profile" exact component={Auth(Profile, true)} />
             <Route path="/edit-profile" exact component={Auth(UpdateProfile, true)} />
             <Route path="/updatePassword" exact component={Auth(UpdatePassword, true)} />

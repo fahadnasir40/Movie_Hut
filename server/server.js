@@ -1216,7 +1216,7 @@ app.get('/api/users', auth2, (req, res) => {
     })
 })
 
-app.post('/api/resolve_report',(req,res)=>{
+app.post('/api/resolve_report', auth2, (req,res)=>{
     let id = req.query.id;
 
     ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
@@ -1225,7 +1225,7 @@ app.post('/api/resolve_report',(req,res)=>{
     })
 })
 
-app.post('/api/user-suspend',(req,res)=>{
+app.post('/api/user-suspend', auth2, (req,res)=>{
     let id = req.query.id;
     // console.log(id)
     User.findOneAndUpdate({ _id: id }, {status: "suspended"}, null, function(err,doc){
@@ -1234,7 +1234,7 @@ app.post('/api/user-suspend',(req,res)=>{
     })
 })
 
-app.post('/api/user-unsuspend',(req,res)=>{
+app.post('/api/user-unsuspend', auth2, (req,res)=>{
     let id = req.query.id;
     // console.log(id)
     User.findOneAndUpdate({ _id: id }, {status: "active"}, null, function(err,doc){
