@@ -29,21 +29,6 @@ const SidenavItems = ({ user }) => {
             link: '/admin-panel',
             restricted: true
         },
-        // {
-        //     type:'navItem',
-        //     // icon:'file-text-o',
-        //     text:'Add Admins',
-        //     link:'/register',
-        //     restricted:true
-        // },
-        // {
-        //     type:'navItem',
-        //     // icon:'file-text-o',
-        //     text:'Login',
-        //     link:'/login',
-        //     restricted:false,
-        //     exclude:true
-        // },
         {
             type: 'navItem',
             // icon:'file-text-o',
@@ -51,20 +36,6 @@ const SidenavItems = ({ user }) => {
             link: '/favorites',
             restricted: true
         },
-        {
-            type: 'navItem',
-            // icon:'file-text-o',
-            text: 'My reviews',
-            link: '/user/user-reviews',
-            restricted: true
-        },
-        // {
-        //     type: 'navItem',
-        //     // icon:'file-text-o',
-        //     text: 'Add reviews',
-        //     link: '/create-review',
-        //     restricted: true
-        // },
         {
             type: 'navItem',
             // icon:'file-text-o',
@@ -107,7 +78,7 @@ const SidenavItems = ({ user }) => {
                 str = user.login.name
                 : str = ""
             : str = ""
-        
+
         if (str.substr(0, str.indexOf(' ')) === "")
             return str
         return str.substr(0, str.indexOf(' '))

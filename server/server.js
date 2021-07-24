@@ -256,8 +256,8 @@ app.get('/api/getReportsList', auth2, (req, res) => {
     // ORDER = asc || desc
     ReviewReport.find().skip(skip).sort({ createdAt: order }).limit(limit).exec((err, doc) => {
         if (err) return res.status(400).send(err);
-        var reviews = doc.map((reports)=>{return reports.reviewId});
-        Review.find({_id: {$in: reviews}}).exec((err,review)=>{res.status(200).json({reviewList: review, reportList: doc})})
+        var reviews = doc.map((reports) => { return reports.reviewId });
+        Review.find({ _id: { $in: reviews } }).exec((err, review) => { res.status(200).json({ reviewList: review, reportList: doc }) })
         // res.send(doc);
     })
 })
@@ -284,6 +284,8 @@ app.get('/api/getCinemaMovies', auth2, (req, res) => {
         }
     })
 })
+
+
 
 app.get('/api/getMoviesRunningInCinemas', (req, res) => {
 
@@ -381,6 +383,15 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
         });
     });
 });
+
+app.get('/api/getFavoriteMovies', auth, (req, res) => {
+    Movie.find({ _id: { $in: req.user.favorites } }).sort({ createdAt: -1 }).select('_id poster_url title runtime  description rating title ').exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+
+        return res.status(200).json({ "movies": doc })
+    })
+})
+
 
 app.get('/api/getHomeMovies', async (req, res) => {
 
@@ -993,7 +1004,7 @@ app.get('/api/getCinemas', (req, res) => {
 })
 
 app.get('/api/user-info', auth, (req, res) => {
-    User.findById(req.query.id ).select("name city dob").exec((err, doc) => {
+    User.findById(req.query.id).select("name city dob").exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
             user: doc,
@@ -1002,7 +1013,7 @@ app.get('/api/user-info', auth, (req, res) => {
 })
 
 app.get('/api/user-settings', auth, (req, res) => {
-    User.findById(req.query.id ).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
+    User.findById(req.query.id).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
             user: doc,
@@ -1032,7 +1043,7 @@ app.post('/api/change_password', auth, (req, res) => {
             bcrypt.genSalt(10, function (error, salt) {
                 bcrypt.hash(req.body.newPassword, salt, function (error, hash) {
                     if (error) return next(error);
-                    User.findOneAndUpdate({ email: user.email },{
+                    User.findOneAndUpdate({ email: user.email }, {
                         password: hash
                     }, null, function (err, docs) {
                         if (err) {
@@ -1200,27 +1211,28 @@ app.get('/api/users', auth2, (req, res) => {
     })
 })
 
-app.post('/api/resolve_report',(req,res)=>{
+app.post('/api/resolve_report', (req, res) => {
     let id = req.query.id;
 
-    ReviewReport.findOneAndUpdate({ _id: id }, {status: "resolved"}, null, function(err,doc){
-        if(err) return res.status(400).send(err);
+    ReviewReport.findOneAndUpdate({ _id: id }, { status: "resolved" }, null, function (err, doc) {
+        if (err) return res.status(400).send(err);
         res.json(true)
     })
 })
 
-app.delete('/api/delete_review',(req,res)=>{
+app.delete('/api/delete_review', (req, res) => {
     let id = req.query.id;
     console.log(id)
-    Review.findByIdAndRemove(id,(err,doc)=>{
-        if(err){ 
-            return res.status(400).send(err);}
-        else{
-            ReviewReport.updateMany({ reviewId: id }, {status: "resolved and deleted"}, null, function(err,doc){
-                if(err) return res.status(400).send(err);
+    Review.findByIdAndRemove(id, (err, doc) => {
+        if (err) {
+            return res.status(400).send(err);
+        }
+        else {
+            ReviewReport.updateMany({ reviewId: id }, { status: "resolved and deleted" }, null, function (err, doc) {
+                if (err) return res.status(400).send(err);
                 res.json(true)
             })
-        }        
+        }
     })
 })
 
