@@ -9,7 +9,7 @@ import MovieDetails from './components/MovieDetails/details';
 import CreateReview from './components/Review/CreateReview/createReview'
 import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
-import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
+import CreateShowtime from './components/Admin/CreateShowtime/CreateShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
 import Favorites from './components/Favorites/favorites';
 import CinemasList from './components/Admin/Cinemas/cinemas'
