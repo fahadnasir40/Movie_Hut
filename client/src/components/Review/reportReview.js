@@ -128,7 +128,7 @@ class ReportReview extends Component {
             }
 
             this.props.dispatch(reportReview(report));
-
+            this.handleClose();
         }
     }
 
