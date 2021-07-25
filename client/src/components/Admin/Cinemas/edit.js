@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
 import Header from '../../Header/header';
 import { Link } from 'react-router-dom';
@@ -9,10 +9,10 @@ import { getCinemaDetails, updateCinema, clearCinemaUpdate } from '../../../acti
 class EditCinema extends Component {
     state = {
         _id: '',
-        name:'',
-        city:'',
+        name: '',
+        city: '',
         address: '',
-        url:'',
+        url: '',
         error: '',
         success: '',
         validated: false,
@@ -20,26 +20,24 @@ class EditCinema extends Component {
     }
 
     handleInputName = (event) => {
-        this.setState({name:event.target.value})
+        this.setState({ name: event.target.value })
     }
     handleInputCity = (event) => {
-        this.setState({city:event.target.value})
+        this.setState({ city: event.target.value })
     }
     handleInputAddress = (event) => {
-        this.setState({address:event.target.value})
+        this.setState({ address: event.target.value })
     }
     handleInputURL = (event) => {
-        this.setState({url:event.target.value})
+        this.setState({ url: event.target.value })
     }
     componentDidMount = () => {
-        // console.log(this.props.match.params.cinemaId)
         this.props.dispatch(getCinemaDetails(this.props.match.params.cinemaId));
     }
     static getDerivedStateFromProps(nextProps, state) {
-        console.log("Curr" ,nextProps)
-        if(state.cachedProps !== nextProps){
-            if(nextProps.cinema){
-                if(nextProps.cinema.cinema){
+        if (state.cachedProps !== nextProps) {
+            if (nextProps.cinema) {
+                if (nextProps.cinema.cinema) {
                     return {
                         _id: nextProps.cinema.cinema._id,
                         name: nextProps.cinema.cinema.name,
@@ -51,8 +49,8 @@ class EditCinema extends Component {
                 }
             }
         }
-        if(nextProps.cinema){
-            if(nextProps.cinema.message === "Updated successfully"){
+        if (nextProps.cinema) {
+            if (nextProps.cinema.message === "Updated successfully") {
                 nextProps.history.push('/admin-cinemas')
             }
         }
@@ -64,7 +62,7 @@ class EditCinema extends Component {
         this.props.dispatch(updateCinema(this.state));
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.props.dispatch(clearCinemaUpdate())
     }
 
@@ -101,7 +99,7 @@ class EditCinema extends Component {
                                         <option value="Karachi">Karachi</option>
                                         <option value="Other">Other</option>
                                     </select>
-                                </Form.Group>                                
+                                </Form.Group>
                                 <Form.Group className="input-style" controlId="address">
                                     <Form.Label>Address</Form.Label>
                                     <Form.Control
@@ -145,8 +143,8 @@ class EditCinema extends Component {
     }
 }
 
-function mapStateToProps(state){
-    return{
+function mapStateToProps(state) {
+    return {
         cinema: state.cinema.cinema
     }
 }

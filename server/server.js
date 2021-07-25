@@ -232,6 +232,7 @@ app.get("/api/auth", auth, (req, res) => {
         dob: req.user.dob,
         role: req.user.role,
         favorites: req.user.favorites,
+        showProfaneWords: req.user.showProfaneWords,
         error: false
     });
 });
@@ -1051,7 +1052,6 @@ app.post('/api/user-update', auth, (req, res) => {
 })
 
 app.post('/api/cinema-update', auth, (req, res) => {
-    console.log(req.body)
     Cinema.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
         if (err) return res.status(400).send({ success: false });
         res.json({
@@ -1113,101 +1113,103 @@ app.post('/api/sendPromotionalEmail', auth2, (req, res) => {
 
 
     try {
-        User.find({}).select('email name').exec((err, users) => {
+        User.find({}).select('email name emailNotification').exec((err, users) => {
             if (err) {
                 console.log("Error", err)
                 return res.status(400).send("Users not found");
             }
 
             users.map((user, key) => {
+                if (user.emailNotification == true) {
+                    Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
+                        if (err)
+                            return res.status(500).json("error ");
 
-                Movie.find({ rating: { $gte: '7' } }).sort({ rating: "desc" }).limit(3).exec((err, doc) => {
-                    if (err)
-                        return res.status(500).json("error ");
-
-                    const movie = doc.map((item, key) => {
-                        return item;
-                    })
-
-                    const showtimes = Showtime.find().limit(3).lean().exec();
-
-                    showtimes.then((showtime) => {
-
-                        const shows = showtime.map((item, key) => {
+                        const movie = doc.map((item, key) => {
                             return item;
                         })
 
-                        var readHTMLFile = function (path, callback) {
-                            fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                                if (err) {
-                                    throw err;
-                                    callback(err);
-                                }
-                                else {
-                                    callback(null, html);
-                                }
-                            });
-                        };
+                        const showtimes = Showtime.find().limit(3).lean().exec();
 
+                        showtimes.then((showtime) => {
 
-                        readHTMLFile('./server/emails/email-templates/top-picks.html', function (err, html) {
-                            // console.log("HTML", movie);
-                            var template = handlebars.compile(html);
+                            const shows = showtime.map((item, key) => {
+                                return item;
+                            })
 
-                            const getFirstName = (str) => {
-                                if (str.substr(0, str.indexOf(' ')) === "")
-                                    return str
-                                return str.substr(0, str.indexOf(' '))
-                            }
-
-                            var userName = getFirstName(user.name);
-
-                            var replacements = {
-                                username: userName,
-                                top_movie_poster_url: movie[0].poster_url,
-                                top_movie_description: movie[0].description,
-                                top_movie_title: movie[0].title,
-                                top_rated_movie_1_title: movie[1].title,
-                                top_rated_movie_1_poster_url: movie[1].poster_url,
-                                top_rated_movie_1_description: movie[1].description,
-                                top_rated_movie_1_runtime: movie[1].runtime,
-                                top_rated_movie_1_rating: movie[1].rating,
-                                top_rated_movie_2_title: movie[2].title,
-                                top_rated_movie_2_poster_url: movie[2].poster_url,
-                                top_rated_movie_2_description: movie[2].description,
-                                top_rated_movie_2_runtime: movie[2].runtime,
-                                top_rated_movie_2_rating: movie[2].rating,
-                                showtime_1_title: shows[0].movieTitle,
-                                showtime_1_time: moment(shows[0].date).format("hh:mm A"),
-                                showtime_2_title: shows[1].movieTitle,
-                                showtime_2_time: moment(shows[1].date).format("hh:mm A"),
-                                showtime_3_title: shows[2].movieTitle,
-                                showtime_3_time: moment(shows[2].date).format("hh:mm A")
-
+                            var readHTMLFile = function (path, callback) {
+                                fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                                    if (err) {
+                                        throw err;
+                                        callback(err);
+                                    }
+                                    else {
+                                        callback(null, html);
+                                    }
+                                });
                             };
 
-                            var htmlToSend = template(replacements);
-                            var mailOptions = {
-                                from: config.MOVIEHUT_EMAIL_AUTH_USER,
-                                to: [user.email],
-                                subject: 'Movie Hut: Top Picks for you!',
-                                preview: true,
-                                html: htmlToSend
-                            };
 
-                            return transporter.sendMail(mailOptions, function (error, response) {
-                                if (error) {
-                                    // console.log(error);
-                                    callback(error);
+                            readHTMLFile('./server/emails/email-templates/top-picks.html', function (err, html) {
+                                // console.log("HTML", movie);
+                                var template = handlebars.compile(html);
+
+                                const getFirstName = (str) => {
+                                    if (str.substr(0, str.indexOf(' ')) === "")
+                                        return str
+                                    return str.substr(0, str.indexOf(' '))
                                 }
 
-                                return res.status(200).json({ post: true, message: "Email sent successfully" })
+                                var userName = getFirstName(user.name);
+
+                                var replacements = {
+                                    username: userName,
+                                    top_movie_poster_url: movie[0].poster_url,
+                                    top_movie_description: movie[0].description,
+                                    top_movie_title: movie[0].title,
+                                    top_rated_movie_1_title: movie[1].title,
+                                    top_rated_movie_1_poster_url: movie[1].poster_url,
+                                    top_rated_movie_1_description: movie[1].description,
+                                    top_rated_movie_1_runtime: movie[1].runtime,
+                                    top_rated_movie_1_rating: movie[1].rating,
+                                    top_rated_movie_2_title: movie[2].title,
+                                    top_rated_movie_2_poster_url: movie[2].poster_url,
+                                    top_rated_movie_2_description: movie[2].description,
+                                    top_rated_movie_2_runtime: movie[2].runtime,
+                                    top_rated_movie_2_rating: movie[2].rating,
+                                    showtime_1_title: shows[0].movieTitle,
+                                    showtime_1_time: moment(shows[0].date).format("hh:mm A"),
+                                    showtime_2_title: shows[1].movieTitle,
+                                    showtime_2_time: moment(shows[1].date).format("hh:mm A"),
+                                    showtime_3_title: shows[2].movieTitle,
+                                    showtime_3_time: moment(shows[2].date).format("hh:mm A")
+
+                                };
+
+                                var htmlToSend = template(replacements);
+                                var mailOptions = {
+                                    from: config.MOVIEHUT_EMAIL_AUTH_USER,
+                                    to: [user.email],
+                                    subject: 'Movie Hut: Top Picks for you!',
+                                    preview: true,
+                                    html: htmlToSend
+                                };
+
+                                return transporter.sendMail(mailOptions, function (error, response) {
+                                    if (error) {
+                                        // console.log(error);
+                                        callback(error);
+                                    }
+
+                                    return res.status(200).json({ post: true, message: "Email sent successfully" })
+                                });
                             });
-                        });
 
-                    })
+                        })
 
-                });
+                    });
+                }
+
 
             })
         })
