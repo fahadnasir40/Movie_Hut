@@ -4,7 +4,7 @@ import Header from '../../Header/header'
 import { Link, Redirect } from 'react-router-dom'
 import { addShowtime, clearCinemaMovie, clearShowtime, getCinemaMovies } from '../../../actions';
 import { connect } from 'react-redux';
-import { Moment } from 'react-moment';
+import Moment from 'react-moment';
 
 class CreateShowtime extends Component {
     setDate = () => {
@@ -79,13 +79,6 @@ class CreateShowtime extends Component {
                 }
             }
         }
-        // console.log("Props", props)
-        // if (props.showtimepost.showtime) {
-        //     if (props.showtimepost.showtime.post)
-        //         return {
-        //             redirect: true,
-        //         }
-        // }
         return null;
     }
 
@@ -190,11 +183,11 @@ class CreateShowtime extends Component {
                                             </Link>
 
                                             <div>
-                                                Release: {movie.releaseDate}
+                                                Release: {movie.releaseDate ? <Moment format="DD-MM-YYYY">{movie.releaseDate}</Moment> : 'N/A'}
                                             </div>
                                             <div>
                                                 Runtime: {movie.runtime} Minutes
-                                                </div>
+                                            </div>
                                             <div>
                                                 Rating: {movie.rating}
                                             </div>
