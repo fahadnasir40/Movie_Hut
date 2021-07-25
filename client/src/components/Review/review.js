@@ -53,6 +53,11 @@ class Review extends Component {
     }
 
     filterProfanity = (comment) => {
+        if (this.props.user.login) {
+            if (this.props.user.login.showProfaneWords == true) {
+                return comment;
+            }
+        }
         var Filter = require('bad-words');
         var customFilter = new Filter({ placeHolder: '*' });
 
