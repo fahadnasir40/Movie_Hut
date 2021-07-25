@@ -702,7 +702,6 @@ app.get('/api/getCinepaxData', (req, res) => {
                             if (err) return res.status(400).send(err);
 
                             if (cinema != null) {
-                                console.log(element.movie.title);
 
                                 Movie.findOne({ title: { $regex: '.*' + element.movie.title + '.*' } }, (err, movie) => {
                                     if (err) return res.status(400).send(err);
@@ -710,7 +709,6 @@ app.get('/api/getCinepaxData', (req, res) => {
                                         console.log("Movie not found");
                                     }
 
-                                    console.log(movie.title)
                                     let time = new Array();
                                     for (i = 1; i < show.screen.length; i++) {
                                         time.push(show.screen[i]);
@@ -797,27 +795,7 @@ app.post('/api/create-cinema', auth2, (req, res) => {
 
 app.post('/api/create-review', auth, (req, res) => {
 
-    function checkSentiment(comment) {
-        var Sentiment = require('sentiment');
-        var sentiment = new Sentiment();
-        var result = sentiment.analyze(comment);
-        return result.score;
-        // if (result.score >= 1) {
-        //     return 'Positive';
-        // }
-        // else if (result.score >= 0) {
-        //     return 'Neutral';
-        // }
-        // else {
-        //     return 'Negative';
-        // }
-    }
-
-    const sentiment = checkSentiment(req.body.review);
-
-    let reviewBody = { ...req.body, sentiment: sentiment };
-
-    const review = new Review(reviewBody);
+    const review = new Review(req.body);
     review.save((error, review) => {
         if (error) {
             console.log(error)

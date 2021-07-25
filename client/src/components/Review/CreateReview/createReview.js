@@ -7,7 +7,7 @@ import { addReview, clearMovieReview } from "../../../actions"
 import StarRatings from 'react-star-ratings'
 import Moment from 'react-moment'
 import { connect } from 'react-redux'
-
+import nlp from 'compromise';
 
 class CreateReview extends Component {
 
@@ -81,6 +81,28 @@ class CreateReview extends Component {
         })
     }
 
+    checkSentiment = (comment) => {
+        let doc = nlp(comment)
+
+        // transform
+        doc.contractions().expand()
+        comment = doc.text()  //remove contractions line wasn't->was not
+
+        var Sentiment = require('sentiment');
+        var sentiment = new Sentiment();
+        var result = sentiment.analyze(comment);
+
+        if (result.comparative > 0) {
+            return 'Positive';
+        }
+        else if (result.score === 0) {
+            return 'Neutral';
+        }
+        else {
+            return 'Negative';
+        }
+    }
+
 
 
     handleSubmit = (e) => {
@@ -92,9 +114,9 @@ class CreateReview extends Component {
                 userName: this.props.user.login.name,
                 isSpoiler: this.state.isSpoiler,
                 review: this.state.review.trim(),
-                heading: this.state.heading.trim()
+                heading: this.state.heading.trim(),
+                sentiment: this.checkSentiment(this.state.review)
             }
-
             this.props.dispatch(addReview(review));
 
             this.setState({

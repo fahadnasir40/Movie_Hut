@@ -1,3 +1,4 @@
+const { SafeString } = require("handlebars/runtime");
 const mongoose = require("mongoose");
 
 const reviewSchema = mongoose.Schema({
@@ -18,7 +19,7 @@ const reviewSchema = mongoose.Schema({
         required: true
     },
     sentiment: {
-        type: Number,
+        type: String,
         required: true
     },
     userId: {

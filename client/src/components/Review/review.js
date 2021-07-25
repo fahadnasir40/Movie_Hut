@@ -216,6 +216,17 @@ class Review extends Component {
                                                             style={{ cursor: "pointer" }} onClick={() => { return this.upvoteReview(review) }}></i> {this.getReviewUpvoteCount(review)} <i className={` ${this.getReviewDownvote(review)}  fa-thumbs-down`} style={{ cursor: "pointer" }}
                                                                 onClick={() => { return this.downvoteReview(review) }}></i> {this.getReviewDownvoteCount(review)}.
                                                             {this.props.user.login.isAuth == true ? null : <span> <Link style={{ color: 'black', fontWeight: '500' }} to="/login">Sign in</Link> to vote.</span>}</small>
+                                                        <OverlayTrigger
+                                                            key={key}
+                                                            placement={'top'}
+                                                            overlay={
+                                                                <Tooltip id={`tooltip-top`}>
+                                                                    Sentiment predicted by Movie Hut.
+                                                                </Tooltip>
+                                                            }
+                                                        >
+                                                            <small className="text-muted"> <strong> ({review.sentiment})</strong> </small>
+                                                        </OverlayTrigger>
                                                     </div>
                                                     <ReportReview {...this.props} review={review} />
                                                     <hr className="border col-10 border-light m-0 my-2" />
