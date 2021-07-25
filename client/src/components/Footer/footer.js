@@ -47,8 +47,8 @@ class Footer extends Component {
                             <span className="copyright-text offset-lg-2 col-xs-12 my-2 ">Copyright &copy; <Moment format='YYYY'></Moment> Movie Hut. All Rights Reserved.
                             </span>
                             <span className="footer-title  col-sm-12 col my-2"> MOVIE HUT</span>
-                            <span className=" font-rc font-weight-bold  col-xs-12 my-2" style={{ opacity: '0.5', color: '#fff' }}> <a href="#"> Privacy Policy</a></span>
-                            <span className=" font-rc font-weight-bold  col-xs-12 col my-2" style={{ opacity: '0.5', color: '#fff' }}> <a href="#"> Terms {'&'} Conditions</a></span>
+                            <span className=" font-rc font-weight-bold  col-xs-12 my-2" style={{ opacity: '0.5', color: '#fff' }}> <Link to={`/privacy-policy`}>Privacy Policy</Link></span>
+                            <span className=" font-rc font-weight-bold  col-xs-12 col my-2" style={{ opacity: '0.5', color: '#fff' }}><Link to={`/terms-and-conditions`}>Terms {'&'} Conditions</Link></span>
                         </div>
                         {/* 
                         <div class="col-md-4 col-sm-6 col-xs-12">

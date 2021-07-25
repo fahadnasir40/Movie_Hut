@@ -342,7 +342,7 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
     const p = Showtime.find({
         date: {
             $gte: moment().startOf("Day").toDate(),
-            $lte: moment().add(7, "days").toDate()
+            $lte: moment().add(6, "days").toDate()
         }
     }).exec((err, docs) => {
         if (err) return res.status(400).send(err);
@@ -385,7 +385,7 @@ app.get('/api/getCinemaHomeMovies', async (req, res) => {
 });
 
 app.get('/api/getFavoriteMovies', auth, (req, res) => {
-    Movie.find({ _id: { $in: req.user.favorites } }).sort({ createdAt: -1 }).select('_id poster_url title runtime  description rating title ').exec((err, doc) => {
+    Movie.find({ _id: { $in: req.user.favorites } }).sort({ createdAt: -1 }).select('_id poster_url title runtime  description rating title releaseDate ').exec((err, doc) => {
         if (err) return res.status(400).send(err);
 
         return res.status(200).json({ "movies": doc })

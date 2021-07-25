@@ -4,7 +4,7 @@ import Footer from '../Footer/footer'
 import { connect } from 'react-redux'
 import { getFavoriteMovies } from '../../actions'
 import { Link } from 'react-router-dom'
-
+import Moment from 'react-moment'
 class Favorites extends Component {
 
     state = {
@@ -65,7 +65,7 @@ class Favorites extends Component {
                                                 </Link>
 
                                                 <div>
-                                                    Release: {movie.releaseDate}
+                                                    Release: {movie.releaseDate ? <Moment format="DD/MM/YYYY">{movie.releaseDate}</Moment> : 'N/A'}
                                                 </div>
                                                 <div>
                                                     Runtime: {movie.runtime} Minutes
