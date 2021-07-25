@@ -14,37 +14,6 @@ class Showtime extends Component {
 
     state = {
         events: [
-            // {
-            //     start: moment().toDate(),
-            //     end: moment().add(0.4, "hours").toDate(),
-            //     title: "Movie 1",
-            // },
-            // {
-            //     'title': 'Movie 2',
-            //     'allDay': true,
-            //     'start': moment().toDate(),
-            //     'end': moment().add(1, "hours").toDate(),
-            // }, {
-            //     'title': 'Movie 3',
-
-            //     'start': moment().toDate(),
-            //     'end': moment().add(3, "hours").toDate(),
-            // }, {
-            //     'title': 'Movie 4',
-
-            //     'start': moment().toDate(),
-            //     'end': moment().add(0.5, "hours").toDate(),
-            // }, {
-            //     'title': 'Movie 5',
-
-            //     'start': moment().toDate(),
-            //     'end': moment().add(0.2, "hours").toDate(),
-            // }, {
-            //     'title': 'Movie 7',
-
-            //     'start': moment().toDate(),
-            //     'end': moment().add(4, "hours").toDate(),
-            // },
         ],
         title: '',
         language: 'English',
@@ -52,53 +21,56 @@ class Showtime extends Component {
         time: '',
         screenType: '',
         show: false,
-        redirect: false
+        redirect: false,
+        cahcedProps: ''
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
-        const events = [];
-        let show = prevState.show;
+        if (prevState.cahcedProps != nextProps) {
+            const events = [];
+            let show = prevState.show;
 
-        if (nextProps.postShowtime) {
-            if (nextProps.postShowtime.post == true) {
-                let language = nextProps.postShowtime.newShowtime.language == 'Urdu' ? ' (Urdu)' : '';
-                const event = {
-                    title: "Screen: " + nextProps.postShowtime.newShowtime.screenType + language,
-                    start: moment(nextProps.postShowtime.newShowtime.date).toDate(),
-                    end: moment(nextProps.postShowtime.newShowtime.date).add("minute", nextProps.postShowtime.newShowtime.runtime).toDate()
-                }
-                events.push(event);
-                show = !prevState.show;
-                nextProps.dispatch(clearShowtime);
-            }
-        }
-
-
-        if (nextProps.showtimes) {
-            if (nextProps.showtimes.showtime) {
-                if (prevState.movie) {
-                    nextProps.showtimes.showtime.forEach((item => {
-                        let language = item.language == 'Urdu' ? ' (Urdu)' : '';
-                        const event = {
-                            title: "Screen: " + item.screenType + language,
-                            start: moment(item.date).toDate(),
-                            end: moment(item.date).add("minute", item.runtime).toDate()
-                        }
-                        console.log("Event", event)
-                        events.push(event)
-                    }))
-
-
-                    return {
-                        events: events,
-                        show: show
+            if (nextProps.postShowtime) {
+                if (nextProps.postShowtime.post == true) {
+                    let language = nextProps.postShowtime.newShowtime.language == 'Urdu' ? ' (Urdu)' : '';
+                    const event = {
+                        title: "Screen: " + nextProps.postShowtime.newShowtime.screenType + language,
+                        start: moment(nextProps.postShowtime.newShowtime.date).toDate(),
+                        end: moment(nextProps.postShowtime.newShowtime.date).add("minute", nextProps.postShowtime.newShowtime.runtime).toDate()
                     }
+                    events.push(event);
+                    nextProps.dispatch(clearShowtime);
+                }
+            }
+
+
+            if (nextProps.showtimes) {
+                if (nextProps.showtimes.showtime) {
+                    if (prevState.movie) {
+                        nextProps.showtimes.showtime.forEach((item => {
+                            let language = item.language == 'Urdu' ? ' (Urdu)' : '';
+                            const event = {
+                                title: "Screen: " + item.screenType + language,
+                                start: moment(item.date).toDate(),
+                                end: moment(item.date).add("minute", item.runtime).toDate()
+                            }
+                            console.log("Event", event)
+                            events.push(event)
+                        }))
+
+
+                        return {
+                            events: events,
+                            show: show
+                        }
+                    }
+
                 }
 
             }
-
         }
+
 
         return null;
     }
@@ -175,7 +147,6 @@ class Showtime extends Component {
     }
 
     handleSubmit = (event) => {
-        // console.log("Inside handle submit")
         event.preventDefault();
         this.props.dispatch(addShowtime({
             language: this.state.language,
@@ -186,6 +157,7 @@ class Showtime extends Component {
             movieId: this.state.movie._id,
             movieTitle: this.state.movie.title
         }))
+        this.handleClose();
     }
 
     addShowtime = () => {
@@ -201,7 +173,7 @@ class Showtime extends Component {
                 <Modal.Header className="" closeButton>
                     <Modal.Title id="contained-modal-title-vcenter" className=" text-center" style={{ opacity: '0.8', fontSize: '18px' }}>
                         Add a new showtime
-                </Modal.Title>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
 
@@ -233,15 +205,6 @@ class Showtime extends Component {
                                     onChange={this.handleInputDate}
                                 />
                             </Form.Group>
-                            {/* <Form.Group className="input-style" controlId="time">
-                                <Form.Label>Time</Form.Label>
-                                <Form.Control
-                                    type="time"
-                                    placeholder="Time"
-                                    value={this.state.time}
-                                    onChange={this.handleInputTime}
-                                />
-                            </Form.Group> */}
                             <Form.Group className="input-style" controlId="screen">
                                 <Form.Label>Screen type</Form.Label>
                                 <Form.Control
@@ -250,16 +213,10 @@ class Showtime extends Component {
                                     value={this.state.screenType}
                                     onChange={this.handleInputScreen}
                                 />
-                                {/* <select id="type" name="type">
-                                    <option value="gold1">Gold-1</option>
-                                    <option value="gold2">Gold-2</option>
-                                    <option value="plat1">Platinum-1</option>
-                                    <option value="plat2">Platinum-2</option>
-                                </select> */}
                             </Form.Group>
                             <Button block id="btn-size" className="btn-dark mt-4 mb-3" style={{ borderRadius: '100px' }} size="lg" type="submit">
                                 SAVE
-                                </Button>
+                            </Button>
                         </Form>
 
                     </div>
@@ -268,7 +225,6 @@ class Showtime extends Component {
             </Modal>
         )
     }
-
 
     componentDidMount() {
 
@@ -281,7 +237,6 @@ class Showtime extends Component {
                 cinemaId: id,
                 movie: this.props.location.showtimeProps.movie
             })
-
         }
         else {
             this.setState({
