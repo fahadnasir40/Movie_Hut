@@ -30,6 +30,16 @@ export function updatePasswordEmail(resetPasswordToken, password) {
     }
 }
 
+export function updateCinema(cinema) {
+    const request = axios.post("/api/cinema-update", cinema)
+        .then(response => response.data);
+
+    return {
+        type: 'UPDATE_CINEMA',
+        payload: request
+    }
+}
+
 export function loginUser({ email, password }) {
 
     const request = axios.post(`/api/login`, { email, password })
@@ -66,6 +76,16 @@ export function getUser(id) {
 
     return {
         type: 'GET_USER',
+        payload: request
+    }
+}
+
+export function getCinemaDetails(id) {
+    const request = axios.get(`/api/cinema-info?id=${id}`)
+        .then(response => response.data);
+
+    return {
+        type: 'GET_CINEMA',
         payload: request
     }
 }
@@ -448,6 +468,13 @@ export function clearReviewVote() {
 export function clearCinema() {
     return {
         type: 'CLEAR_CINEMA',
+        payload: {}
+    }
+}
+
+export function clearCinemaUpdate() {
+    return {
+        type: 'CLEAR_CINEMA_UPDATE',
         payload: {}
     }
 }

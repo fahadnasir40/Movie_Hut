@@ -9,7 +9,7 @@ import MovieDetails from './components/MovieDetails/details';
 import CreateReview from './components/Review/CreateReview/createReview'
 import CreateCinema from './components/Admin/CreateCinema/CreateCinema'
 import Promotions from './components/Admin/Promotions/promotions'
-import CreateShowtime from './components/Admin/CreateShowtime/CreateShowtime'
+import CreateShowtime from './components/Admin/CreateShowtime/createShowtime'
 import Dashboard from './components/Admin/Dashboard/dashboard'
 import Favorites from './components/Favorites/favorites';
 import CinemasList from './components/Admin/Cinemas/cinemas'
@@ -25,7 +25,8 @@ import ExpirePassword from './components/Reset/expiredPassword';
 import Cinemas from './components/Home/cinemas';
 import CinemaMovie from './components/Home/moviesInCinema';
 import UsersList from './components/Admin/Users/users';
-import ReportsList from './components/Admin/ReviewReports/reviewreports'
+import ReportsList from './components/Admin/ReviewReports/reviewreports';
+import EditCinema from './components/Admin/Cinemas/edit'
 
 const routes = () => {
     return (
@@ -53,6 +54,7 @@ const routes = () => {
             <Route path="/admin-cinemas" exact component={Auth(CinemasList, true, true)} />
             <Route path="/admin-users" exact component={Auth(UsersList, true, true)} />
             <Route path="/admin-reports" exact component={Auth(ReportsList, true, true)} />
+            <Route path="/edit-cinema/:cinemaId" exact component={Auth(EditCinema, true, true)} />
             <Route path="/logout" exact component={Logout} />
             <Route path="/reset-expired" exact component={ExpirePassword} />
             <Route component={() => (<h1 className="heading m-5">404 Page Not Found</h1>)} />

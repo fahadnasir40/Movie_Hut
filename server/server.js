@@ -1019,8 +1019,18 @@ app.get('/api/user-info', auth, (req, res) => {
     })
 })
 
+app.get('/api/cinema-info', auth, (req, res) => {
+    // console.log(req.query.id)
+    Cinema.findById(req.query.id).select("name address city url").exec((err, doc) => {
+        if (err) return res.status(400).send(err);
+        res.json({
+            cinema: doc,
+        })
+    })
+})
+
 app.get('/api/user-settings', auth, (req, res) => {
-    User.findById(req.query.id).select("cb1 cb2 cb3 cb4").exec((err, doc) => {
+    User.findById(req.query.id).select("showProfaneWords emailNotification").exec((err, doc) => {
         if (err) return res.status(400).send(err);
         res.json({
             user: doc,
@@ -1033,6 +1043,16 @@ app.get('/api/user-settings', auth, (req, res) => {
 //UPDATE
 app.post('/api/user-update', auth, (req, res) => {
     User.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
+        if (err) return res.status(400).send({ success: false });
+        res.json({
+            message: "Updated successfully"
+        })
+    })
+})
+
+app.post('/api/cinema-update', auth, (req, res) => {
+    console.log(req.body)
+    Cinema.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, doc) => {
         if (err) return res.status(400).send({ success: false });
         res.json({
             message: "Updated successfully"

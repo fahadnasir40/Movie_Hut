@@ -30,6 +30,12 @@ export default function (state = {}, action) {
             return { ...state, promotionalMails: action.payload }
         case 'GET_CINEMA_MOVIES_SHOWING':
             return { ...state, cinemaMovies: action.payload }
+        case 'GET_CINEMA':
+            return { ...state, cinema: action.payload }
+        case 'UPDATE_CINEMA':
+            return {...state,cinema:action.payload}
+        case 'CLEAR_CINEMA_UPDATE':
+            return { ...state, cinema:action.payload }
 
         // case 'DOWNLOAD_DOCUMENT':
         //     return {...state,downloadStatus:action.payload}
