@@ -1,89 +1,90 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
 import Header from '../Header/header';
 import { Link } from 'react-router-dom';
-import {userRegister, loginUser} from './../../actions/index';
+import { userRegister, loginUser } from './../../actions/index';
 
 
 class Register extends Component {
     state = {
-        name:'',
+        name: '',
         email: '',
-        dob:'',
+        dob: '',
         password: '',
-        confirmPassword:'',
+        confirmPassword: '',
         error: '',
         success: '',
         validated: false,
     }
 
     handleInputName = (event) => {
-        this.setState({name:event.target.value})
+        this.setState({ name: event.target.value })
     }
     handleInputEmail = (event) => {
-        this.setState({email:event.target.value})
+        this.setState({ email: event.target.value })
     }
     handleInputDob = (event) => {
-        this.setState({dob:event.target.value})
+        this.setState({ dob: event.target.value })
     }
-    handleInputPassword= (event) => {
-        this.setState({password:event.target.value})
+    handleInputPassword = (event) => {
+        this.setState({ password: event.target.value })
     }
     handleInputConfirmPassword = (event) => {
-        this.setState({confirmPassword:event.target.value})
+        this.setState({ confirmPassword: event.target.value })
     }
 
-    static getDerivedStateFromProps(nextProps, state){
+    static getDerivedStateFromProps(nextProps, state) {
         console.log(nextProps)
-        if(nextProps.user.register === false){
-            return {error:'Error registering the user, try again'}
+        if (nextProps.user.register === false) {
+            return { error: 'Error registering the user, try again' }
         }
-        if(nextProps.user.login.isAuth){
+        if (nextProps.user.login.isAuth) {
             nextProps.history.push('/')
-        } 
-        else if(nextProps.user.register === true){{
-            
-            if(nextProps.user.login.isAuth){
-                nextProps.history.push('/')
-            } 
-            
-            // if(nextProps.user.login.error){
-            //     nextProps.history.push('/login')
-            // } 
-            nextProps.dispatch(loginUser({
-                email:state.email,
-                password:state.password
-            }))
-            // this.setState({
-            //     name:'',
-            //     email:'',
-            //     dob:'',
-            //     password: '',
-            //     confirmPassword:'',
-            //     success: 'Registered successfully',
-            // })
-            
         }
-        return null;
-        // setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
-    }
+        else if (nextProps.user.register === true) {
+            {
+
+                if (nextProps.user.login.isAuth) {
+                    nextProps.history.push('/')
+                }
+
+                // if(nextProps.user.login.error){
+                //     nextProps.history.push('/login')
+                // } 
+                nextProps.dispatch(loginUser({
+                    email: state.email,
+                    password: state.password
+                }))
+                // this.setState({
+                //     name:'',
+                //     email:'',
+                //     dob:'',
+                //     password: '',
+                //     confirmPassword:'',
+                //     success: 'Registered successfully',
+                // })
+
+            }
+            return null;
+            // setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
+        }
     }
 
     submitForm = (e) => {
         e.preventDefault();
-        this.setState({error:'', success:''});
-        if(this.state.password === this.state.confirmPassword){
+        this.setState({ error: '', success: '' });
+        if (this.state.password === this.state.confirmPassword) {
             this.props.dispatch(userRegister({
-                name:this.state.name,
-                email:this.state.email,
-                dob:this.state.dob,
-                password:this.state.password
+                name: this.state.name,
+                email: this.state.email,
+                dob: this.state.dob,
+                password: this.state.password
             }))
         }
-        else{
-            this.setState({error:'Password and Confirm pawword do not match', success:''});
-            setTimeout(()=>{this.setState({error:'', success: ''}) }, 5000);
+        else {
+            this.setState({ error: 'Password and Confirm pawword do not match', success: '' });
+            setTimeout(() => { this.setState({ error: '', success: '' }) }, 5000);
         }
     }
 
@@ -167,8 +168,8 @@ class Register extends Component {
                                 </div>
                                 <p style={{ fontFamily: 'Roboto', textAlign: 'center' }}>Already have an account? <Link to="login">Sign In</Link></p>
                                 <hr class="register-line" size="1" />
-                                <p className="input-style" style={{ fontFamily: 'Roboto', textAlign: 'center' }}>By clicking Sign Up, you agree to you agree to the <Link to="#">Terms</Link> and <Link to="#">Private policy</Link></p>
-                                
+                                <p className="input-style" style={{ fontFamily: 'Roboto', textAlign: 'center' }}>By clicking Sign Up, you agree to you agree to the <Link to="terms-and-conditions">Terms</Link> and <Link to="privacy-policy">Private policy</Link></p>
+
                             </Form>
                         </div>
                     </div>
@@ -179,8 +180,8 @@ class Register extends Component {
     }
 }
 
-function mapStateToProps(state){
-    return{
+function mapStateToProps(state) {
+    return {
         user: state.user
     }
 }
