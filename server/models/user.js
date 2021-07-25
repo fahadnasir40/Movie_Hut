@@ -66,19 +66,11 @@ const userSchema = mongoose.Schema({
         type: String,
         default: ""
     },
-    cb1: {
+    showProfaneWords: {
         type: Boolean,
         default: false
     },
-    cb2: {
-        type: Boolean,
-        default: false
-    },
-    cb3: {
-        type: Boolean,
-        default: false
-    },
-    cb4: {
+    emailNotification: {
         type: Boolean,
         default: false
     },

@@ -15,7 +15,9 @@ class Cinemas extends Component {
     componentDidMount() {
         this.props.dispatch(getCinemasList())
     }
-
+    handleCinemaEdit = (e) => {
+        console.log(e)
+    }
     static getDerivedStateFromProps(props, state) {
 
         if (props.cinemaList) {
@@ -76,7 +78,7 @@ class Cinemas extends Component {
             name: 'Action',
             hide: 'md',
             cell: row => (
-                <span><strong>...</strong></span>
+                <Link to={`/edit-cinema/${row._id}`} className='btn btn-outline-dark'>Edit</Link>
                 // <DropdownButton id="dropdown-basic-button" title="Dropdown button">
                 //     <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
                 //     <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
@@ -123,7 +125,7 @@ class Cinemas extends Component {
     render() {
         return (
             <div>
-                <Header />
+                <Header user={this.props.user}/>
                 <div className="container">
                     <div className='row mt-2'>
                         <div className='col-12 col-md-4 mt-2'>
