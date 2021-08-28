@@ -566,117 +566,7 @@ app.get('/api/getCertification', (req, res) => {
 app.get('/api/getCinepaxData', (req, res) => {
     var dataToSend, err;
 
-    // const data = [
-    //     {
-    //         "city": "Islamabad",
-    //         "showDate": "2021-07-16 00:00:00",
-    //         "showDay": "FRI",
-    //         "scrapeDate": "2021-07-15 16:11:26.397770",
-    //         "movie": {
-    //             "showtimes": [
-    //                 {
-    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
-    //                     "screen": [
-    //                         "SCREEN 1- SILVER",
-    //                         "3:00PM",
-    //                         "6:00PM",
-    //                         "9:00PM"
-    //                     ]
-    //                 }
-    //             ],
-    //             "title": "Black Widow 3D Eng"
-    //         }
-    //     },
-    //     {
-    //         "city": "Islamabad",
-    //         "showDate": "2021-07-17 00:00:00",
-    //         "showDay": "SAT",
-    //         "scrapeDate": "2021-07-15 16:11:28.027686",
-    //         "movie": {
-    //             "showtimes": [
-    //                 {
-    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
-    //                     "screen": [
-    //                         "SCREEN 1- SILVER",
-    //                         "1:00PM",
-    //                         "4:00PM",
-    //                         "7:00PM",
-    //                         "10:00PM"
-    //                     ]
-    //                 }
-    //             ],
-    //             "title": "Black Widow 3D Eng"
-    //         }
-    //     },
-    //     {
-    //         "city": "Islamabad",
-    //         "showDate": "2021-07-18 00:00:00",
-    //         "showDay": "SUN",
-    //         "scrapeDate": "2021-07-15 16:11:29.662571",
-    //         "movie": {
-    //             "showtimes": [
-    //                 {
-    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
-    //                     "screen": [
-    //                         "SCREEN 1- SILVER",
-    //                         "1:00PM",
-    //                         "4:00PM",
-    //                         "7:00PM",
-    //                         "10:00PM"
-    //                     ]
-    //                 }
-    //             ],
-    //             "title": "Black Widow 3D Eng"
-    //         }
-    //     },
-    //     {
-    //         "city": "Islamabad",
-    //         "showDate": "2021-07-19 00:00:00",
-    //         "showDay": "MON",
-    //         "scrapeDate": "2021-07-15 16:11:31.307512",
-    //         "movie": {
-    //             "showtimes": [
-    //                 {
-    //                     "address": "CINEPAX WORLD TRADE CENTER - Islamabad",
-    //                     "screen": [
-    //                         "SCREEN 1- SILVER",
-    //                         "1:00PM",
-    //                         "4:00PM",
-    //                         "7:00PM",
-    //                         "10:00PM"
-    //                     ]
-    //                 }
-    //             ],
-    //             "title": "Black Widow 3D Eng"
-    //         }
-    //     },
-    //     {
-    //         "city": "Lahore",
-    //         "showDate": "2021-07-15 00:00:00",
-    //         "showDay": "THU",
-    //         "scrapeDate": "2021-07-15 16:11:38.247884",
-    //         "movie": {
-    //             "showtimes": [
-    //                 {
-    //                     "address": "CINEPAX PACKAGES MALL - Lahore",
-    //                     "screen": [
-    //                         "Gluco Minipax",
-    //                         "4:20PM",
-    //                         "7:00PM"
-    //                     ]
-    //                 },
-    //                 {
-    //                     "address": "CINEPAX AMANAH MALL - Lahore",
-    //                     "screen": [
-    //                         "SILVER 3",
-    //                         "5:30PM"
-    //                     ]
-    //                 }
-    //             ],
-    //             "title": "Sonic the Hedgehog"
-    //         }
-    //     }
-    // ];
+    // const data = [{ "city": "Islamabad", "showDate": "2021-07-25 00:00:00", "showDay": "SUN", "scrapeDate": "2021-07-25 21:46:05.444708", "movie": { "showtimes": [{ "address": "CINEPAX WORLD TRADE CENTER - Islamabad", "screen": ["SCREEN 1- SILVER", "10:00PM"] }], "title": "Black Widow" } }, { "city": "Islamabad", "showDate": "2021-07-26 00:00:00", "showDay": "MON", "scrapeDate": "2021-07-25 21:46:07.090926", "movie": { "showtimes": [{ "address": "CINEPAX WORLD TRADE CENTER - Islamabad", "screen": ["SCREEN 2 - PLATINUM", "3:00PM"] }], "title": "F9" } }, { "city": "Islamabad", "showDate": "2021-07-27 00:00:00", "showDay": "TUE", "scrapeDate": "2021-07-25 21:46:08.723825", "movie": { "showtimes": [{ "address": "CINEPAX WORLD TRADE CENTER - Islamabad", "screen": ["SCREEN 2 - PLATINUM", "3:00PM"] }], "title": "F9" } }, { "city": "Lahore", "showDate": "2021-07-26 00:00:00", "showDay": "MON", "scrapeDate": "2021-07-25 21:46:15.856384", "movie": { "showtimes": [{ "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Screen 5", "1:30PM"] }, { "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Platinum 2", "2:00PM", "5:00PM", "8:00PM"] }, { "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Platinum 1", "2:45PM", "5:40PM", "8:30PM"] }, { "address": "CINEPAX AMANAH MALL - Lahore", "screen": ["SILVER 2", "3:00PM", "8:40PM"] }, { "address": "CINEPAX AMANAH MALL - Lahore", "screen": ["Gold Screen", "3:30PM", "6:30PM", "9:30PM"] }], "title": "Black Widow" } }, { "city": "Lahore", "showDate": "2021-07-27 00:00:00", "showDay": "TUE", "scrapeDate": "2021-07-25 21:46:17.499282", "movie": { "showtimes": [{ "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Screen 5", "1:30PM"] }, { "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Platinum 2", "2:00PM", "5:00PM", "8:00PM"] }, { "address": "CINEPAX PACKAGES MALL - Lahore", "screen": ["Platinum 1", "2:45PM", "5:40PM", "8:30PM"] }, { "address": "CINEPAX AMANAH MALL - Lahore", "screen": ["SILVER 2", "5:45PM"] }, { "address": "CINEPAX AMANAH MALL - Lahore", "screen": ["Gold Screen", "3:35PM", "6:35PM", "9:35PM"] }], "title": "Black Widow" } }]
 
     const python2 = spawn('python', ['./server/crawler/cinepax.py']);
 
@@ -690,7 +580,8 @@ app.get('/api/getCinepaxData', (req, res) => {
     python2.on('close', (code) => {
         console.log(`child process close all stdio with code ${code}`);
         try {
-            var data = JSON.parse(dataToSend);
+            // var data = JSON.parse(dataToSend);
+            // console.log(data);
             data.forEach(element => {
 
                 let showtimes = new Array();
