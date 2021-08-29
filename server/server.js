@@ -6,7 +6,7 @@ const moment = require("moment")
 const { spawn } = require('child_process');
 const path = require('path');
 const crypto = require('crypto');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 
 const config = require("./config/config").get(process.env.NODE_ENV);
 const app = express();
