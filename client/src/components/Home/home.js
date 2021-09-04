@@ -24,7 +24,7 @@ class Home extends Component {
         this.props.dispatch(getCinemaHomeMovies());
         if (this.props.user.login) {
             if (this.props.user.login.isAuth == true) {
-                this.props.dispatch(getRecommendedMovies());
+                // this.props.dispatch(getRecommendedMovies());
             }
         }
     }
@@ -197,10 +197,10 @@ class Home extends Component {
                                     /> :
                                     this.state.active === 'Comming Soon' ?
                                         this.state.commingSoon.length > 0 ?
-                                        <HomeMovies
-                                            movies={this.state.commingSoon}
-                                        />
-                                        : <span className="row m-5 nt-3">No coming soon movies available</span>
+                                            <HomeMovies
+                                                movies={this.state.commingSoon}
+                                            />
+                                            : <span className="row m-5 nt-3">No coming soon movies available</span>
                                         : this.state.active === 'Recommended' ?
                                             this.state.recommendedMovies ?
                                                 < HomeMovies
