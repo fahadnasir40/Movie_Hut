@@ -33,7 +33,7 @@ import Terms from './components/Policy/terms';
 import ReactGA from 'react-ga';
 const Routes = () => {
     useEffect(() => {
-        ReactGA.initialize('G-PDV6ZE2Y7X');
+        ReactGA.initialize('UA-163458073-1');
         ReactGA.pageview(window.location.pathname + window.location.search);
     }, [])
 
