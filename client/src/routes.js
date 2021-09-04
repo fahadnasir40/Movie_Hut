@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Auth from './hoc/auth';
 import Home from './components/Home/home';
@@ -30,8 +30,13 @@ import EditCinema from './components/Admin/Cinemas/edit';
 import PrivacyPolicy from './components/Policy/privacyPolicy';
 import Terms from './components/Policy/terms';
 
+import ReactGA from 'react-ga';
+const Routes = () => {
+    useEffect(() => {
+        ReactGA.initialize('G-PDV6ZE2Y7X');
+        ReactGA.pageview(window.location.pathname + window.location.search);
+    }, [])
 
-const routes = () => {
     return (
         <Switch>
             <Route path="/" exact component={Auth(Home, null)} />
@@ -67,4 +72,4 @@ const routes = () => {
     )
 }
 
-export default routes;
+export default Routes;

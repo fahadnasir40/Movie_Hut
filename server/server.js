@@ -483,13 +483,13 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
     // spawn new child process to call the python script
 
     title = String(req.query.name);
-
+    var python;
     //variables file name, movie name, api key
-    if (process.env.NODE_ENV === 'production') {
-        const python = spawn('python3', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
+    if (config.NODE_ENV == 'production') {
+        python = spawn('python3', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
     }
     else {
-        const python = spawn('python', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
+        python = spawn('python', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);
     }
     // collect data from script
     python.stdout.on('data', function (data) {
