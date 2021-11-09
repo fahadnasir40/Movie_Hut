@@ -197,7 +197,7 @@ class AddMovie extends Component {
                             {
                                 this.state.notFound == true ?
                                     <div className="col-md-6 col">
-                                        <Link onClick={this.getMovieTMDB}>Search movie from TMDB.</Link>
+                                        <Link to="#" onClick={this.getMovieTMDB}>Search movie from TMDB.</Link>
                                     </div>
                                     : null
                             }

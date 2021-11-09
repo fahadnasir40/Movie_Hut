@@ -1,6 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+require('console-stamp')(console, { 
+    format: ':date(dd/mm/yyyy HH:MM:ss.l)' 
+} );
 const mongoose = require("mongoose");
 const moment = require("moment")
 const { spawn } = require('child_process');
@@ -484,6 +487,7 @@ app.get('/api/getMovieTMDB', auth2, (req, res) => {
 
     title = String(req.query.name);
     var python;
+    console.log("TMDB Params: ",title, config.TMDB_API_KEY);
     //variables file name, movie name, api key
     if (config.NODE_ENV == 'production') {
         python = spawn('python3', ['./server/tmdb-api/tmdb.py', title, config.TMDB_API_KEY]);

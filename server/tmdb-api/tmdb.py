@@ -5,7 +5,6 @@ import sys
 
 from json import JSONEncoder
 
-
 key = sys.argv[2]
 
 
